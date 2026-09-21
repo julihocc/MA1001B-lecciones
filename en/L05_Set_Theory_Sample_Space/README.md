@@ -103,6 +103,23 @@ data files, network resources, or package-install commands. It can be run in a
 clean kernel from the repository or from an isolated directory with the locked
 environment.
 
+## 40-minute classroom companion
+
+[`notebooks/lesson_05_set_theory_sample_space_class_40min.ipynb`](notebooks/lesson_05_set_theory_sample_space_class_40min.ipynb)
+is the short English classroom route for MA1001B.502. It is a companion, not a
+replacement for the complete self-study notebook above: the complete notebook
+retains the figures, extended practices, source-to-cell mapping, and detailed
+answers, while this variant keeps only the state and calculations needed for a
+40-minute explanation.
+
+Its timed route is 00–04 experiment and outcome, 04–12 sample space, 12–25
+events and operations, 25–33 disjointness and exhaustiveness, 33–38 the
+Express-and-Delayed integration, and 38–40 an oral check and bridge to L06. It
+uses the same synthetic model, `SEED = 42`, 480 observations, canonical
+frequencies, cardinalities, observed counts, and A–B/C–D classification. The
+notebook is self-contained, uses no imports from `src/`, reads no external
+files, and does not write figures or other sidecar files.
+
 ## Validation record
 
 The package was validated after source revision `f38d037`:
@@ -117,6 +134,12 @@ The package was validated after source revision `f38d037`:
   cardinalities, observed counts, pair properties, F values, error contracts,
   and zero open Matplotlib figures;
 - HTML export contained the full notebook and three embedded figures.
+- the 40-minute English companion passed JSON structure and unique-cell-ID
+  checks, executed twice from clean kernels and temporary directories, and
+  reproduced the same canonical values without sidecar files;
+- the companion HTML export was reviewed structurally for the timed headings,
+  formulas, tables, code, and saved outputs; it intentionally contains no
+  figures because the short route uses only the calculations needed in class.
 
 HTML export was checked structurally for the complete notebook and its three
 embedded figures. A full browser visual review of the local HTML remains
@@ -128,7 +151,8 @@ subject to the local `file:` URL policy; no Colab validation is claimed.
 L05_Set_Theory_Sample_Space/
 |-- README.md
 |-- notebooks/
-|   `-- lesson_05_set_theory_sample_space.ipynb
+|   |-- lesson_05_set_theory_sample_space.ipynb
+|   `-- lesson_05_set_theory_sample_space_class_40min.ipynb
 |-- src/
 |   |-- set_theory_01_sample_space.py
 |   |-- set_theory_02_set_operations.py
@@ -158,6 +182,13 @@ Execute the notebook and retain its outputs:
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
   en/L05_Set_Theory_Sample_Space/notebooks/lesson_05_set_theory_sample_space.ipynb
+```
+
+Execute the 40-minute classroom companion:
+
+```powershell
+uv run jupyter nbconvert --execute --to notebook --inplace `
+  en/L05_Set_Theory_Sample_Space/notebooks/lesson_05_set_theory_sample_space_class_40min.ipynb
 ```
 
 Compile twice from `slides/`:
