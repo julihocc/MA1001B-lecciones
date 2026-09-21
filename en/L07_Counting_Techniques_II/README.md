@@ -136,6 +136,22 @@ in VS Code with a Colab kernel, or executed in the locked project environment.
 Its figures are embedded cell outputs; the PNGs under `figures/` remain the
 retained evidence produced by the standalone scripts.
 
+## 50-minute classroom companion
+
+The companion notebook
+[`notebooks/lesson_07_counting_techniques_ii_class_50min.ipynb`](notebooks/lesson_07_counting_techniques_ii_class_50min.ipynb)
+is the presentation route; it does not replace the full self-study notebook.
+It keeps the minimal sequence of repeated permutations (00--14), multinomial
+allocations (14--31), and stars and bars with the probability limit (31--47),
+followed by a check and bridge (47--50). It does not import `src/`, use
+external files, or generate figures; it retains the results 560, 210, 210,
+140, 165, and the exact probabilities from the example.
+
+The short variant was executed twice with clean kernels and temporary
+directories, without errors, and rendered to HTML for review of headings,
+formulas, tables, code, and outputs. The full notebook remains the self-study
+route with simulation, practice, answers, and figures.
+
 ## Common Misconceptions
 
 - Dividing by \(n!\) is not a general correction. Divide only by factorials of
@@ -157,7 +173,8 @@ retained evidence produced by the standalone scripts.
 L07_Counting_Techniques_II/
 |-- README.md
 |-- notebooks/
-|   `-- lesson_07_counting_techniques_ii.ipynb
+|   |-- lesson_07_counting_techniques_ii.ipynb
+|   `-- lesson_07_counting_techniques_ii_class_50min.ipynb
 |-- src/
 |   |-- allocations_01_repeated_permutations.py
 |   |-- allocations_02_multinomial_categories.py
@@ -187,6 +204,13 @@ Execute the notebook and save all cell outputs:
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
   en/L07_Counting_Techniques_II/notebooks/lesson_07_counting_techniques_ii.ipynb
+```
+
+Prepare the short classroom route with:
+
+```powershell
+uv run jupyter nbconvert --execute --to notebook --inplace `
+  en/L07_Counting_Techniques_II/notebooks/lesson_07_counting_techniques_ii_class_50min.ipynb
 ```
 
 Compile twice from the `slides/` directory:

@@ -145,6 +145,22 @@ un kernel de Colab o ejecutarse en el entorno bloqueado del proyecto. Sus
 figuras son salidas embebidas; los PNG de `figuras/` siguen siendo la evidencia
 retenida producida por los scripts autónomos.
 
+## Libreta breve para clase de 50 minutos
+
+La libreta compañera
+[`notebooks/leccion_06_tecnicas_conteo_i_clase_50min.ipynb`](notebooks/leccion_06_tecnicas_conteo_i_clase_50min.ipynb)
+es la ruta de exposición, no reemplaza la libreta completa de autoestudio.
+Conserva sólo los cálculos esenciales de los cuatro bloques: regla del
+producto (00--10), permutaciones (10--22), combinaciones (22--35) y
+restricciones (35--47), con comprobación y puente final (47--50). No importa
+`src/`, no usa archivos externos ni genera figuras; sus resultados canónicos
+siguen siendo 24, 120, 20, 126, 420 y 99.
+
+La variante breve se ejecutó dos veces con kernels limpios y directorios
+temporales, sin errores, y se renderizó a HTML para revisar títulos, fórmulas,
+tablas, código y salidas. La libreta completa permanece como la ruta de
+autoestudio con práctica, respuestas y figuras.
+
 ## Conceptos erróneos comunes
 
 - La regla del producto cuenta configuraciones completas, no la suma de
@@ -168,7 +184,8 @@ retenida producida por los scripts autónomos.
 L06_Tecnicas_Conteo_I/
 |-- README.md
 |-- notebooks/
-|   `-- leccion_06_tecnicas_conteo_i.ipynb
+|   |-- leccion_06_tecnicas_conteo_i.ipynb
+|   `-- leccion_06_tecnicas_conteo_i_clase_50min.ipynb
 |-- src/
 |   |-- conteo_01_regla_producto.py
 |   |-- conteo_02_permutaciones.py
@@ -201,6 +218,13 @@ Ejecutar la libreta y guardar todas las salidas de las celdas:
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
   es/L06_Tecnicas_Conteo_I/notebooks/leccion_06_tecnicas_conteo_i.ipynb
+```
+
+Para preparar la ruta breve de exposición:
+
+```powershell
+uv run jupyter nbconvert --execute --to notebook --inplace `
+  es/L06_Tecnicas_Conteo_I/notebooks/leccion_06_tecnicas_conteo_i_clase_50min.ipynb
 ```
 
 Compilar las diapositivas desde `diapositivas/`:

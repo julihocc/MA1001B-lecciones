@@ -134,6 +134,22 @@ in VS Code with a Colab kernel, or executed in the locked project environment.
 Its figures are embedded cell outputs; the PNGs under `figures/` remain the
 retained evidence produced by the standalone scripts.
 
+## 50-minute classroom companion
+
+The companion notebook
+[`notebooks/lesson_06_counting_techniques_i_class_50min.ipynb`](notebooks/lesson_06_counting_techniques_i_class_50min.ipynb)
+is the presentation route; it does not replace the full self-study notebook.
+It keeps only the essential calculations for product rule (00--10),
+permutations (10--22), combinations (22--35), and restrictions (35--47),
+followed by a check and bridge (47--50). It does not import `src/`, use
+external files, or generate figures; the canonical results remain 24, 120,
+20, 126, 420, and 99.
+
+The short variant was executed twice with clean kernels and temporary
+directories, without errors, and rendered to HTML for review of headings,
+formulas, tables, code, and outputs. The full notebook remains the self-study
+route with practice, answers, and figures.
+
 ## Common Misconceptions
 
 - The product rule counts complete configurations, not the sum of choices
@@ -156,7 +172,8 @@ retained evidence produced by the standalone scripts.
 L06_Counting_Techniques_I/
 |-- README.md
 |-- notebooks/
-|   `-- lesson_06_counting_techniques_i.ipynb
+|   |-- lesson_06_counting_techniques_i.ipynb
+|   `-- lesson_06_counting_techniques_i_class_50min.ipynb
 |-- src/
 |   |-- counting_01_product_rule.py
 |   |-- counting_02_permutations.py
@@ -189,6 +206,13 @@ Execute the notebook and save all cell outputs:
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
   en/L06_Counting_Techniques_I/notebooks/lesson_06_counting_techniques_i.ipynb
+```
+
+Prepare the short classroom route with:
+
+```powershell
+uv run jupyter nbconvert --execute --to notebook --inplace `
+  en/L06_Counting_Techniques_I/notebooks/lesson_06_counting_techniques_i_class_50min.ipynb
 ```
 
 Compile twice from the `slides/` directory:

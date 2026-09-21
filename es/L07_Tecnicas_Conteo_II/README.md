@@ -141,6 +141,22 @@ un kernel de Colab o ejecutarse en el entorno bloqueado del proyecto. Sus
 figuras son salidas embebidas; los PNG de `figuras/` siguen siendo la evidencia
 retenida producida por los scripts autónomos.
 
+## Libreta breve para clase de 50 minutos
+
+La libreta compañera
+[`notebooks/leccion_07_tecnicas_conteo_ii_clase_50min.ipynb`](notebooks/leccion_07_tecnicas_conteo_ii_clase_50min.ipynb)
+es la ruta de exposición, no reemplaza la libreta completa de autoestudio.
+Conserva la secuencia mínima de permutaciones repetidas (00--14), asignaciones
+multinomiales (14--31) y estrellas y barras con el límite de probabilidad
+(31--47), seguida de comprobación y puente (47--50). No importa `src/`, no usa
+archivos externos ni genera figuras; conserva los resultados 560, 210, 210,
+140, 165 y las probabilidades exactas del ejemplo.
+
+La variante breve se ejecutó dos veces con kernels limpios y directorios
+temporales, sin errores, y se renderizó a HTML para revisar títulos, fórmulas,
+tablas, código y salidas. La libreta completa permanece como la ruta de
+autoestudio con simulación, práctica, respuestas y figuras.
+
 ## Conceptos erróneos comunes
 
 - Dividir por \(n!\) no es una corrección general. Divida solo por factoriales
@@ -164,7 +180,8 @@ retenida producida por los scripts autónomos.
 L07_Tecnicas_Conteo_II/
 |-- README.md
 |-- notebooks/
-|   `-- leccion_07_tecnicas_conteo_ii.ipynb
+|   |-- leccion_07_tecnicas_conteo_ii.ipynb
+|   `-- leccion_07_tecnicas_conteo_ii_clase_50min.ipynb
 |-- src/
 |   |-- asignaciones_01_permutaciones_repetidas.py
 |   |-- asignaciones_02_categorias_multinomiales.py
@@ -194,6 +211,13 @@ Ejecutar la libreta y guardar todas las salidas de las celdas:
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
   es/L07_Tecnicas_Conteo_II/notebooks/leccion_07_tecnicas_conteo_ii.ipynb
+```
+
+Para preparar la ruta breve de exposición:
+
+```powershell
+uv run jupyter nbconvert --execute --to notebook --inplace `
+  es/L07_Tecnicas_Conteo_II/notebooks/leccion_07_tecnicas_conteo_ii_clase_50min.ipynb
 ```
 
 Compilar dos veces desde el directorio `diapositivas/`:
