@@ -1,0 +1,201 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 06: Counting Techniques I}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 06: Counting Techniques I\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Counting Question}
+  \begin{alertblock}{Guiding question}
+    How can we determine the size of a finite sample space without listing every
+    outcome, and how can we detect overcounting?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item apply the product rule to successive choice stages;
+    \item distinguish ordered assignments from unordered subsets;
+    \item verify formulas through exhaustive enumeration;
+    \item diagnose repeated counting when restrictions interact.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All facilities, roles, people, and restrictions are synthetic.
+\end{frame}
+
+\begin{frame}{Step 1: Product Rule for Complete Configurations}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Choose one element from each stage:
+      \[
+        N=\prod_{i=1}^{m}n_i.
+      \]
+
+      \begin{block}{Synthetic review configuration}
+        3 fulfillment centers\\
+        4 workflow stages\\
+        2 evidence types
+      \end{block}
+
+      \[
+        3\times4\times2=24
+      \]
+
+      Exhaustive Python enumeration also returns 24 tuples. Each center
+      contributes 8 configurations.
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/counting_01_product_rule.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 2: Permutations for Distinct Roles}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Assign Lead, Validation, and Reporting roles from six analysts.
+
+      \[
+        P(n,k)=\frac{n!}{(n-k)!}
+      \]
+      \[
+        P(6,3)=6\times5\times4=120
+      \]
+
+      \begin{exampleblock}{Why order matters}
+        The same three analysts in different roles create a different
+        assignment. Python generates exactly 120 ordered tuples.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/counting_02_permutations.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Combinations for an Unranked Panel}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Select three analysts for a peer panel with no internal roles.
+
+      \[
+        \binom{n}{k}=\frac{n!}{k!(n-k)!}
+      \]
+      \[
+        \binom{6}{3}=20
+      \]
+
+      Each three-person subset has $3!=6$ possible orderings:
+      \[
+        \frac{P(6,3)}{3!}=\frac{120}{6}=20.
+      \]
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/counting_03_combinations.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Outcome Determines the Counting Method}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.27\textwidth}p{0.26\textwidth}p{0.34\textwidth}}
+      \toprule
+      \textbf{Question} & \textbf{Method} & \textbf{Lesson 06 result} \\
+      \midrule
+      One choice at every stage & Product rule & $3\times4\times2=24$ configurations \\
+      Distinct positions assigned & Permutation & $P(6,3)=120$ role assignments \\
+      Unranked subset selected & Combination & $\binom{6}{3}=20$ panels \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{alertblock}{Decision test}
+    Describe one final outcome before choosing a formula. If exchanging two
+    selected elements changes that outcome, order matters.
+  \end{alertblock}
+
+  A formula can return an integer and still answer the wrong counting question.
+\end{frame}
+
+\begin{frame}{Step 4: The Overcounting Limit}
+  \begin{columns}[T]
+    \begin{column}{0.43\textwidth}
+      \small
+      Choose four people from five operations analysts and four data specialists.
+      Require both disciplines and exclude the pair O1 with D1.
+
+      \vspace{0.4em}
+      \begin{alertblock}{Naive expression}
+        $5\times4\times\binom{7}{2}=420$\\
+        The entire universe has only $\binom{9}{4}=126$ groups.
+      \end{alertblock}
+
+      \[
+        126-5-1-21=99
+      \]
+      Exhaustive enumeration confirms 99 valid groups.
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/counting_04_restrictions.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item A review code uses 4 centers, 3 stages, and 2 evidence types. How many
+      complete configurations exist?
+    \item How many ordered assignments fill two distinct roles from five people?
+    \item How many unranked two-person panels can be selected from five people?
+    \item Why does a result of 420 immediately reveal an error when the full
+      universe contains only 126 unique groups?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Connection to Lesson 07}
+    The next lesson extends counting to repeated categories and multinomial
+    allocations, where several elements share the same type.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 3, Section 3.1. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

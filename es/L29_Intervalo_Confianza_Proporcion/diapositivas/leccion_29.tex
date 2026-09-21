@@ -1,0 +1,192 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 29: Intervalo de confianza para una proporción poblacional}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 29: Intervalo de confianza para una proporción poblacional\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de la tasa binaria}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se construye un intervalo al 95\% para una proporción desconocida
+    a partir de $x$ éxitos en $n$ ensayos independientes?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $\hat{p}=x/n$;
+    \item verificar $n\hat{p}$ y $n(1-\hat{p})$ antes de usar $z$;
+    \item formar el intervalo de Wald $\hat{p}\pm 1.96\sqrt{\hat{p}(1-\hat{p})/n}$;
+    \item explicar por qué un evento raro con $x$ pequeña hace engañoso a Wald.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los conteos de tickets usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Una instantánea sintética de primer contacto}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Valor} \\
+      \midrule
+      Tickets $n$ & 150 \\
+      Resoluciones en primer contacto $x$ & 27 \\
+      No primer contacto & 123 \\
+      Proporción muestral $\hat{p}$ & $27/150=0.180000$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Verificación éxito-fracaso}
+    $n\hat{p}=27\ge 5$ y $n(1-\hat{p})=123\ge 5$. La aproximación normal de
+    $\hat{p}$ se trata como usable para esta instantánea.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Proporción muestral}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+phat = x / n
+n_phat = n * phat
+n_qhat = n * (1 - phat)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\hat{p}=0.180000$\\
+        $n\hat{p}=27$\\
+        $n(1-\hat{p})=123$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prop_ci_01_sample_proportion.png}
+      \vspace{0.2em}
+      \scriptsize Conteos de primer contacto del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Intervalo de Wald después de que la verificación pasa}
+  \small
+  Error estándar y margen al 95\%:
+  \[
+    \mathrm{EE}=\sqrt{\frac{0.18\times 0.82}{150}}=0.031369,
+  \]
+  \[
+    E=1.96\times 0.031369=0.061483.
+  \]
+  Intervalo:
+  \[
+    \hat{p}\pm E=[0.118517, 0.241483].
+  \]
+  El intervalo estima la tasa poblacional desconocida $p$, no el siguiente
+  ticket.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: El intervalo de Wald al 95\%}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = np.sqrt(
+    phat * (1 - phat) / n
+)
+lower = phat - 1.96 * se
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\mathrm{EE}=0.031369$\\
+        Margen $=0.061483$\\
+        IC $[0.118517, 0.241483]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prop_ci_02_wald_interval.png}
+      \vspace{0.2em}
+      \scriptsize Intervalo de Wald del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Los eventos raros hacen engañoso a Wald}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Ahora $x=3$, $n=150$, $\hat{p}=0.020000$.
+
+      \vspace{0.4em}
+      $n\hat{p}=3<5$. Las condiciones fallan.
+
+      \vspace{0.4em}
+      Intervalo de Wald:
+      \[
+        [-0.002405, 0.042405].
+      \]
+      El límite inferior es negativo.
+
+      \vspace{0.5em}
+      \textbf{Límite:} una proporción no puede ser negativa. Una $x$ pequeña
+      hace engañoso el intervalo de Wald.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prop_ci_03_rare_event_wald.png}
+      \vspace{0.2em}
+      \scriptsize Diagnóstico Wald versus Wilson del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Calcule $\hat{p}$ a partir de $x=27$ y $n=150$.
+    \item ¿Pasan $n\hat{p}=27$ y $n(1-\hat{p})=123$ el umbral 5?
+    \item ¿Por qué un límite de Wald negativo es un problema para una
+      proporción?
+    \item ¿Qué cantidad falla la verificación cuando $x=3$ y $n=150$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 30}
+    La sesión puede continuar directamente con la elección de $n$ de modo
+    que un margen de error objetivo sea alcanzable bajo un presupuesto.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 8, Sección 8.3. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

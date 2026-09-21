@@ -1,0 +1,185 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 30: Sample Size for Margin of Error and Budget}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 30: Sample Size for Margin of Error and Budget\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Planning Question}
+  \begin{alertblock}{Guiding question}
+    How large must $n$ be so that a 95\% interval hits a chosen margin of
+    error, and can the budget fund that $n$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $n=(z^{*}s/E)^{2}$ for a mean and round up;
+    \item compute $n=z^{*2}p(1-p)/E^{2}$ for a proportion;
+    \item explain why $p=0.5$ is conservative;
+    \item compare required $n$ with the $n$ a budget can buy.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All planning values used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Choose $E$ Before Collecting Data}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Mean-handling plan} & \textbf{Value} \\
+      \midrule
+      Textbook $z^{*}$ & 1.96 \\
+      Planning $s$ & 10 minutes \\
+      Target margin $E$ & 2 minutes \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Mean sample-size formula}
+    \[
+      n=\left(\frac{z^{*}s}{E}\right)^{2}=\left(\frac{1.96\times 10}{2}\right)^{2}=96.040000.
+    \]
+    Round up to the next whole observation: $n=97$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Size for a Mean}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+raw = (z_star * s / E) ** 2
+n = int(np.ceil(raw))
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Raw $n=96.040000$\\
+        Rounded-up $n=97$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sample_size_01_mean_margin.png}
+      \vspace{0.2em}
+      \scriptsize Required $n$ versus $E$ from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Conservative $p=0.5$ for a Proportion}
+  \small
+  Target margin $E=0.03$ for a first-contact rate:
+  \[
+    n=\frac{z^{*2}p(1-p)}{E^{2}}.
+  \]
+  At $p=0.5$, $p(1-p)=0.25$ is maximized:
+  \[
+    n=\frac{1.96^{2}\times 0.25}{0.03^{2}}=1067.111111 \;\to\; 1068.
+  \]
+  Using the Lesson 29 guess $p=0.18$ yields only $n=631$, which is 437
+  observations too optimistic if $p$ is nearer $0.5$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Conservative Proportion Sample Size}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+raw = (
+    z_star**2 * p * (1-p)
+    / E**2
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $p=0.5$ gives $n=1068$\\
+        $p=0.18$ gives $n=631$\\
+        Extra $=437$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sample_size_02_proportion_conservative.png}
+      \vspace{0.2em}
+      \scriptsize $n$ versus planning $p$ from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Desired $E=0.01$ Can Exceed the Budget}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Conservative $n$ for $E=0.01$:
+      \[
+        n=9604.
+      \]
+      Budget $\$20{,}000$ at $\$12$ each
+      funds only $1666$ observations.
+
+      \vspace{0.4em}
+      Required cost: $\$115{,}248$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} shrinking $E$ inflates $n$ with $1/E^{2}$. A desired
+      margin is not a fundable study.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sample_size_03_budget_vs_precision.png}
+      \vspace{0.2em}
+      \scriptsize Required versus affordable $n$ from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $(1.96\times 10/2)^{2}$ and round up.
+    \item Why is $p=0.5$ conservative for a proportion?
+    \item Why does $n$ explode when $E$ shrinks from $0.03$ to $0.01$?
+    \item Can a $\$20{,}000$ budget at $\$12$ per observation fund $n=9604$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 31}
+    The session can continue directly into a chi-square interval for a
+    population variance.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 8, Section 8.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

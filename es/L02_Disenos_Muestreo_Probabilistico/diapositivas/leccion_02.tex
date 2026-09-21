@@ -1,0 +1,222 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 02: Diseños de muestreo probabilístico}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 02: Diseños de muestreo probabilístico\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de diseño muestral}
+  \begin{alertblock}{Pregunta guía}
+    ¿Qué unidades se seleccionarán al azar y qué partes de la población cubrirá
+    la muestra resultante?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item conectar una muestra probabilística con un marco muestral;
+    \item implementar muestreo aleatorio simple y estratificado proporcional;
+    \item identificar la unidad seleccionada en el muestreo por conglomerados
+      de una etapa;
+    \item comparar diseños sin declarar un ganador universal.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los registros son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Tres diseños de muestreo probabilístico}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.20\textwidth}p{0.27\textwidth}p{0.39\textwidth}}
+      \toprule
+      \textbf{Diseño} & \textbf{Unidad aleatorizada} & \textbf{Construcción} \\
+      \midrule
+      Aleatoria simple & Pedido individual & Seleccionar $n$ pedidos de un marco completo \\
+      Estratificado & Pedido dentro de una región & Partir en estratos; muestrear de cada estrato \\
+      Conglomerados de una etapa & Instalación & Seleccionar instalaciones; incluir todos sus pedidos \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.7em}
+  \begin{exampleblock}{Marco sintético}
+    $12{,}000$ pedidos $=$ 24 instalaciones $\times$ 500 pedidos. Cuatro regiones
+    definen estratos; las instalaciones definen conglomerados.
+  \end{exampleblock}
+
+  \textbf{Diseño probabilístico:} la selección se rige por un proceso de azar
+  conocido, no por qué registros resultan más fáciles de alcanzar.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Muestreo aleatorio simple}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+sample = population.sample(
+    n=240,
+    replace=False,
+    random_state=42,
+)
+
+inclusion_chance = n / N
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $N=12{,}000$, $n=240$\\
+        Probabilidad de inclusión $=2.00\%$\\
+        $\mu=47.67$, $\bar{x}=47.17$ min\\
+        Error absoluto $=0.50$ min
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/disenos_muestreo_01_aleatorio_simple.png}
+      \vspace{0.15em}
+      \scriptsize La probabilidad igual de selección no fuerza un balance
+      regional exacto.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Muestreo estratificado proporcional}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \textbf{Regla de asignación}
+      \[
+        n_h = n\frac{N_h}{N}
+      \]
+      Aquí $N_h=3{,}000$ para cada región, así que $n_h=60$.
+
+      \vspace{0.4em}
+      \begin{lstlisting}
+for region in regions:
+    stratum = population[
+        population.region == region
+    ]
+    sample 60 orders
+      \end{lstlisting}
+
+      Error del MAS: 0.50 min\\
+      Error estratificado: 0.28 min
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/disenos_muestreo_02_estratificado.png}
+      \vspace{0.15em}
+      \scriptsize La estratificación garantiza representación, no el menor
+      error en cada muestra posible.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Muestreo por conglomerados de una etapa}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Instalaciones seleccionadas al azar:
+      \[
+        \{\mathrm{F02},\mathrm{F11},\mathrm{F16},\mathrm{F18}\}
+      \]
+      Incluir los 500 pedidos de cada instalación seleccionada.
+
+      \vspace{0.5em}
+      \begin{tabular}{lr}
+        \toprule
+        Pedidos incluidos & 2{,}000 \\
+        Probabilidad de inclusión & 16.67\% \\
+        Regiones presentes & 3 de 4 \\
+        Estimación de la media & 48.76 min \\
+        Error absoluto & 1.09 min \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      Unidades cercanas pueden compartir un efecto de instalación; una muestra
+      grande de conglomerados puede aportar menos información independiente de
+      lo que sugiere su número de filas.
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/disenos_muestreo_03_conglomerados.png}
+      \vspace{0.15em}
+      \scriptsize Las barras rosa marcan las instalaciones seleccionadas en
+      esta muestra con semilla.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Elegir un diseño}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.18\textwidth}p{0.23\textwidth}p{0.22\textwidth}p{0.22\textwidth}}
+      \toprule
+      \textbf{Diseño} & \textbf{Marco necesario} & \textbf{Cobertura} & \textbf{Compensación operativa} \\
+      \midrule
+      Aleatoria simple & Lista completa de pedidos & Aleatoria, no fija por región & Las unidades pueden estar dispersas \\
+      Estratificado & Lista de pedidos más región & Cada región muestreada & Requiere etiquetas de región \\
+      Conglomerados & Lista de instalaciones & Solo instalaciones seleccionadas & Menos sitios que visitar \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{alertblock}{Interprete la comparación correctamente}
+    Los errores observados---0.50, 0.28 y 1.09 minutos---pertenecen a una
+    realización sintética con semilla. Ilustran consecuencias de la estructura
+    poblacional; no ordenan los tres diseños para todo contexto.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item En el MAS, ¿cuál es la probabilidad de inclusión de un pedido y qué
+      marco se requiere para implementar el diseño?
+    \item ¿Por qué la muestra estratificada contiene cada región mientras que
+      el MAS no garantiza conteos regionales exactos?
+    \item En el diseño por conglomerados, ¿qué se selecciona al azar y qué
+      pedidos entran después a la muestra?
+    \item ¿Por qué esta comparación con semilla no prueba que la estratificación
+      sea siempre el diseño más exacto?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Conexión con la Lección 03}
+    Una vez recolectada una muestra defendible, los resúmenes numéricos
+    describen su centro y su variabilidad.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 1, Sección 1.2. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

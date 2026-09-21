@@ -1,0 +1,200 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 03: Tendencia central y dispersión}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 03: Tendencia central y dispersión\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta descriptiva}
+  \begin{alertblock}{Pregunta guía}
+    ¿Qué resúmenes describen un tiempo de procesamiento típico y la
+    variabilidad entre pedidos?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular e interpretar la media y la mediana;
+    \item calcular la desviación estándar muestral y el rango intercuartílico;
+    \item emparejar una medida de centro con una medida compatible de
+      dispersión;
+    \item explicar cómo un valor extremo afecta cada resumen.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Los 240 registros de pedidos son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Centro y dispersión}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.18\textwidth}p{0.31\textwidth}p{0.37\textwidth}}
+      \toprule
+      \textbf{Resumen} & \textbf{Cálculo} & \textbf{Pregunta que responde} \\
+      \midrule
+      Media & $\bar{x}=\frac{1}{n}\sum x_i$ & ¿Dónde se equilibran los valores? \\
+      Mediana & Valor central ordenado & ¿Qué valor parte los datos ordenados a la mitad? \\
+      $s$ muestral & $\sqrt{\frac{\sum(x_i-\bar{x})^2}{n-1}}$ & ¿Cuánto varían los valores alrededor de la media? \\
+      IQR & $Q_3-Q_1$ & ¿Qué tan ancho es el 50\% central? \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{exampleblock}{Regla de interpretación}
+    Reporte los resúmenes en contexto y en las unidades de la variable.
+    Empareje media con $s$ muestral, o mediana con IQR, para que centro y
+    dispersión cuenten una historia coherente.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Media y mediana}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+values = sample[
+    "processing_time_minutes"
+]
+
+mean = values.mean()
+median = values.median()
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $n=240$ pedidos\\
+        Media $=45.19$ min\\
+        Mediana $=44.70$ min\\
+        Diferencia $=0.49$ min
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/estadistica_descriptiva_01_centro.png}
+      \vspace{0.15em}
+      \scriptsize Ambos números describen el centro. Ninguno describe la
+      dispersión.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 2: Dos medidas de dispersión}
+  \begin{columns}[T]
+    \begin{column}{0.39\textwidth}
+      \small
+      Desviación estándar muestral:
+      \[
+        s=\sqrt{\frac{\sum(x_i-\bar{x})^2}{n-1}}=6.38\text{ min}
+      \]
+
+      Intervalo de cuartiles:
+      \[
+        Q_1=40.53,\quad Q_3=49.01
+      \]
+      \[
+        \mathrm{IQR}=Q_3-Q_1=8.48\text{ min}
+      \]
+
+      $s$ mide la variación alrededor de la media. El IQR cubre la mitad
+      central de las observaciones ordenadas.
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/estadistica_descriptiva_02_dispersion.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Sensibilidad a un valor extremo}
+  \small
+  \textbf{El pedido 300193 cambia de 65.22 a 180.00 minutos.}
+
+  \vspace{0.1em}
+  \centering
+  \includegraphics[width=0.80\textwidth]{../figuras/estadistica_descriptiva_03_sensibilidad.png}
+
+  \vspace{0.1em}
+  \begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Resumen} & Media & Mediana & $s$ muestral & IQR \\
+    \textbf{Cambio (min)} & $+0.48$ & $+0.00$ & $+4.34$ & $+0.00$ \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.1em}
+  \scriptsize Los cambios mostrados están redondeados a dos decimales. La
+  sensibilidad por sí sola no diagnostica una anomalía.
+\end{frame}
+
+\begin{frame}{Elegir resúmenes descriptivos}
+  \small
+  \textbf{Media con desviación estándar muestral}\par\vspace{0.2em}
+  Este par usa cada observación. Suele describir bien una distribución
+  aproximadamente simétrica cuando ningún extremo domina los resúmenes.
+
+  \vspace{0.7em}
+  \textbf{Mediana con rango intercuartílico}\par\vspace{0.2em}
+  Este par depende de posiciones ordenadas. Suele resistir mejor la
+  influencia de un número pequeño de valores extremos.
+
+  \vspace{0.8em}
+  \begin{alertblock}{Una descripción defendible}
+    Inspeccione la distribución, enuncie las unidades y explique la elección.
+    Estos emparejamientos son pautas útiles, no reglas automáticas.
+  \end{alertblock}
+
+  Un identificador numérico como \texttt{order\_id} sigue etiquetando un
+  registro. No es una medición cuantitativa para resumir con media o
+  desviación estándar.
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Qué preguntas distintas responden la media y la desviación
+      estándar muestral sobre el tiempo de procesamiento?
+    \item Con $Q_1=40.53$ y $Q_3=49.01$, calcule e interprete el IQR.
+    \item ¿Qué par centro-dispersión describe mejor datos afectados por unos
+      pocos retrasos extremos, y por qué?
+    \item ¿Por qué el valor de 180 minutos requiere más evidencia antes de
+      etiquetarlo como anomalía o error de registro?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Conexión con la Lección 04}
+    Los boxplots y las reglas explícitas de detección añaden una forma
+    reproducible de marcar valores para investigación. El contexto de
+    negocio sigue determinando qué significa la bandera.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 2, Secciones 2.2, 2.3 y 2.7. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

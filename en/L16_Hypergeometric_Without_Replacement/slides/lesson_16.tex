@@ -1,0 +1,161 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 16: Hypergeometric Distribution: Sampling Without Replacement}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 16: Hypergeometric Distribution\par}
+  \vspace{0.15cm}
+  {\large Sampling Without Replacement\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Lot Is Finite}
+  \begin{alertblock}{Guiding question}
+    If $6$ of $80$ units are defective and $10$ are drawn without replacement,
+    what is $P(X=0)$, and why is a binomial approximation too optimistic?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item identify $N$, $K$, and $n$ in a without-replacement draw;
+    \item compute hypergeometric $P(X=0)$;
+    \item compute $E[X]=nK/N$;
+    \item explain why the binomial overstates $P(X=0)$ when $n/N$ is not small.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All lots used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Hypergeometric Ingredients}
+  \small
+  \[
+    N=80,\qquad K=6,\qquad n=10,\qquad \frac{n}{N}=0.125.
+  \]
+  $X$ is the number of defectives in the draw. Because units are not replaced,
+  each draw changes the remaining lot, so the trials are not independent.
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: $P(X=0)$ Without Replacement}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+p0 = stats.hypergeom.pmf(
+    0, M=80, n=6, N=10
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $n/N=0.125000$\\
+        $P(X=0)=0.436326$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/hypergeometric_01_without_replacement.png}
+      \vspace{0.2em}
+      \scriptsize Hypergeometric PMF from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Mean Does Not Need Independence}
+  \small
+  \[
+    E[X]=\frac{nK}{N}=\frac{10\times 6}{80}=0.75.
+  \]
+  That mean matches a binomial with $p=K/N=0.075$. Matching means does not
+  match $P(X=0)$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Hypergeometric Expectation}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+mean = n * K / N
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $nK/N=0.750000$\\
+        scipy mean $=0.750000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/hypergeometric_02_expectation.png}
+      \vspace{0.2em}
+      \scriptsize Mean marked on the PMF from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Binomial Overstates $P(X=0)$}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Binomial approximation: $X\sim\mathrm{Binomial}(10,0.075)$.
+      \[
+        P_{\text{binom}}(X=0)=0.458582
+      \]
+      versus hypergeometric $0.436326$. Overstatement $0.022257$.
+
+      \vspace{0.4em}
+      \textbf{Limit:} the binomial overstates $P(X=0)$ when $n/N$ is not small.
+      Lesson 17 models rare events with a Poisson rate.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/hypergeometric_03_binomial_approximation.png}
+      \vspace{0.2em}
+      \scriptsize Hypergeometric versus binomial from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why are the ten draws not independent?
+    \item Compute $E[X]=nK/N$.
+    \item Which model gives the larger $P(X=0)$?
+    \item Why is $n/N=0.125$ a warning for the binomial approximation?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 17}
+    The session can continue directly into the Poisson model for rare events
+    in a shift.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Section 4.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

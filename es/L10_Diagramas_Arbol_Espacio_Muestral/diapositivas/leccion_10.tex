@@ -1,0 +1,202 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 10: Diagramas de árbol y descomposición del espacio muestral}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 10: Diagramas de árbol y descomposición del espacio muestral\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de probabilidad secuencial}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo puede un experimento de dos etapas descomponerse en ramas de modo
+    que las conjuntas y las condicionales inversas sigan visibles?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item dibujar un árbol de caminos terminales mutuamente excluyentes;
+    \item etiquetar ramas con frecuencias o probabilidades;
+    \item multiplicar a lo largo de un camino y sumar caminos disjuntos;
+    \item explicar por qué $P(B\mid A)$ puede ser una rama mientras $P(A\mid B)$
+      no lo es.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los lotes y marcas de inspección usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Un espacio muestral de dos etapas}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Estado del lote} & \textbf{Marcado} & \textbf{No marcado} & \textbf{Total} \\
+      \midrule
+      Defectuoso & 8 & 2 & 10 \\
+      Limpio & 9 & 81 & 90 \\
+      \midrule
+      Total & 17 & 83 & 100 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Registro sintético de inspección}
+    La etapa 1 es el estado del lote. La etapa 2 es el resultado de la
+    inspección. Las cuatro celdas terminales son caminos mutuamente
+    excluyentes que agotan el espacio muestral de 100 lotes.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Árbol de frecuencias}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+joints = {
+  "def_flag": 8,
+  "def_miss": 2,
+  "clean_flag": 9,
+  "clean_clear": 81,
+}
+flagged = 8 + 9
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $100$ lotes; $10$ defectuosos\\
+        Conteos terminales $8$, $2$, $9$, $81$\\
+        Total marcado $=17$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diagramas_arbol_01_arbol_frecuencias.png}
+      \vspace{0.2em}
+      \scriptsize Árbol de frecuencias del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Multiplicar a lo largo de ramas; sumar caminos disjuntos}
+  \small
+  Ramas de primera etapa:
+  \[
+    P(D)=\frac{10}{100}=0.10,\qquad P(C)=\frac{90}{100}=0.90.
+  \]
+  Ramas de segunda etapa:
+  \[
+    P(F\mid D)=\frac{8}{10}=0.80,\qquad P(F\mid C)=\frac{9}{90}=0.10.
+  \]
+  Un producto de camino y el total marcado:
+  \[
+    P(D\cap F)=0.10\times 0.80=0.08,
+  \]
+  \[
+    P(F)=0.08+0.09=0.17.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Probabilidades de camino}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+p_def_flag = p_d * p_f_given_d
+p_flag = (
+    p_def_flag
+    + p_clean_flag
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $P(D\cap F)=0.080000$\\
+        $P(C\cap F)=0.090000$\\
+        $P(F)=0.170000$\\
+        Suma de cuatro caminos $=1.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diagramas_arbol_02_probabilidades_caminos.png}
+      \vspace{0.2em}
+      \scriptsize Probabilidades de caminos terminales del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: La condicional inversa no es una rama}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $P(F\mid D)=0.800000$ es una rama hacia abajo.
+
+      \vspace{0.5em}
+      \[
+        P(D\mid F)=\frac{8}{17}=0.470588.
+      \]
+
+      \vspace{0.4em}
+      Simulación semilla 42 de $100{,}000$ lotes: $0.469551$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} un árbol en orden temporal no muestra $P(D\mid F)$
+      como una sola rama. La Lección 11 nombra esa inversión como teorema de
+      Bayes.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diagramas_arbol_03_condicional_inversa.png}
+      \vspace{0.2em}
+      \scriptsize Etiqueta de rama versus condicional inversa del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué los cuatro conteos terminales deben sumar 100 en este árbol?
+    \item Calcule $P(C\cap F)$ a partir de las etiquetas de rama $0.90$ y
+      $0.10$.
+    \item ¿Cuál probabilidad es una sola rama de segunda etapa: $P(F\mid D)$ o
+      $P(D\mid F)$?
+    \item ¿Por qué $P(D\mid F)=8/17$ no es igual a $P(F\mid D)=0.80$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 11}
+    La sesión puede continuar directamente con el teorema de Bayes,
+    probabilidades priori y posterior, y ponderación por tasa base.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 3, Sección 3.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

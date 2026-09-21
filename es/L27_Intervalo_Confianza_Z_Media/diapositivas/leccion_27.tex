@@ -1,0 +1,195 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 27: Intervalo de confianza Z para una media (sigma conocida)}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 27: Intervalo de confianza Z para una media ($\sigma$ conocida)\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta del intervalo con sigma conocida}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se construye un intervalo al 95\% para una media desconocida
+    cuando $\sigma$ se trata como conocida?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $\mathrm{EE}=\sigma/\sqrt{n}$ a partir de una $\sigma$ conocida;
+    \item formar $\bar{x}\pm 1.96\cdot\sigma/\sqrt{n}$;
+    \item interpretar el intervalo como un rango para $\mu$, no para una botella;
+    \item explicar por qué una $\sigma$ desconocida hace de este procedimiento z la herramienta equivocada.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los volúmenes de llenado usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Una línea de llenado sintética con $\sigma$ conocida}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Valor} \\
+      \midrule
+      Tamaño de muestra $n$ & 36 botellas \\
+      $\sigma$ conocida & 10 ml \\
+      $\mu$ oculta (no usada por el analista) & 502 ml \\
+      Estimación puntual $\bar{x}$ (semilla 42) & 502.738498 ml \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Error estándar}
+    \[
+      \mathrm{EE}=\frac{\sigma}{\sqrt{n}}=\frac{10}{\sqrt{36}}=1.666667.
+    \]
+    El analista conoce $\sigma$ a partir de la capacidad de proceso de largo
+    plazo y no conoce $\mu$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Media muestral y error estándar}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+se = sigma / np.sqrt(n)
+xbar = np.mean(sample)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $n=36$, $\sigma=10$\\
+        $\bar{x}=502.738498$ ml\\
+        $\mathrm{EE}=1.666667$ ml
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/z_ci_mean_01_sample_standard_error.png}
+      \vspace{0.2em}
+      \scriptsize Histograma y banda de EE del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Multiplicar $z^{*}$ por el error estándar}
+  \small
+  Valor crítico de libro al 95\%:
+  \[
+    z^{*}=1.96.
+  \]
+  Margen de error e intervalo:
+  \[
+    E=1.96\times 1.666667=3.266667,
+  \]
+  \[
+    \bar{x}\pm E=[499.471831, 506.005165].
+  \]
+  Este intervalo con semilla 42 cubre la $\mu$ oculta $=502$. La cobertura
+  en una muestra no es un enunciado de probabilidad sobre este intervalo
+  realizado.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: El intervalo Z al 95\%}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+margin = 1.96 * se
+lower = xbar - margin
+upper = xbar + margin
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $z^{*}=1.96$\\
+        Margen $=3.266667$\\
+        IC $[499.471831, 506.005165]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/z_ci_mean_02_z_interval.png}
+      \vspace{0.2em}
+      \scriptsize Intervalo z con sigma conocida del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Sigma desconocida hace de Z la herramienta equivocada}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $s$ muestral $=8.390375\neq 10$.
+
+      \vspace{0.5em}
+      Intervalo z-con-$s$ inválido:
+      \[
+        [499.997642, 505.479354].
+      \]
+
+      \vspace{0.4em}
+      La anchura cae de $6.533333$ a $5.481711$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} conservar $z^{*}=1.96$ después de sustituir $\sigma$
+      por $s$ no es un intervalo z. La Lección 28 usa $t$ con
+      $\mathrm{gl}=n-1$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/z_ci_mean_03_unknown_sigma_limit.png}
+      \vspace{0.2em}
+      \scriptsize Intervalo z válido versus z-con-$s$ inválido del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué $\mathrm{EE}=10/\sqrt{36}$ y no $s/\sqrt{n}$ en esta
+      lección?
+    \item Calcule el margen al 95\% $1.96\times 1.666667$.
+    \item ¿Cubrir $\mu=502$ en esta muestra implica que la siguiente
+      muestra cubrirá $\mu$?
+    \item ¿Por qué $s=8.390375$ no autoriza conservar $z^{*}=1.96$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 28}
+    La sesión puede continuar directamente con el intervalo $t$ de Student,
+    los grados de libertad y el efecto de un solo atípico sobre $s$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 8, Sección 8.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

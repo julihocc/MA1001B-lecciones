@@ -1,0 +1,186 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 34: Prueba z para una media con varianza conocida}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 34: Prueba z para una media con varianza conocida\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de la prueba con sigma conocida}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se lleva a cabo una prueba unilateral de una media desconocida
+    cuando $\sigma$ se trata como conocida?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $z=(\bar{x}-\mu_{0})/(\sigma/\sqrt{n})$;
+    \item obtener el valor $p$ de cola superior de la normal estándar;
+    \item decidir con $\alpha=0.05$ comparando $p$ con $\alpha$;
+    \item explicar por qué una $\sigma$ conocida rara vez es verdadera en
+      datos de operaciones.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de entrega usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Una prueba sintética de tiempo de entrega}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Valor} \\
+      \midrule
+      $H_{0}$ & $\mu=80$ minutos \\
+      $H_{1}$ & $\mu>80$ minutos \\
+      $n$, $\sigma$ conocida & 40, 6 minutos \\
+      $\bar{x}$ muestral (semilla 42) & 82.229590 minutos \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Error estándar}
+    \[
+      \mathrm{EE}=\frac{6}{\sqrt{40}}=0.948683.
+    \]
+    El analista trata $\sigma$ como conocida a partir de la capacidad de
+    proceso de largo plazo.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: El estadístico z}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+se = sigma / np.sqrt(n)
+z = (xbar - 80) / se
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\bar{x}=82.229590$\\
+        $\mathrm{EE}=0.948683$\\
+        $z=2.350194$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_z_media_01_estadistico_z.png}
+      \vspace{0.2em}
+      \scriptsize Histograma de entregas del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Valor $p$ de cola superior y decisión}
+  \small
+  \[
+    p=P(Z\ge 2.350194)=\texttt{norm.sf}(2.350194)=0.009382.
+  \]
+  Como $p<\alpha=0.05$, se rechaza $H_{0}$: la muestra sintética es
+  inconsistente con una media de 80 minutos cuando $\sigma=6$ se trata como
+  conocida.
+
+  \vspace{0.4em}
+  El valor $p$ no es la probabilidad de que $H_{0}$ sea verdadera. Es la
+  probabilidad de cola de un resultado tan grande o mayor bajo $H_{0}$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Valor $p$ y decisión}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+p = stats.norm.sf(z)
+reject = p < 0.05
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $p=0.009382$\\
+        $\alpha=0.05$\\
+        Rechazar $H_{0}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_z_media_02_valor_p.png}
+      \vspace{0.2em}
+      \scriptsize Cola de la normal estándar del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: $\sigma$ conocida rara vez es verdadera}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $s$ muestral $=4.955099\neq 6$.
+
+      \vspace{0.4em}
+      z inválido con $s$:
+      \[
+        z=2.845789,\quad p=0.002215.
+      \]
+
+      \vspace{0.5em}
+      \textbf{Límite:} conservar una curva $z$ después de reemplazar $\sigma$
+      por $s$ es la prueba incorrecta. La Lección 35 usa $t$ con
+      $\mathrm{gl}=n-1$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_z_media_03_limite_sigma_conocida.png}
+      \vspace{0.2em}
+      \scriptsize z válido frente a z inválido con $s$ del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Calcule $\mathrm{EE}=6/\sqrt{40}$.
+    \item Calcule $z=(82.229590-80)/\mathrm{EE}$.
+    \item ¿Por qué $p=0.009382$ no es la probabilidad de que $\mu=80$?
+    \item ¿Por qué $s=4.955099$ no autoriza a conservar la prueba z?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 35}
+    La sesión puede continuar directamente con la prueba $t$ de una muestra,
+    con $s$ en el denominador y $\mathrm{gl}=n-1$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 9, Secciones 9.3--9.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

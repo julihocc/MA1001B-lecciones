@@ -1,0 +1,179 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 38: Muestras pareadas (t antes-después)}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 38: Muestras pareadas (t antes-después)\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta antes-después}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se prueba un cambio de layout cuando las mismas 25 estaciones se
+    miden antes y después?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item formar diferencias pareadas $d=\text{antes}-\text{después}$;
+    \item ejecutar una prueba $t$ de una muestra de $H_0:\mu_d=0$;
+    \item contrastar el EE pareado con un EE de dos muestras no pareado;
+    \item explicar por qué el análisis no pareado ignora el emparejamiento.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de manejo usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{La unidad es la estación, no la columna}
+  \small
+  Una celda de empaque sintética registra el tiempo de manejo en las mismas
+  25 estaciones antes y después de un cambio de layout. La unidad
+  observacional es la estación.
+
+  \[
+    d_i = \text{antes}_i - \text{después}_i,\qquad i=1,\ldots,25.
+  \]
+
+  \begin{exampleblock}{Hipótesis pareadas}
+    $H_0:\mu_d=0$ frente a $H_1:\mu_d\neq 0$, con $\alpha=0.05$. Esta es una
+    $t$ de una muestra sobre las 25 diferencias, no una $t$ de dos muestras
+    sobre 50 tiempos.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Diferencias emparejadas}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+d = before - after
+dbar = d.mean()
+s_d = d.std(ddof=1)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\bar{d}=2.720813$\\
+        $s_d=1.525772$\\
+        $r=0.973356$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_pareada_01_diferencias.png}
+      \vspace{0.2em}
+      \scriptsize Líneas emparejadas antes-después del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{La $t$ pareada es $t$ de una muestra sobre $d$}
+  \small
+  \[
+    t=\frac{\bar{d}}{s_d/\sqrt{n}}=\frac{2.720813}{0.305154}=8.916186,
+    \qquad gl=24.
+  \]
+  \[
+    p=2P(T_{24}\ge 8.916186)=4.395592\times 10^{-9}.
+  \]
+  Como $|t|>t^*=2.063899$ y $p<\alpha$, la prueba pareada rechaza
+  $H_0:\mu_d=0$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Decisión pareada}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = s_d / sqrt(n)
+t = dbar / se
+p = 2 * t_dist.sf(abs(t), 24)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $EE=0.305154$, $t=8.916186$\\
+        $p=4.395592\times 10^{-9}$\\
+        Decisión: rechazar $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_pareada_02_prueba_pareada.png}
+      \vspace{0.2em}
+      \scriptsize Histograma de diferencias del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: El análisis no pareado ignora el emparejamiento}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      EE pareado $=0.305154$, $p=4.395592\times 10^{-9}$, rechazar.
+
+      \vspace{0.4em}
+      EE de Welch no pareado $=1.847143$, $p=0.147291$, no rechazar.
+
+      \vspace{0.4em}
+      Correlación antes-después: $0.973356$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} tratar las dos columnas como muestras independientes
+      descarta el pareo y puede invertir la decisión con $\alpha=0.05$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_pareada_03_limite_no_pareada.png}
+      \vspace{0.2em}
+      \scriptsize Valores p pareado frente a no pareado del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué $d_i=\text{antes}_i-\text{después}_i$ es la unidad
+      observacional correcta aquí?
+    \item Calcule $EE=s_d/\sqrt{n}$ a partir de $s_d=1.525772$ y $n=25$.
+    \item Si $p=4.395592\times 10^{-9}$ y $\alpha=0.05$, ¿cuál es la decisión
+      pareada?
+    \item ¿Por qué el $p=0.147291$ no pareado no refuta el hallazgo pareado?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 39}
+    La sesión puede continuar directamente con dos proporciones independientes
+    en una prueba A/B, donde las muestras no están pareadas.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 10, Sección 10.6. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

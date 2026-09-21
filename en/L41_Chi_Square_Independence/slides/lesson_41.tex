@@ -1,0 +1,184 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 41: Chi-Square Test of Independence}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 41: Chi-Square Test of Independence\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Two-Way Association Question}
+  \begin{alertblock}{Guiding question}
+    In one sample of $n=325$ visitors, is conversion independent of
+    acquisition channel?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item form expected counts from the table margins;
+    \item compute $\chi^2$ with $df=(r-1)(c-1)$;
+    \item report a p-value and Cramer's V;
+    \item refuse a causal reading of a significant association.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All visitor counts used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{One Sample, Two Classifications}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrrr}
+      \toprule
+      \textbf{Outcome} & \textbf{Email} & \textbf{Search} & \textbf{Social} & \textbf{Total} \\
+      \midrule
+      Converted & 40 & 55 & 18 & 113 \\
+      Not converted & 80 & 70 & 62 & 212 \\
+      \midrule
+      Total & 120 & 125 & 80 & 325 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  \begin{exampleblock}{Independence expected count}
+    $E_{ij}=(\text{row total}\times\text{column total})/n$. Converted-email
+    expected count: $113\times120/325=41.723$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Contingency Table}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+E = outer(row, col) / n
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $n=325$\\
+        Converted $E$: $41.723$, $43.462$, $27.815$\\
+        All $E\ge 5$: yes
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/independence_01_contingency_table.png}
+      \vspace{0.2em}
+      \scriptsize Observed $2\times 3$ table from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Independence $\chi^2$ with $df=2$}
+  \small
+  \[
+    \chi^2=\sum\frac{(O_{ij}-E_{ij})^2}{E_{ij}}=10.114985,
+    \qquad df=(2-1)(3-1)=2.
+  \]
+  \[
+    p=0.006361,\qquad
+    V=\sqrt{\chi^2/(n\min(r-1,c-1))}=0.176417.
+  \]
+  The test rejects $H_0$: conversion independent of channel. Cramer's V is
+  modest.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Chi-Square Decision}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+chi2, p, df, E = chi2_contingency(table)
+V = sqrt(chi2 / (n * (k - 1)))
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\chi^2=10.114985$, $df=2$\\
+        $p=0.006361$, $V=0.176417$\\
+        Decision: reject $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/independence_02_chi_square.png}
+      \vspace{0.2em}
+      \scriptsize Cell contributions from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Association Is Not a Causal Claim}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Combined $p=0.006361$ (reject independence).
+
+      \vspace{0.3em}
+      Desktop stratum $p=0.368546$.
+
+      \vspace{0.3em}
+      Mobile stratum $p=0.761939$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} channel was not randomly assigned. After stratifying
+      by device, the association vanishes. A significant $\chi^2$ is not a
+      causal claim.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/independence_03_no_causation_limit.png}
+      \vspace{0.2em}
+      \scriptsize Device confounder from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $df$ for a $2\times 3$ table.
+    \item Why is $E_{11}=113\times120/325$ rather than $np$ from a
+      hypothesized mix?
+    \item If $p=0.006361$ and $\alpha=0.05$, what is the independence
+      decision?
+    \item Why do desktop $p=0.368546$ and mobile $p=0.761939$ block a causal
+      channel claim?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 42}
+    The session can continue directly into a chi-square test of homogeneity,
+    which uses the same statistic with a different sampling story.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 11, Section 11.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

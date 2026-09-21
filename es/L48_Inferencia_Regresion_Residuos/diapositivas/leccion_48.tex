@@ -1,0 +1,184 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 48: Inferencia de regresión, residuos y decisiones}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 48: Inferencia de regresión, residuos y decisiones\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de inferencia}
+  \begin{alertblock}{Pregunta guía}
+    ¿Es una pendiente ajustada de horas extra distinta de 0, y puede un
+    fin de semana de emergencia crear esa significancia por sí solo?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $EE(b_1)$ y la prueba $t$ de $H_0:\beta_1=0$;
+    \item leer una gráfica residuo-frente-a-ajustado;
+    \item reajustar tras eliminar una semana influyente;
+    \item rechazar tratar un fin de semana como política de semanas
+      ordinarias.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todas las horas extra y conteos de unidades usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Treinta y nueve semanas ordinarias y una emergencia}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Pieza} & \textbf{En esta muestra} \\
+      \midrule
+      Semanas ordinarias & 39, horas extra en $[6,\ 22]$ \\
+      Fin de semana de emergencia & $(x,y)=(48,\ 42)$ \\
+      $H_0$ & $\beta_1=0$ \\
+      $H_1$ & $\beta_1\neq 0$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Por qué importa el fin de semana}
+    Un $x$ de alto apalancamiento puede inclinar la recta de mínimos
+    cuadrados. La inferencia en las 40 semanas no es automáticamente
+    inferencia sobre operaciones ordinarias.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Pendiente, EE y $t$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+t = slope / se_slope
+p = two_sided_t(t, df=38)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $b_1=0.434381$\\
+        $EE=0.072494$, $t=5.991932$\\
+        $p=5.839701\times10^{-7}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/inferencia_regresion_01_pendiente_ee_t.png}
+      \vspace{0.2em}
+      \scriptsize Recta ajustada $n=40$ del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Los residuos localizan la semana inusual}
+  \small
+  La media residual es $0.000000$ por la identidad de mínimos cuadrados.
+  La DE residual es $3.140288$. El residuo del fin de semana de emergencia
+  es $8.570594$, el residuo absoluto más grande de la muestra.
+  \[
+    e_i=y_i-\hat y_i=y_i-(12.579109+0.434381\,x_i).
+  \]
+  Una gráfica de residuos es una herramienta de decisión: puede mostrar un
+  abanico, una curva o una semana que no pertenece con las demás.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Residuo frente a ajustado}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+e = y - (b0 + b1 * x)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Media residual $0.000000$\\
+        Emergencia $e=8.570594$\\
+        El $|e|$ más grande es esa semana
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/inferencia_regresion_02_grafica_residuos.png}
+      \vspace{0.2em}
+      \scriptsize Gráfica de residuos del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: La pendiente significativa desaparece}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Sin el fin de semana: $n=39$, $b_1=0.088445$, $t=1.070131$,
+      $p=0.291492$, $R^2=0.030022$.
+
+      \vspace{0.4em}
+      No rechazar $H_0:\beta_1=0$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} un punto influyente puede crear una pendiente
+      significativa que desaparece al quitarlo. La prueba $n=40$ no es una
+      decisión sobre semanas extra ordinarias.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/inferencia_regresion_03_punto_influyente.png}
+      \vspace{0.2em}
+      \scriptsize Rectas $n=40$ frente a $n=39$ del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Escriba el estadístico $t$ para $H_0:\beta_1=0$ en términos de
+      $b_1$ y $EE(b_1)$.
+    \item ¿Por qué la media residual 0 no es, por sí sola, un aprobado
+      diagnóstico?
+    \item ¿Qué ocurre con $p$ cuando se elimina el fin de semana de
+      emergencia?
+    \item ¿Por qué la pendiente $n=40$ es el número equivocado de política
+      de semanas ordinarias?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión}
+    Esto cierra la secuencia de regresión simple. Los predictores múltiples
+    y los experimentos diseñados son cursos posteriores; el límite aquí es
+    la influencia.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Secciones 13.2 y 13.6. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

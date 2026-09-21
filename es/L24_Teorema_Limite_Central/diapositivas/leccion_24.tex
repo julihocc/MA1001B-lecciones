@@ -1,0 +1,180 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 24: Teorema del límite central}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 24: Teorema del límite central\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de la población asimétrica}
+  \begin{alertblock}{Pregunta guía}
+    Si los tiempos de retraso son exponenciales y no acampanados, ¿cuándo
+    sigue siendo aproximadamente normal la distribución muestral de $\bar x$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item reconocer una población sesgada a la derecha que no es normal;
+    \item comparar histogramas de $\bar x$ para $n=4$ y $n=40$;
+    \item enunciar el TLC para la media muestral;
+    \item explicar por qué una cola a dos EE falla con $n$ pequeño.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de retraso usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Un reloj exponencial de retrasos}
+  \small
+  $X\sim\mathrm{Exponencial}(\text{media}=10)$:
+  \[
+    E[X]=\sigma=10,\qquad \text{asimetría}=2,\qquad \text{mediana}=6.931472.
+  \]
+  La cola derecha es larga: $P(X>20)=0.135335$.
+  Para muestras iid,
+  \[
+    E[\bar x]=10,\qquad \mathrm{EE}(\bar x)=10/\sqrt{n}.
+  \]
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Objetivo del TLC}
+    El TLC es un enunciado sobre $\bar x$, no sobre que los retrasos
+    originales se vuelvan normales.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Población asimétrica}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+model = expon(scale=10)
+mean = model.mean()
+skew = model.stats(
+  moments="s"
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Media $=$ sd $=10$\\
+        Mediana $=6.931472$\\
+        Asimetría $=2.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/clt_01_skewed_population.png}
+      \vspace{0.2em}
+      \scriptsize Densidad exponencial de retrasos del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Un $n$ mayor acerca $\bar x$ a una campana}
+  \small
+  5{,}000 muestras con semilla 42:
+  \[
+    n=4:\ \widehat{\mathrm{EE}}=5.076401,\ \text{asimetr\'ia}=1.049897.
+  \]
+  \[
+    n=40:\ \widehat{\mathrm{EE}}=1.574371,\ \text{asimetr\'ia}=0.332572.
+  \]
+  La asimetría teórica de una media exponencial es $2/\sqrt{n}$. Ese valor
+  es $1$ en $n=4$ y $0.316228$ en $n=40$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: $n=4$ versus $n=40$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+draws = model.rvs(
+  size=(5000, n)
+)
+xbars = draws.mean(axis=1)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $n=4$ asimetría $=1.049897$\\
+        $n=40$ asimetría $=0.332572$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/clt_02_means_n4_n40.png}
+      \vspace{0.2em}
+      \scriptsize Histogramas muestrales del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Un $n$ pequeño hace fallar la cola}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Ley exacta: $\bar x\sim\mathrm{Gamma}$.
+      Evento: $\bar x>\mu+2\,\mathrm{EE}$.
+
+      \vspace{0.4em}
+      $n=4$: exacta $0.042380$ versus normal $0.022750$.\\
+      $n=40$: exacta $0.030560$ versus normal $0.022750$.
+
+      \vspace{0.4em}
+      \textbf{Límite:} $n$ pequeño más asimetría hace que el TLC sea una mala
+      aproximación. La Lección 25 estudia $\hat p$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/clt_03_small_n_skew_limit.png}
+      \vspace{0.2em}
+      \scriptsize Colas a dos EE exactas versus normales del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué la población de retrasos no es un modelo normal?
+    \item ¿Qué ocurre con la asimetría de $\bar x$ cuando $n$ crece?
+    \item En $n=4$, compare la cola exacta a dos EE con $0.022750$.
+    \item ¿Hace $n=40$ que la cola normal sea exacta?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 25}
+    La sesión puede continuar directamente con la distribución muestral de
+    una proporción muestral $\hat p$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 7, Secciones 7.1--7.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,182 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 32: F Distribution and Comparing Two Variances}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 32: F Distribution and Comparing Two Variances\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Two-Variance Question}
+  \begin{alertblock}{Guiding question}
+    How can two independent sample variances be compared through an $F$
+    ratio and an upper-tail probability?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $s_{1}^{2}$ and $s_{2}^{2}$ from two samples;
+    \item form $F=s_{1}^{2}/s_{2}^{2}$ with a pair of degrees of freedom;
+    \item read $p$ from \texttt{scipy.stats.f.sf};
+    \item explain why the two-variance $F$ test is sensitive to non-normality.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All cycle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Two Independent Packing Stations}
+  \small
+  \begin{center}
+    \begin{tabular}{lrr}
+      \toprule
+      \textbf{Quantity} & \textbf{Station A} & \textbf{Station B} \\
+      \midrule
+      Sample size & $n_{1}=25$ & $n_{2}=25$ \\
+      Degrees of freedom & 24 & 24 \\
+      Sample variance & $s_{1}^{2}=44.205731$ & $s_{2}^{2}=12.024693$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Hypotheses}
+    $H_{0}:\sigma_{1}^{2}=\sigma_{2}^{2}$ versus $H_{1}:\sigma_{1}^{2}>\sigma_{2}^{2}$.
+    The stations are independent. Means are not the target of this test.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Two Sample Variances}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+s1_sq = np.var(a, ddof=1)
+s2_sq = np.var(b, ddof=1)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $s_{1}^{2}=44.205731$\\
+        $s_{2}^{2}=12.024693$\\
+        $\mathrm{df}=(24,24)$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/f_two_var_01_sample_variances.png}
+      \vspace{0.2em}
+      \scriptsize Station boxplots from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The $F$ Ratio and the Upper Tail}
+  \small
+  \[
+    F=\frac{s_{1}^{2}}{s_{2}^{2}}=\frac{44.205731}{12.024693}=3.676246.
+  \]
+  Critical value and $p$-value:
+  \[
+    F_{0.05}(24,24)=1.983760,
+  \]
+  \[
+    p=\texttt{f.sf}(3.676246,24,24)=0.001125.
+  \]
+  Because $p<\alpha=0.05$, $H_{0}$ is rejected: Station A is more variable
+  in this synthetic snapshot.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $F$ and \texttt{f.sf}}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+F = s1_sq / s2_sq
+p = stats.f.sf(F, 24, 24)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $F=3.676246$\\
+        $p=0.001125$\\
+        Reject $H_{0}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/f_two_var_02_f_test.png}
+      \vspace{0.2em}
+      \scriptsize $F$ upper tail from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: $F$ Is Sensitive to Non-Normality}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Equal variances, 5000 tests, $\alpha=0.05$.
+
+      \vspace{0.4em}
+      Normal samples: Type I rate $0.052200$.
+
+      \vspace{0.4em}
+      $t(3)$ samples: Type I rate $0.202400$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} heavy tails inflate false rejections even when the two
+      variances are equal. The two-variance $F$ test is not robust.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/f_two_var_03_nonnormal_sensitivity.png}
+      \vspace{0.2em}
+      \scriptsize Type I rates from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $F$ from $s_{1}^{2}=44.205731$ and $s_{2}^{2}=12.024693$.
+    \item What are the two degrees of freedom for $n_{1}=n_{2}=25$?
+    \item Does $p=0.001125$ compare means or variances?
+    \item Why is a Type I rate of $0.202400$ a problem at $\alpha=0.05$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 33}
+    The session can continue directly into $H_{0}$, $H_{1}$, Type I and Type
+    II errors as a general testing framework.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 12, Section 12.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

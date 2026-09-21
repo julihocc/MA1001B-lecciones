@@ -1,0 +1,186 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 09: Probabilidad condicional e independencia}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 09: Probabilidad condicional e independencia\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de probabilidad condicional}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo cambia el espacio muestral relevante al saber que ocurrió un evento,
+    y cuándo ese conocimiento deja otra probabilidad sin cambio?
+  \end{alertblock}
+
+  \vspace{0.4em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular e interpretar probabilidades condicionales;
+    \item explicar por qué invertir una condición cambia la pregunta;
+    \item probar independencia con igualdades equivalentes de probabilidad;
+    \item actualizar una probabilidad de secuencia al muestrear sin reemplazo.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los registros de pedidos y procesos operativos son sintéticos.
+\end{frame}
+
+\begin{frame}{Condicionar reduce el espacio muestral}
+  \small
+  Sea $M$ revisión manual y $L$ entrega retrasada.
+
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Proceso de enrutamiento} & \textbf{Retrasado} & \textbf{A tiempo} & \textbf{Total} \\
+      \midrule
+      Revisión manual & 48 & 72 & 120 \\
+      Automatizado & 32 & 248 & 280 \\
+      \midrule
+      Total & 80 & 320 & 400 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \[
+    P(L\mid M)=\frac{P(L\cap M)}{P(M)}=\frac{48}{120}=0.40.
+  \]
+
+  La condición $M$ convierte los 120 pedidos de revisión manual en el nuevo
+  grupo de referencia, en lugar de los 400 pedidos.
+\end{frame}
+
+\begin{frame}{Paso 1: La dirección cambia el denominador}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \small
+      \begin{block}{Salida verificada}
+        $P(L\mid M)=0.400000$\\
+        $P(L\mid A)=0.114286$\\
+        $P(M\mid L)=0.600000$
+      \end{block}
+
+      $P(L\mid M)$ pregunta por pedidos retrasados dentro de la revisión
+      manual. $P(M\mid L)$ pregunta por revisión manual dentro de los
+      retrasados. No tienen que coincidir.
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=0.93\textwidth]{../figuras/condicional_01_tasas.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Independencia significa que no hay actualización}
+  \small
+  Los eventos $M$ y $L$ son independientes si se cumple cualquier prueba
+  equivalente:
+  \[
+    P(L\mid M)=P(L),
+    \qquad
+    P(M\cap L)=P(M)P(L).
+  \]
+
+  Para los pedidos sintéticos:
+  \[
+    0.40\ne0.20,
+    \qquad
+    0.12\ne(0.30)(0.20)=0.06.
+  \]
+
+  \begin{alertblock}{Límite de interpretación}
+    La tabla muestra una asociación entre enrutamiento y estado de entrega.
+    No muestra que la revisión manual cause entrega retrasada.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 2: Dos pruebas equivalentes llegan a una decisión}
+  \begin{columns}[T]
+    \begin{column}{0.34\textwidth}
+      \small
+      \begin{block}{Comparación verificada}
+        Condicional: $0.40\ne0.20$\\
+        Producto: $0.12\ne0.06$\\[0.2em]
+        Independiente: \textbf{Falso}
+      \end{block}
+
+      Basta una igualdad fallida para rechazar independencia. La segunda es
+      una comprobación de consistencia.
+    \end{column}
+    \begin{column}{0.66\textwidth}
+      \centering
+      \includegraphics[width=0.98\textwidth]{../figuras/condicional_02_independencia.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Sin reemplazo se crea dependencia}
+  \begin{columns}[T]
+    \begin{column}{0.39\textwidth}
+      \small
+      En un lote de 10 pedidos, 4 están marcados. Para dos selecciones sin
+      reemplazo,
+      \[
+        P(F_1\cap F_2)=\frac{4}{10}\frac{3}{9}=0.133333.
+      \]
+
+      La independencia ingenua da $0.4^2=0.160000$. Una simulación con
+      semilla 42 de 500{,}000 selecciones da \textbf{0.132938}.
+
+      \textbf{Límite:} las secuencias más largas requieren ramas explícitas.
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/condicional_03_secuencia.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  Use la tabla sintética de pedidos y el lote de inspección.
+  \begin{enumerate}
+    \item ¿Qué denominador corresponde a $P(L\mid M)$?
+    \item ¿Por qué $P(L\mid M)=0.40$ es distinto de $P(M\mid L)=0.60$?
+    \item ¿Son $M$ y $L$ independientes? Sustente la decisión con una prueba
+      de igualdad.
+    \item Tras seleccionar un pedido marcado sin reemplazo, ¿por qué la
+      siguiente probabilidad de marcado se vuelve $3/9$?
+  \end{enumerate}
+
+  \begin{block}{Conexión con la Lección 10}
+    Los diagramas de árbol hacen visibles, rama por rama, las
+    probabilidades condicionales que cambian y los espacios muestrales de
+    varias etapas.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 3, Secciones 3.1--3.3. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

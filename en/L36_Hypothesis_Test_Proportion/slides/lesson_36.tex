@@ -1,0 +1,178 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 36: Hypothesis Test for a Business Proportion}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 36: Hypothesis Test for a Business Proportion\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The One-Proportion Question}
+  \begin{alertblock}{Guiding question}
+    How do we test a claimed late-flag rate $p=0.10$ from $x=28$ flags in
+    $n=200$ lots?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item write $H_0:p=0.10$ versus $H_1:p>0.10$;
+    \item check $np_0>5$ and $n(1-p_0)>5$;
+    \item compute $z$ with $p_0$ in the standard error;
+    \item explain why replacing $p_0$ with $\hat{p}$ is the wrong statistic.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All lots and late flags used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Claimed Rate and a Sample Count}
+  \small
+  A synthetic inbound-inspection process claims that 10 percent of lots are
+  flagged late. The observed register is $x=28$ late flags in $n=200$ lots.
+
+  \[
+    \hat{p}=\frac{28}{200}=0.14,\qquad
+    np_0=200\times0.10=20,\qquad
+    n(1-p_0)=180.
+  \]
+
+  \begin{exampleblock}{Right-tailed hypotheses}
+    $H_0:p=0.10$ versus $H_1:p>0.10$, with $\alpha=0.05$. The normal $z$
+    approximation is used only after $np_0>5$ and $n(1-p_0)>5$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Proportion and Conditions}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+phat = 28 / 200
+np0 = n * p0
+nq0 = n * (1 - p0)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\hat{p}=0.140000$\\
+        $np_0=20$, $n(1-p_0)=180$\\
+        Conditions met: yes
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/proportion_test_01_sample_and_conditions.png}
+      \vspace{0.2em}
+      \scriptsize Hypothesized $p_0$ versus $\hat{p}$ from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Test Standard Error Uses $p_0$}
+  \small
+  Under $H_0:p=p_0$ the sampling variance is $p_0(1-p_0)/n$, not
+  $\hat{p}(1-\hat{p})/n$:
+  \[
+    z=\frac{\hat{p}-p_0}{\sqrt{p_0(1-p_0)/n}}
+    =\frac{0.14-0.10}{0.021213}=1.885618.
+  \]
+  The right-tailed p-value is
+  \[
+    p=P(Z\ge 1.885618)=0.029673.
+  \]
+  Because $p<\alpha=0.05$ and $z>z^*=1.644854$, the test rejects $H_0$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $z$ and the Right-Tailed p-Value}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = sqrt(p0*(1-p0)/n)
+z = (phat - p0) / se
+p = norm.sf(z)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $SE=0.021213$, $z=1.885618$\\
+        $p=0.029673$, $z^*=1.644854$\\
+        Decision: reject $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/proportion_test_02_z_pvalue.png}
+      \vspace{0.2em}
+      \scriptsize Right-tailed $z$ test from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: $\hat{p}$ in the SE Is the Wrong Statistic}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Correct SE uses $p_0$: $0.021213$, $z=1.885618$, $p=0.029673$, reject.
+
+      \vspace{0.5em}
+      Wrong SE uses $\hat{p}$: $0.024536$, $z=1.630278$, $p=0.051521$,
+      do not reject.
+
+      \vspace{0.5em}
+      \textbf{Limit:} a test of $H_0:p=p_0$ must put $p_0$ in the standard
+      error. Using $\hat{p}$ is a confidence-interval SE and can flip the
+      $\alpha=0.05$ decision.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/proportion_test_03_wrong_se_limit.png}
+      \vspace{0.2em}
+      \scriptsize Correct versus wrong SE from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $\hat{p}$ from $x=28$ and $n=200$.
+    \item Why is $np_0=20$ checked with $p_0=0.10$ rather than with $\hat{p}$?
+    \item Write the $z$ formula that belongs in this test.
+    \item Why can using $\hat{p}$ in the SE flip the decision at $\alpha=0.05$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 37}
+    The session can continue directly into a two-sample $t$ test for two
+    independent means, where each group has its own $s$ and $n$.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 9, Sections 9.3--9.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

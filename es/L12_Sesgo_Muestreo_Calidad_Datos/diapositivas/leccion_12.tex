@@ -1,0 +1,189 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 12: Sesgo de muestreo, calidad de datos y error no muestral}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 12: Sesgo de muestreo, calidad de datos y error no muestral\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{Cuando el problema es el marco}
+  \begin{alertblock}{Pregunta guía}
+    ¿Puede una muestra más grande, o una tabla limpia, reparar una
+    estimación de tasa de quejas si falta el canal fácil o toda una región?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item estimar una tasa poblacional a partir de una muestra aleatoria simple;
+    \item contrastar ese error de muestreo con el sesgo de conveniencia solo en línea;
+    \item identificar un hueco de cobertura cuando una región está ausente del marco;
+    \item explicar por qué limpiar filas incompletas no restaura unidades faltantes.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tickets, regiones y banderas de queja usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Un registro sintético de 8{,}000 tickets}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Región} & \textbf{Tickets} & \textbf{En el marco MAS} & \textbf{En el marco sin Oeste} \\
+      \midrule
+      Norte & 2{,}400 & sí & sí \\
+      Sur & 2{,}400 & sí & sí \\
+      Este & 2{,}000 & sí & sí \\
+      Oeste & 1{,}200 & sí & no \\
+      \midrule
+      Total & 8{,}000 & 8{,}000 & 6{,}800 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  \begin{exampleblock}{Parámetro}
+    La tasa poblacional de quejas es la media de la bandera completa de
+    queja, incluido el Oeste. El error de muestreo no es lo mismo que un
+    hueco de cobertura.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Muestra aleatoria simple}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+srs = register.sample(
+    n=400,
+    replace=False,
+    random_state=42,
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $N=8{,}000$\\
+        Tasa poblacional $=0.119875$\\
+        MAS $n=400$ tasa $=0.105000$\\
+        Error absoluto $=0.014875$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/sesgo_muestreo_01_mas.png}
+      \vspace{0.2em}
+      \scriptsize Parámetro poblacional versus MAS del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Los tickets en línea son un canal fácil y sesgado}
+  \small
+  Los tickets en línea se quejan con menor frecuencia que los de tienda:
+  \[
+    \hat{p}_{\text{en línea}}=0.057323,\qquad
+    \hat{p}_{\text{tienda}}=0.176555.
+  \]
+  Una muestra de conveniencia de los primeros $1{,}200$ tickets en línea es
+  más grande que la MAS, pero copia la tasa del canal En línea en lugar de
+  la tasa poblacional.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Muestra de conveniencia en línea}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+web = register.loc[
+    register["channel"] == "En linea"
+]
+conv = web.head(1200)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Conveniencia $n=1{,}200$\\
+        Tasa $=0.056667$\\
+        Error $=0.063208$\\
+        Más grande, más error
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/sesgo_muestreo_02_conveniencia_web.png}
+      \vspace{0.2em}
+      \scriptsize Tamaño de muestra versus error del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: La limpieza no restaura unidades faltantes}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Tasa de quejas del Oeste $=0.276667$. Omitir el Oeste produce error
+      $0.027669$.
+
+      \vspace{0.4em}
+      Tras la eliminación listwise de banderas faltantes: $6{,}437$ filas,
+      error $0.026509$, tickets del Oeste $=0$.
+
+      \vspace{0.4em}
+      \textbf{Límite:} limpiar un marco sesgado no restaura unidades
+      faltantes. La Lección 13 modela una variable aleatoria discreta en un
+      espacio muestral completo.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/sesgo_muestreo_03_hueco_cobertura.png}
+      \vspace{0.2em}
+      \scriptsize Hueco de cobertura y limpieza del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Cuál es el parámetro poblacional en este registro?
+    \item ¿Por qué $n=1{,}200$ puede producir más error que $n=400$?
+    \item ¿Excluir el Oeste es un error de muestreo o un error de cobertura?
+    \item Tras la limpieza, ¿por qué el conteo del Oeste sigue siendo $0$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 13}
+    La sesión puede continuar directamente con variables aleatorias
+    discretas, FMP, FDA, esperanza y varianza.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Secciones 1.2 y 1.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

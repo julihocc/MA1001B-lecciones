@@ -1,0 +1,186 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 30: Tamaño de muestra para margen de error y presupuesto}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 30: Tamaño de muestra para margen de error y presupuesto\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de planificación}
+  \begin{alertblock}{Pregunta guía}
+    ¿Qué tan grande debe ser $n$ para que un intervalo al 95\% alcance un
+    margen de error elegido, y puede el presupuesto financiar ese $n$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $n=(z^{*}s/E)^{2}$ para una media y redondear hacia arriba;
+    \item calcular $n=z^{*2}p(1-p)/E^{2}$ para una proporción;
+    \item explicar por qué $p=0.5$ es conservadora;
+    \item comparar el $n$ requerido con el $n$ que un presupuesto puede comprar.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los valores de planificación usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Elegir $E$ antes de recolectar datos}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Plan de tiempo medio de atención} & \textbf{Valor} \\
+      \midrule
+      $z^{*}$ de libro & 1.96 \\
+      $s$ de planificación & 10 minutos \\
+      Margen objetivo $E$ & 2 minutos \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Fórmula de tamaño de muestra para la media}
+    \[
+      n=\left(\frac{z^{*}s}{E}\right)^{2}=\left(\frac{1.96\times 10}{2}\right)^{2}=96.040000.
+    \]
+    Redondear hacia arriba a la siguiente observación entera: $n=97$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Tamaño de muestra para una media}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+raw = (z_star * s / E) ** 2
+n = int(np.ceil(raw))
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $n$ crudo $=96.040000$\\
+        $n$ redondeado $=97$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/sample_size_01_mean_margin.png}
+      \vspace{0.2em}
+      \scriptsize $n$ requerido versus $E$ del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{$p=0.5$ conservadora para una proporción}
+  \small
+  Margen objetivo $E=0.03$ para una tasa de primer contacto:
+  \[
+    n=\frac{z^{*2}p(1-p)}{E^{2}}.
+  \]
+  En $p=0.5$, $p(1-p)=0.25$ se maximiza:
+  \[
+    n=\frac{1.96^{2}\times 0.25}{0.03^{2}}=1067.111111 \;\to\; 1068.
+  \]
+  Usar la suposición $p=0.18$ de la Lección 29 produce solo $n=631$, que es
+  437 observaciones demasiado optimista si $p$ está más cerca de $0.5$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Tamaño de muestra conservador para una proporción}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+raw = (
+    z_star**2 * p * (1-p)
+    / E**2
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $p=0.5$ da $n=1068$\\
+        $p=0.18$ da $n=631$\\
+        Extra $=437$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/sample_size_02_proportion_conservative.png}
+      \vspace{0.2em}
+      \scriptsize $n$ versus $p$ de planificación del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: El $E=0.01$ deseado puede exceder el presupuesto}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $n$ conservador para $E=0.01$:
+      \[
+        n=9604.
+      \]
+      Un presupuesto de $\$20{,}000$ a $\$12$ cada una
+      financia solo $1666$ observaciones.
+
+      \vspace{0.4em}
+      Costo requerido: $\$115{,}248$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} reducir $E$ infla $n$ con $1/E^{2}$. Un margen
+      deseado no es un estudio financiable.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/sample_size_03_budget_vs_precision.png}
+      \vspace{0.2em}
+      \scriptsize $n$ requerido versus asequible del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Calcule $(1.96\times 10/2)^{2}$ y redondee hacia arriba.
+    \item ¿Por qué $p=0.5$ es conservadora para una proporción?
+    \item ¿Por qué $n$ explota cuando $E$ se reduce de $0.03$ a $0.01$?
+    \item ¿Puede un presupuesto de $\$20{,}000$ a $\$12$ por observación
+      financiar $n=9604$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 31}
+    La sesión puede continuar directamente con un intervalo ji-cuadrada
+    para una varianza poblacional.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 8, Sección 8.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

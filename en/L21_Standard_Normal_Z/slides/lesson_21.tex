@@ -1,0 +1,174 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 21: Standard Normal Distribution and Z Scores}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 21: Standard Normal and $z$ Scores\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Standardization Question}
+  \begin{alertblock}{Guiding question}
+    How can an audit score of 60 on $N(50,8)$ be read on the single
+    standard normal ruler $Z\sim N(0,1)$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item convert a raw score into $z=(x-\mu)/\sigma$;
+    \item read $P(Z\le z)$ from the standard curve;
+    \item transfer that area back to $P(X\le x)$;
+    \item explain why skew breaks a $z$-score comparison.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All audit scores and delay times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{From a Raw Score to $z$}
+  \small
+  Operating model: $X\sim N(50,8^2)$. The marked score is $x=60$:
+  \[
+    z=\frac{60-50}{8}=1.25.
+  \]
+  One standard deviation from the mean is always $z=\pm 1$:
+  \[
+    z(42)=-1,\qquad z(58)=1.
+  \]
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Synthetic audit clock}
+    $z$ locates the score in $\sigma$ units. It is not itself a probability.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Compute $z$}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+z = (x - mu) / sigma
+z_60 = (60 - 50) / 8
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\mu=50$, $\sigma=8$\\
+        $z(60)=1.250000$\\
+        $z(\mu-\sigma)=-1.000000$\\
+        $z(\mu+\sigma)=1.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/standard_normal_01_z_scores.png}
+      \vspace{0.2em}
+      \scriptsize Operating density from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Standard Left Tail}
+  \small
+  After standardization,
+  \[
+    P(X\le 60)=P(Z\le 1.25).
+  \]
+  `scipy.stats.norm.cdf(1.25)` returns $0.894350$. The right tail is
+  \[
+    P(Z>1.25)=1-0.894350=0.105650.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $P(Z\le 1.25)$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+z_model = norm(0, 1)
+p_left = z_model.cdf(1.25)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $P(Z\le 1.25)=0.894350$\\
+        $P(Z>1.25)=0.105650$\\
+        $P(X\le 60)=0.894350$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/standard_normal_02_standard_probabilities.png}
+      \vspace{0.2em}
+      \scriptsize Standard left tail from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Skew Breaks the Percentile}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Exponential delays: mean $=$ sd $=20$.
+      Support starts at $z=-1$.
+
+      \vspace{0.4em}
+      $P(Z\le -1)=0.158655$ on the bell.\\
+      $P(X\le 0)=0.000000$ on the delay clock.
+
+      \vspace{0.4em}
+      \textbf{Limit:} $z$ is comparable only when shapes are similar.
+      Lesson 22 uses $z$ cuts as specification limits.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/standard_normal_03_skew_breaks_z.png}
+      \vspace{0.2em}
+      \scriptsize Standardized bell versus delay clock from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $z$ for $x=60$ on $N(50,8)$.
+    \item Why does $P(X\le 60)$ equal $P(Z\le 1.25)$?
+    \item What probability is $P(Z>1.25)$?
+    \item Why is $z=-1$ not the 16th percentile on the delay clock?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 22}
+    The session can continue directly into specification limits, process
+    yield, and a mean shift.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 6, Section 6.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,181 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 42: Prueba ji-cuadrada de homogeneidad}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 42: Prueba ji-cuadrada de homogeneidad\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de la mezcla compartida}
+  \begin{alertblock}{Pregunta guía}
+    ¿Comparten tres almacenes muestreados de forma independiente una mezcla
+    de canal de tickets?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item tratar los totales de fila como fijos por el plan de muestreo;
+    \item calcular una $\chi^2$ de homogeneidad con $df=(r-1)(c-1)$;
+    \item decidir si los sitios comparten una mezcla;
+    \item contrastar esa historia con una prueba de independencia.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los conteos de tickets usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Tres muestras planeadas, mismas categorías}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrrr}
+      \toprule
+      \textbf{Sitio} & \textbf{Teléfono} & \textbf{Chat} & \textbf{Correo} & \textbf{$n$} \\
+      \midrule
+      Norte & 60 & 40 & 20 & 120 \\
+      Centro & 35 & 40 & 25 & 100 \\
+      Sur & 25 & 30 & 35 & 90 \\
+      \midrule
+      Total & 120 & 110 & 80 & 310 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Hipótesis de homogeneidad}
+    $H_0$: los tres sitios comparten una mezcla frente a $H_1$: al menos un
+    sitio difiere, con $\alpha=0.05$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Tres mezclas independientes}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+shares = counts / n_site
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Participación telefónica Norte $=0.500000$\\
+        Participación telefónica Centro $=0.350000$\\
+        Participación telefónica Sur $=0.277778$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/homogeneidad_01_tres_muestras.png}
+      \vspace{0.2em}
+      \scriptsize Mezclas dentro del sitio del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{La homogeneidad usa la misma aritmética $\chi^2$}
+  \small
+  Los conteos esperados siguen usando el producto de márgenes:
+  \[
+    E_{ij}=\frac{(\text{total de fila}_i)(\text{total de columna}_j)}{n}.
+  \]
+  \[
+    \chi^2=17.812605,\qquad df=(3-1)(3-1)=4,\qquad p=0.001343.
+  \]
+  Como $\chi^2>\chi^{2*}=9.487729$ y $p<\alpha$, la prueba rechaza la
+  afirmación de que los tres sitios comparten una mezcla.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Decisión de homogeneidad}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+chi2, p, df, E = chi2_contingency(table)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\chi^2=17.812605$, $df=4$\\
+        $p=0.001343$\\
+        Decisión: rechazar $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/homogeneidad_02_chi_cuadrada.png}
+      \vspace{0.2em}
+      \scriptsize Contribuciones celulares de homogeneidad del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: El mismo estadístico, distinta historia}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Homogeneidad: tres muestras planeadas. Los totales de fila $120$,
+      $100$ y $90$ se eligieron primero.
+
+      \vspace{0.4em}
+      Independencia: una muestra de $310$ tickets clasificada después por
+      sitio y canal.
+
+      \vspace{0.5em}
+      \textbf{Límite:} ambas historias producen $\chi^2=17.812605$ y
+      $p=0.001343$. La aritmética se comparte; la $H_0$ no.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/homogeneidad_03_limite_historia_muestreo.png}
+      \vspace{0.2em}
+      \scriptsize Dos historias de muestreo del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué los totales de fila $120$, $100$ y $90$ son parte del
+      diseño?
+    \item Calcule $df$ para tres sitios y tres categorías.
+    \item Si $p=0.001343$ y $\alpha=0.05$, ¿cuál es la decisión de
+      homogeneidad?
+    \item ¿Cómo puede la misma tabla ser un problema de independencia?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 43}
+    La sesión puede continuar directamente con diseño experimental:
+    factores, aleatorización y por qué un sitio observacional no es un
+    tratamiento.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 11, Sección 11.5. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

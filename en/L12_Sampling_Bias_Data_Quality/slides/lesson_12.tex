@@ -1,0 +1,185 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 12: Sampling Bias, Data Quality, and Nonsampling Error}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 12: Sampling Bias, Data Quality, and Nonsampling Error\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{When the Frame Is the Problem}
+  \begin{alertblock}{Guiding question}
+    Can a larger sample, or a cleaned table, repair a complaint-rate estimate
+    if the easy channel or a whole region is missing?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item estimate a population rate from a simple random sample;
+    \item contrast that sampling error with web-only convenience bias;
+    \item identify a coverage gap when a region is absent from the frame;
+    \item explain why cleaning incomplete rows cannot restore missing units.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All tickets, regions, and complaint flags used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{An 8{,}000-Row Synthetic Ticket Register}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Region} & \textbf{Tickets} & \textbf{In the SRS frame} & \textbf{In the no-West frame} \\
+      \midrule
+      North & 2{,}400 & yes & yes \\
+      South & 2{,}400 & yes & yes \\
+      East & 2{,}000 & yes & yes \\
+      West & 1{,}200 & yes & no \\
+      \midrule
+      Total & 8{,}000 & 8{,}000 & 6{,}800 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  \begin{exampleblock}{Parameter}
+    The population complaint rate is the mean of the complete complaint flag,
+    including West. Sampling error is not the same as a coverage gap.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Simple Random Sample}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+srs = register.sample(
+    n=400,
+    replace=False,
+    random_state=42,
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $N=8{,}000$\\
+        Population rate $=0.119875$\\
+        SRS $n=400$ rate $=0.105000$\\
+        Absolute error $=0.014875$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_bias_01_srs.png}
+      \vspace{0.2em}
+      \scriptsize Population parameter versus SRS from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Web Tickets Are an Easy, Biased Channel}
+  \small
+  Web tickets complain less often than store tickets:
+  \[
+    \hat{p}_{\text{web}}=0.057323,\qquad
+    \hat{p}_{\text{store}}=0.176555.
+  \]
+  A convenience sample of the first $1{,}200$ web tickets is larger than the
+  SRS, but it copies the web-channel rate instead of the population rate.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Web Convenience Sample}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+web = register.loc[
+    register["channel"] == "Web"
+]
+conv = web.head(1200)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Convenience $n=1{,}200$\\
+        Rate $=0.056667$\\
+        Error $=0.063208$\\
+        Larger, more error
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_bias_02_convenience_web.png}
+      \vspace{0.2em}
+      \scriptsize Sample size versus error from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Cleaning Does Not Restore Missing Units}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      West complaint rate $=0.276667$. Dropping West yields error $0.027669$.
+
+      \vspace{0.4em}
+      After listwise deletion of missing flags: $6{,}437$ rows, error
+      $0.026509$, West tickets $=0$.
+
+      \vspace{0.4em}
+      \textbf{Limit:} cleaning a biased frame does not restore missing units.
+      Lesson 13 models a discrete random variable on a complete sample space.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_bias_03_coverage_gap.png}
+      \vspace{0.2em}
+      \scriptsize Coverage gap and cleaning from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item What is the population parameter in this register?
+    \item Why can $n=1{,}200$ produce more error than $n=400$?
+    \item Is excluding West a sampling error or a coverage error?
+    \item After cleaning, why is the West count still $0$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 13}
+    The session can continue directly into discrete random variables, PMFs,
+    CDFs, expectation, and variance.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Sections 1.2 and 1.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

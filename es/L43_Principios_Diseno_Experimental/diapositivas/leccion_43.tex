@@ -1,0 +1,196 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 43: Diseño experimental: factores y aleatorización}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 43: Diseño experimental: factores y aleatorización\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de diseño}
+  \begin{alertblock}{Pregunta guía}
+    Cuando se comparan tres métodos de empaque, ¿qué convierte una
+    diferencia de medias en un efecto de tratamiento y no en una diferencia
+    de quién eligió qué?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item nombrar el factor, sus niveles, las unidades y la respuesta;
+    \item asignar al azar 36 estaciones a tres tratamientos;
+    \item leer medias de grupo tras la aleatorización;
+    \item explicar por qué los grupos autoseleccionados no son un
+      experimento aleatorizado.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todas las estaciones, experiencias y tiempos de ciclo usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Un factor de tres niveles y 36 unidades}
+  \small
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Pieza de diseño} & \textbf{En este experimento} & \textbf{Rol} \\
+      \midrule
+      Factor & Método de empaque & Lo que asignamos \\
+      Niveles & Estándar, Guiado, Automatizado & $k=3$ tratamientos \\
+      Unidades & 36 estaciones de empaque & A qué asignamos \\
+      Respuesta & Tiempo de ciclo (segundos) & Lo que medimos \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Línea de empaque sintética}
+    La asignación aleatoria coloca 12 estaciones en cada método. La
+    experiencia del operador es una covariable previa. No se usa para
+    elegir el método.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Asignación aleatoria}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+labels = np.repeat(
+  treatments, 12
+)
+rng.shuffle(labels)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $n=12$ estaciones por método\\
+        Experiencia media $4.618$, $5.943$, $5.666$\\
+        Brecha Auto-Estándar $1.047694$ años
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diseno_experimental_01_factor_aleatorizacion.png}
+      \vspace{0.2em}
+      \scriptsize Asignación equilibrada y chequeo de covariable del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{La aleatorización hace de la comparación un contraste de tratamiento}
+  \small
+  Efectos aditivos verdaderos sobre el tiempo de ciclo:
+  \[
+    0\ \text{(Estándar)},\quad -2\ \text{(Guiado)},\quad -7\ \text{(Automatizado)}.
+  \]
+  Tras la asignación aleatoria con semilla 42, las medias observadas son
+  $51.871576$, $50.039332$ y $43.852371$ segundos.
+  \[
+    \bar y_{\text{Automatizado}}-\bar y_{\text{Estándar}}=-8.019206.
+  \]
+  La brecha está cerca del efecto verdadero Automatizado de $-7$. La
+  aleatorización, no un ajuste posterior, es lo que justifica leerla como
+  una comparación de método.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Tiempos de ciclo aleatorizados}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+y = (
+  52 + effect
+  - 0.35 * (
+    exp - exp.mean()
+  ) + noise
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Medias $51.872$, $50.039$, $43.852$\\
+        Brecha aleatorizada $-8.019206$\\
+        Efecto verdadero Automatizado $-7$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diseno_experimental_02_resultados_aleatorizados.png}
+      \vspace{0.2em}
+      \scriptsize Tiempos de ciclo aleatorizados del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: La autoselección no es un tratamiento}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Experiencia media autoseleccionada: $2.678$, $5.655$, $7.895$ años.
+
+      \vspace{0.4em}
+      Brecha observacional $Y$ Auto-Estándar: $-14.809630$.
+
+      \vspace{0.4em}
+      Brecha de experiencia $5.216727$ frente a aleatorizada $1.047694$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} un factor observacional no es un tratamiento
+      aleatorizado. La Lección 44 analiza la respuesta aleatorizada de tres
+      grupos con ANOVA.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diseno_experimental_03_limite_autoseleccion.png}
+      \vspace{0.2em}
+      \scriptsize Medias aleatorizadas frente a autoseleccionadas del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Cuál es el factor experimental y cuáles son sus niveles?
+    \item ¿Por qué importa la asignación aleatoria de 36 estaciones para la
+      experiencia?
+    \item La brecha aleatorizada Auto-Estándar es $-8.019$ segundos y el
+      efecto verdadero es $-7$. ¿Por qué pueden diferir?
+    \item ¿Por qué la brecha observacional $-14.810$ no es un efecto de
+      tratamiento?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 44}
+    La sesión puede continuar directamente con ANOVA de un factor, sumas de
+    cuadrados y el cociente $F$ para las tres medias aleatorizadas.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 12, Sección 12.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

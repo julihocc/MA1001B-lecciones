@@ -1,0 +1,195 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 03: Central Tendency and Dispersion}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 03: Central Tendency and Dispersion\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Descriptive Question}
+  \begin{alertblock}{Guiding question}
+    Which summaries describe a typical processing time and the variability
+    among orders?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item calculate and interpret the mean and median;
+    \item calculate sample standard deviation and interquartile range;
+    \item pair a measure of center with a compatible measure of spread;
+    \item explain how one extreme value affects each summary.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All 240 order records are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Center and Spread}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.18\textwidth}p{0.31\textwidth}p{0.37\textwidth}}
+      \toprule
+      \textbf{Summary} & \textbf{Calculation} & \textbf{Question answered} \\
+      \midrule
+      Mean & $\bar{x}=\frac{1}{n}\sum x_i$ & Where do values balance? \\
+      Median & Middle ordered value & Which value divides the ordered data in half? \\
+      Sample $s$ & $\sqrt{\frac{\sum(x_i-\bar{x})^2}{n-1}}$ & How far do values vary around the mean? \\
+      IQR & $Q_3-Q_1$ & How wide is the middle 50\%? \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{exampleblock}{Interpretation rule}
+    Report the summaries in context and in the variable's units. Pair mean with
+    sample $s$, or median with IQR, so center and spread tell one coherent story.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Mean and Median}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+values = sample[
+    "processing_time_minutes"
+]
+
+mean = values.mean()
+median = values.median()
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $n=240$ orders\\
+        Mean $=45.19$ min\\
+        Median $=44.70$ min\\
+        Difference $=0.49$ min
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/descriptive_statistics_01_center.png}
+      \vspace{0.15em}
+      \scriptsize Both numbers describe center. Neither number describes spread.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 2: Two Measures of Spread}
+  \begin{columns}[T]
+    \begin{column}{0.39\textwidth}
+      \small
+      Sample standard deviation:
+      \[
+        s=\sqrt{\frac{\sum(x_i-\bar{x})^2}{n-1}}=6.38\text{ min}
+      \]
+
+      Quartile interval:
+      \[
+        Q_1=40.53,\quad Q_3=49.01
+      \]
+      \[
+        \mathrm{IQR}=Q_3-Q_1=8.48\text{ min}
+      \]
+
+      $s$ measures variation around the mean. The IQR spans the middle half of
+      the ordered observations.
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/descriptive_statistics_02_spread.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Sensitivity to One Extreme Value}
+  \small
+  \textbf{Order 300193 changes from 65.22 to 180.00 minutes.}
+
+  \vspace{0.1em}
+  \centering
+  \includegraphics[width=0.80\textwidth]{../figures/descriptive_statistics_03_sensitivity.png}
+
+  \vspace{0.1em}
+  \begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Summary} & Mean & Median & Sample $s$ & IQR \\
+    \textbf{Change (min)} & $+0.48$ & $+0.00$ & $+4.34$ & $+0.00$ \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.1em}
+  \scriptsize Displayed changes are rounded to two decimals. Sensitivity alone
+  does not diagnose an anomaly.
+\end{frame}
+
+\begin{frame}{Choosing Descriptive Summaries}
+  \small
+  \textbf{Mean with sample standard deviation}\par\vspace{0.2em}
+  This pair uses every observation. It often describes a roughly symmetric
+  distribution well when no extreme values dominate the summaries.
+
+  \vspace{0.7em}
+  \textbf{Median with interquartile range}\par\vspace{0.2em}
+  This pair depends on ordered positions. It usually resists the influence of a
+  small number of extreme values better.
+
+  \vspace{0.8em}
+  \begin{alertblock}{A defensible description}
+    Inspect the distribution, state the units, and explain the choice. These
+    pairings are useful guidelines rather than automatic rules.
+  \end{alertblock}
+
+  A numeric identifier such as \texttt{order\_id} still labels a record. It is
+  not a quantitative measurement to summarize with a mean or standard deviation.
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item What different questions do the mean and sample standard deviation
+      answer about processing time?
+    \item Using $Q_1=40.53$ and $Q_3=49.01$, calculate and interpret the IQR.
+    \item Which center-spread pair better describes data affected by a small
+      number of extreme delays, and why?
+    \item Why does the 180-minute value require more evidence before anyone
+      labels it an anomaly or recording error?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Connection to Lesson 04}
+    Boxplots and explicit detection rules add a reproducible way to flag values
+    for investigation. Business context still determines what the flag means.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 2, Sections 2.2, 2.3, and 2.7. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

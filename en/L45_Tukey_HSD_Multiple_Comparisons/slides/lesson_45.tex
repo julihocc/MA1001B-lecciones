@@ -1,0 +1,188 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 45: Tukey HSD Multiple Comparisons}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 45: Tukey HSD Multiple Comparisons\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Pairwise Question After $F$}
+  \begin{alertblock}{Guiding question}
+    After a significant three-group $F$, which packing-method pairs differ,
+    and how can that family of tests keep a 5 percent familywise error?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item run the three pairwise $t$ tests;
+    \item read Tukey adjusted $p$-values and simultaneous CIs;
+    \item name the pairs that differ at familywise $\alpha=0.05$;
+    \item explain why unadjusted tests inflate familywise error.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All cycle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Three Pairs, One Family}
+  \small
+  \begin{center}
+    \begin{tabular}{lrr}
+      \toprule
+      \textbf{Pair} & \textbf{Mean difference} & \textbf{Unadjusted $p$} \\
+      \midrule
+      Standard $-$ Guided & 1.215833 & 0.287762 \\
+      Standard $-$ Automated & 5.716390 & 0.000071 \\
+      Guided $-$ Automated & 4.500557 & 0.000233 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Familywise error}
+    Three tests at $\alpha=0.05$ are not one 5 percent decision. Familywise
+    error is the chance of at least one false pair in the family.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Unadjusted Pairwise $t$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+t, p = ttest_ind(a, b,
+                 equal_var=True)
+reject = p < 0.05
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Guided pair $p=0.287762$ retain\\
+        Auto pairs $p=0.000071$, $0.000233$\\
+        Three tests, no correction
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/tukey_hsd_01_pairwise_unadjusted.png}
+      \vspace{0.2em}
+      \scriptsize Unadjusted pairwise differences from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Tukey HSD Keeps the Family at 5 Percent}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Pair} & $\mathbf{p_{\text{adj}}}$ & \textbf{Tukey CI} & \textbf{Reject?} \\
+      \midrule
+      Auto vs Guided & 0.000789 & $(1.79,\ 7.21)$ & Yes \\
+      Auto vs Standard & 0.000033 & $(3.00,\ 8.43)$ & Yes \\
+      Guided vs Standard & 0.521330 & $(-1.50,\ 3.93)$ & No \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  Automated differs from both other methods. Guided and Standard are not
+  distinguished. The CI that contains 0 is the retain decision.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Tukey Simultaneous Intervals}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+tukey = pairwise_tukeyhsd(
+  y, groups, alpha=0.05
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Guided vs Standard retains\\
+        $p_{\text{adj}}=0.521330$\\
+        CI $(-1.498,\ 3.930)$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/tukey_hsd_02_tukey_hsd.png}
+      \vspace{0.2em}
+      \scriptsize Tukey HSD intervals from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Unadjusted Tests Inflate Familywise Error}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      5000 null experiments, all true means equal.
+
+      \vspace{0.4em}
+      Unadjusted pairwise FWER $=0.127800$.
+
+      \vspace{0.4em}
+      Tukey HSD FWER $=0.049000$ versus $\alpha=0.05$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} pairwise $t$ tests without correction inflate
+      familywise error. Lesson 46 checks the equal-variance assumption
+      both procedures still need.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/tukey_hsd_03_familywise_error.png}
+      \vspace{0.2em}
+      \scriptsize Empirical familywise error from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item How many pairwise tests exist for $k=3$ methods?
+    \item Why is familywise error not the same as one test's $\alpha=0.05$?
+    \item Which pair is retained by Tukey HSD in this packing experiment?
+    \item In 5000 null experiments, why is $0.127800$ a problem?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 46}
+    The session can continue directly into ANOVA residual plots, Levene's
+    test, and variance inequality.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Sections 12.2--12.3, post-hoc pairwise practice. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

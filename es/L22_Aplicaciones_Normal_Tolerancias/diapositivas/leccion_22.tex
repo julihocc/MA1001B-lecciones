@@ -1,0 +1,183 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 22: Aplicaciones normales: tolerancias e intervalos operativos}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 22: Aplicaciones normales y tolerancias\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de especificación}
+  \begin{alertblock}{Pregunta guía}
+    Si el peso de llenado es $N(50,4)$ gramos y la especificación es
+    $[44,56]$, ¿qué fracción de unidades está en especificación, y qué ocurre
+    si se mueve la media?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item convertir límites de especificación en cortes $z$;
+    \item calcular el rendimiento como $P(\mathrm{LIE}<X<\mathrm{LSE})$;
+    \item cuantificar la caída de rendimiento tras un desplazamiento de la media;
+    \item explicar por qué un rendimiento alto no es lo mismo que estar centrado.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los pesos de llenado usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Proceso centrado y cortes de especificación}
+  \small
+  Modelo $X\sim N(50,4^2)$. Especificación $[44,56]$:
+  \[
+    z_{\mathrm{LIE}}=\frac{44-50}{4}=-1.5,\qquad
+    z_{\mathrm{LSE}}=\frac{56-50}{4}=1.5.
+  \]
+  Rendimiento en especificación:
+  \[
+    P(44<X<56)=0.866386.
+  \]
+  Cada cola es $0.066807$ porque el proceso está centrado.
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Línea de llenado sintética}
+    La especificación es un intervalo del cliente. El rendimiento es el área
+    entre los cortes.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Rendimiento en especificación}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+z_low = (44 - 50) / 4
+z_high = (56 - 50) / 4
+yield_p = (
+    model.cdf(56)
+    - model.cdf(44)
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $z=\pm 1.500000$\\
+        Cada cola $=0.066807$\\
+        Rendimiento $=0.866386$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/tolerancias_normal_01_rendimiento_espec.png}
+      \vspace{0.2em}
+      \scriptsize Rendimiento centrado del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Un desplazamiento de la media mueve los cortes $z$}
+  \small
+  La especificación permanece en $[44,56]$. Después de $\mu=52$,
+  \[
+    z_{\mathrm{LIE}}=\frac{44-52}{4}=-2,\qquad
+    z_{\mathrm{LSE}}=\frac{56-52}{4}=1.
+  \]
+  El rendimiento cae a $0.818595$. La caída frente al proceso centrado es
+  $0.047791$. La cola superior crece a $0.158655$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Rendimiento después de $\mu=52$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+shifted = norm(52, 4)
+new_yield = (
+    shifted.cdf(56)
+    - shifted.cdf(44)
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Cortes $z$ $-2$ y $1$\\
+        Rendimiento $=0.818595$\\
+        Caída $=0.047791$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/tolerancias_normal_02_desplazamiento_media.png}
+      \vspace{0.2em}
+      \scriptsize Densidades centrada y desplazada del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Un rendimiento alto no implica estar centrado}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Reloj estrecho descentrado: $\mu=52$, $\sigma=2$.
+
+      \vspace{0.4em}
+      Cortes $z$ $-4$ y $2$.\\
+      Rendimiento $=0.977218$, más alto que el centrado $0.866386$.
+
+      \vspace{0.4em}
+      \textbf{Límite:} la conformidad con la especificación no es lo mismo que
+      estar centrado. La Lección 23 estudia la distribución muestral de
+      $\bar x$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/tolerancias_normal_03_centrado_vs_conforme.png}
+      \vspace{0.2em}
+      \scriptsize Centrado-ancho frente a estrecho descentrado del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Calcule los cortes $z$ para la especificación $[44,56]$ en $N(50,4)$.
+    \item ¿Por qué las dos colas igualan $0.066807$ en el Paso 1?
+    \item Después de $\mu=52$, ¿cuál cola crece, y a qué valor?
+    \item ¿Por qué el rendimiento $0.977218$ puede seguir siendo la historia operativa equivocada?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 23}
+    La sesión puede continuar directamente con la distribución muestral de la
+    media muestral y su error estándar.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 6, Sección 6.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

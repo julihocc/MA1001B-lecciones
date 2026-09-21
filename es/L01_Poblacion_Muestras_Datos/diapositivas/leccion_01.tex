@@ -1,0 +1,208 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 01: Población, muestras y tipos de datos}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 01: Población, muestras y tipos de datos\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta estadística}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo puede un conjunto limitado de observaciones sustentar una afirmación
+    sobre una población de negocio más grande?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item definir la población objetivo y la muestra observada;
+    \item conectar un parámetro poblacional con su estadístico muestral;
+    \item clasificar variables según su significado analítico;
+    \item identificar por qué el tamaño de muestra no elimina el sesgo de selección.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los registros usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Población, muestra, parámetro y estadístico}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.19\textwidth}p{0.32\textwidth}p{0.32\textwidth}}
+      \toprule
+      \textbf{Rol} & \textbf{Población} & \textbf{Muestra} \\
+      \midrule
+      Observaciones & Todas las unidades definidas por la pregunta & Unidades realmente seleccionadas \\
+      Tamaño & $N$ & $n$ \\
+      Resumen numérico & Parámetro, como $\mu$ & Estadístico, como $\bar{x}$ \\
+      Estatus & Fijo para la población definida & Cambia entre muestras \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.6em}
+  \begin{exampleblock}{Pregunta sintética de operaciones}
+    ¿Cuál es el tiempo medio de procesamiento de los $12{,}000$ pedidos del
+    periodo? Una muestra aleatoria de 200 pedidos proporciona $\bar{x}$ como
+    estimación de la media poblacional $\mu$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Una muestra estima una cantidad poblacional}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \small
+      \begin{lstlisting}
+population = build_population()
+sample = draw_random_sample(population)
+
+mu = population[variable].mean()
+x_bar = sample[variable].mean()
+error = abs(x_bar - mu)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $N=12{,}000$ y $n=200$\\
+        $\mu=45.26$ minutos\\
+        $\bar{x}=46.11$ minutos\\
+        Error absoluto $=0.85$ minutos
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/fundos_datos_01_poblacion_muestra.png}
+      \vspace{0.2em}
+      \scriptsize Distribuciones de población y muestra aleatoria del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Tipos de datos de negocio}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.23\textwidth}p{0.28\textwidth}p{0.34\textwidth}}
+      \toprule
+      \textbf{Tipo} & \textbf{Pregunta} & \textbf{Ejemplo} \\
+      \midrule
+      Categórica & ¿Qué grupo o etiqueta? & Canal, región \\
+      Cuantitativa discreta & ¿Cuántas unidades contables? & Artículos por pedido \\
+      \shortstack[l]{Cuantitativa\\continua} & ¿Cuánto se midió? & Tiempo, valor del pedido \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.7em}
+  \begin{alertblock}{El significado analítico controla la clasificación}
+    \texttt{order\_id} contiene dígitos, pero la aritmética sobre un
+    identificador no tiene sentido de negocio. Actúa como etiqueta.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Una tabla contiene varios tipos de datos}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+roles = {
+  "channel": "Categórica",
+  "items_per_order":
+      "Cuantitativa discreta",
+  "processing_time_minutes":
+      "Cuantitativa continua",
+}
+      \end{lstlisting}
+
+      La misma muestra de 200 filas admite resúmenes distintos porque cada
+      variable responde a un tipo distinto de pregunta.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/fundos_datos_02_tipos_datos.png}
+      \vspace{0.2em}
+      \scriptsize Conteos para categorías y discretas; histograma para un
+      valor continuo medido.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Una muestra sesgada más grande tiene más error}
+  \begin{columns}[T]
+    \begin{column}{0.43\textwidth}
+      \small
+      Parámetro poblacional: $\mu=45.26$ minutos
+
+      \vspace{0.5em}
+      \begin{tabular}{lrr}
+        \toprule
+        \textbf{Muestra} & \textbf{$n$} & \textbf{Error} \\
+        \midrule
+        Aleatoria & 200 & 0.85 min \\
+        Conveniencia & 1{,}000 & 6.24 min \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.7em}
+      La muestra de conveniencia contiene solo pedidos En línea. Su mayor
+      tamaño no restaura los canales faltantes.
+
+      \vspace{0.5em}
+      \textbf{Límite:} este ejemplo determina un sesgo de selección posible.
+      No afirma que toda muestra de conveniencia tenga este error exacto.
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/fundos_datos_03_sesgo_muestreo.png}
+      \vspace{0.2em}
+      \scriptsize Tamaño de muestra y error de estimación de la misma población
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Un analista estudia todos los pedidos del mes e inspecciona 300.
+      Identifique la población y la muestra.
+    \item Los 300 pedidos tienen un valor medio de MXN 1{,}840. ¿Es un
+      parámetro o un estadístico? Explique.
+    \item Clasifique segmento de cliente, número de artículos y tiempo de entrega.
+    \item ¿Por qué 1{,}000 registros convenientemente disponibles pueden dar
+      una peor estimación que 200 seleccionados al azar?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 02}
+    La sesión puede continuar directamente con muestreo aleatorio simple,
+    estratificado y por conglomerados.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 1, Secciones 1.1 y 1.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

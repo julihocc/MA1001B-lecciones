@@ -1,0 +1,182 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 34: Z Test for a Mean with Known Variance}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 34: Z Test for a Mean with Known Variance\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Known-Sigma Test Question}
+  \begin{alertblock}{Guiding question}
+    How is a one-sided test of an unknown mean carried out when $\sigma$ is
+    treated as known?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $z=(\bar{x}-\mu_{0})/(\sigma/\sqrt{n})$;
+    \item obtain the upper-tail $p$-value from the standard normal;
+    \item decide at $\alpha=0.05$ by comparing $p$ with $\alpha$;
+    \item explain why known $\sigma$ is rarely true in operations data.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All delivery times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Synthetic Delivery-Time Test}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Quantity} & \textbf{Value} \\
+      \midrule
+      $H_{0}$ & $\mu=80$ minutes \\
+      $H_{1}$ & $\mu>80$ minutes \\
+      $n$, known $\sigma$ & 40, 6 minutes \\
+      Sample $\bar{x}$ (seed 42) & 82.229590 minutes \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Standard error}
+    \[
+      \mathrm{SE}=\frac{6}{\sqrt{40}}=0.948683.
+    \]
+    The analyst treats $\sigma$ as known from long-run process capability.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: The Z Statistic}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+se = sigma / np.sqrt(n)
+z = (xbar - 80) / se
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\bar{x}=82.229590$\\
+        $\mathrm{SE}=0.948683$\\
+        $z=2.350194$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/z_test_mean_01_z_statistic.png}
+      \vspace{0.2em}
+      \scriptsize Delivery histogram from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Upper-Tail $P$-Value and Decision}
+  \small
+  \[
+    p=P(Z\ge 2.350194)=\texttt{norm.sf}(2.350194)=0.009382.
+  \]
+  Because $p<\alpha=0.05$, $H_{0}$ is rejected: the synthetic sample is
+  inconsistent with a mean of 80 minutes when $\sigma=6$ is treated as known.
+
+  \vspace{0.4em}
+  The $p$-value is not the probability that $H_{0}$ is true. It is the tail
+  probability of a result this large or larger under $H_{0}$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $P$-Value and Decision}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+p = stats.norm.sf(z)
+reject = p < 0.05
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $p=0.009382$\\
+        $\alpha=0.05$\\
+        Reject $H_{0}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/z_test_mean_02_p_value.png}
+      \vspace{0.2em}
+      \scriptsize Standard-normal tail from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Known $\sigma$ Is Rarely True}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Sample $s=4.955099\neq 6$.
+
+      \vspace{0.4em}
+      Invalid z-with-$s$:
+      \[
+        z=2.845789,\quad p=0.002215.
+      \]
+
+      \vspace{0.5em}
+      \textbf{Limit:} keeping a $z$ curve after replacing $\sigma$ by $s$ is
+      the wrong test. Lesson 35 uses $t$ with $\mathrm{df}=n-1$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/z_test_mean_03_known_sigma_limit.png}
+      \vspace{0.2em}
+      \scriptsize Valid z versus invalid z-with-$s$ from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $\mathrm{SE}=6/\sqrt{40}$.
+    \item Compute $z=(82.229590-80)/\mathrm{SE}$.
+    \item Why is $p=0.009382$ not the probability that $\mu=80$?
+    \item Why is $s=4.955099$ not a license to keep the z test?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 35}
+    The session can continue directly into the one-sample $t$ test, with $s$
+    in the denominator and $\mathrm{df}=n-1$.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 9, Sections 9.3--9.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

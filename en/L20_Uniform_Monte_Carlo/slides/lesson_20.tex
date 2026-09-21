@@ -1,0 +1,184 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 20: Continuous Uniform Distribution and Monte Carlo}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 20: Continuous Uniform and Monte Carlo\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Flat-Density Question}
+  \begin{alertblock}{Guiding question}
+    If processing time is equally likely anywhere on $[8,20]$ minutes, how
+    is $P(X>16)$ computed, and how can simulation check it?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item write the flat density $f(x)=1/(b-a)$;
+    \item compute a tail as remaining length over $b-a$;
+    \item check that tail with a seeded Monte Carlo sample;
+    \item explain why a piled density breaks the uniform model.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All processing times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Uniform$(8,20)$ Processing Minutes}
+  \small
+  Density height and mean:
+  \[
+    f(x)=\frac{1}{20-8}=\frac{1}{12}=0.083333,
+    \qquad
+    E[X]=\frac{8+20}{2}=14.
+  \]
+  Tail by length:
+  \[
+    P(X>16)=\frac{20-16}{12}=\frac{1}{3}=0.333333.
+  \]
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Synthetic ticket clock}
+    Every minute between 8 and 20 is equally likely. Probability is length,
+    not a point height.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Exact Uniform Tail}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+model = uniform(
+  loc=8, scale=12
+)
+p_gt_16 = 1 - model.cdf(16)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Height $=0.083333$\\
+        Mean $=14.000000$\\
+        Length ratio $=0.333333$\\
+        $P(X>16)=0.333333$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/uniform_mc_01_exact_uniform.png}
+      \vspace{0.2em}
+      \scriptsize Flat density and shaded tail from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Monte Carlo Recovers Length Probability}
+  \small
+  Draw $n=100{,}000$ times from $\mathrm{Uniform}(8,20)$ with seed 42.
+  Count the fraction of draws above 16:
+  \[
+    \widehat{P}(X>16)=\frac{\#\{X_i>16\}}{100{,}000}.
+  \]
+  The simulated tail is $0.333290$. Absolute error versus $1/3$ is
+  $0.000043$. The simulated mean is $14.007499$ versus exact $14$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $100{,}000$ Seed-42 Draws}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+draws = model.rvs(
+  size=100_000,
+  random_state=rng,
+)
+p_hat = np.mean(draws > 16)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Exact tail $=0.333333$\\
+        Monte Carlo $=0.333290$\\
+        Abs.\ error $=0.000043$\\
+        MC mean $=14.007499$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/uniform_mc_02_monte_carlo.png}
+      \vspace{0.2em}
+      \scriptsize Histogram versus exact density from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Uniform Fails When Density Piles}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Uniform $P(X>16)=0.333333$.
+
+      \vspace{0.4em}
+      Right-triangular pile at 20:
+      \[
+        P(X>16)=0.555556.
+      \]
+      Piled mean $=16$, not $14$.
+
+      \vspace{0.4em}
+      \textbf{Limit:} a flat model is wrong when density piles at one end.
+      Lesson 21 standardizes a bell-shaped clock.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/uniform_mc_03_piled_density_limit.png}
+      \vspace{0.2em}
+      \scriptsize Flat versus piled densities from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is $f(x)=1/12$ on $[8,20]$ a density, not a probability?
+    \item Compute $P(X>16)$ from remaining length $4$ and total length $12$.
+    \item The Monte Carlo tail is $0.333290$. Does that replace $1/3$?
+    \item Why is $0.555556$ the wrong number for a uniform clock?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 21}
+    The session can continue directly into the standard normal curve and
+    $z$-scores.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 5, Section 5.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

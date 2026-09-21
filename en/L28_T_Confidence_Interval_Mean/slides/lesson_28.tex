@@ -1,0 +1,194 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 28: Student t Interval when sigma is Unknown}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 28: Student t Interval when sigma is Unknown\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Unknown-Sigma Interval Question}
+  \begin{alertblock}{Guiding question}
+    How is a 95\% interval for an unknown mean built when $\sigma$ must be
+    replaced by the sample $s$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $s$ and $\widehat{\mathrm{SE}}=s/\sqrt{n}$;
+    \item obtain $t^{*}$ from the $t$ distribution with $\mathrm{df}=n-1$;
+    \item form $\bar{x}\pm t^{*}\cdot s/\sqrt{n}$;
+    \item explain how one outlier inflates $s$ and the interval.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All fill volumes used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{The Same Sample, Now with Unknown $\sigma$}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Quantity} & \textbf{Value} \\
+      \midrule
+      Sample size $n$ & 36 bottles \\
+      Degrees of freedom $n-1$ & 35 \\
+      Point estimate $\bar{x}$ (seed 42) & 502.738498 ml \\
+      Sample $s$ & 8.390375 ml \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Estimated standard error}
+    \[
+      \widehat{\mathrm{SE}}=\frac{s}{\sqrt{n}}=\frac{8.390375}{\sqrt{36}}=1.398396.
+    \]
+    The extra uncertainty in $s$ is why the critical value is $t$, not $z$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Standard Deviation}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+s = np.std(sample, ddof=1)
+se_hat = s / np.sqrt(n)
+df = n - 1
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\mathrm{df}=35$\\
+        $s=8.390375$ ml\\
+        $\widehat{\mathrm{SE}}=1.398396$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/t_ci_mean_01_sample_sd.png}
+      \vspace{0.2em}
+      \scriptsize Histogram and estimated SE band from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Replace $z^{*}$ by $t^{*}$ with $\mathrm{df}=35$}
+  \small
+  From \texttt{scipy.stats.t.ppf}:
+  \[
+    t^{*}=t_{0.975,35}=2.030108 > z^{*}=1.96.
+  \]
+  Margin of error and interval:
+  \[
+    E=2.030108\times 1.398396=2.838894,
+  \]
+  \[
+    \bar{x}\pm E=[499.899604, 505.577392].
+  \]
+  This seed-42 interval covers the hidden $\mu=502$. The $t$ critical value
+  is larger than $1.96$; $s$ itself may still be smaller than $\sigma$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: The 95\% t Interval}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+t_star = stats.t.ppf(
+    0.975, df=35
+)
+margin = t_star * se_hat
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $t^{*}=2.030108$\\
+        Margin $=2.838894$\\
+        CI $[499.899604, 505.577392]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/t_ci_mean_02_t_interval.png}
+      \vspace{0.2em}
+      \scriptsize Unknown-sigma t interval from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: One Outlier Inflates $s$ and the Interval}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      One fill replaced by $560$ ml.
+
+      \vspace{0.4em}
+      $s$ rises from $8.390375$ to $12.616189$.
+
+      \vspace{0.4em}
+      Contaminated interval:
+      \[
+        [499.767301, 508.304710].
+      \]
+      Width grows by $2.859620$ ml.
+
+      \vspace{0.5em}
+      \textbf{Limit:} one extreme observation inflates $s$ and the $t$
+      interval. The formula still runs; the scale estimate does not.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/t_ci_mean_03_outlier_inflates_s.png}
+      \vspace{0.2em}
+      \scriptsize Clean versus outlier-inflated t intervals from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is the critical value $t_{0.975,35}$ instead of $1.96$?
+    \item Compute $\widehat{\mathrm{SE}}=8.390375/\sqrt{36}$.
+    \item Why can this $t$ interval still be narrower than the Lesson 27 z
+      interval?
+    \item What happens to $s$ when one fill is replaced by $560$ ml?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 29}
+    The session can continue directly into a confidence interval for a
+    population proportion and the $np$, $n(1-p)$ conditions.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 8, Section 8.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

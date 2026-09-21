@@ -1,0 +1,183 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 47: Regresión lineal simple: mínimos cuadrados y $R^2$}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 47: Regresión lineal simple: mínimos cuadrados y $R^2$\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de ajustar una recta}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo puede un predictor numérico resumirse con una recta única, y por
+    qué una $R^2$ alta sigue sin ser una palanca causal de coaching?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item leer una nube de horas de coaching y unidades por hora;
+    \item calcular la pendiente y el intercepto de mínimos cuadrados;
+    \item formar $R^2=1-SSE/SST$;
+    \item rechazar tratar una $R^2$ alta como un botón de política.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todas las semanas y valores de productividad usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Cuarenta semanas sintéticas}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Valor} \\
+      \midrule
+      Semanas $n$ & 40 \\
+      Media de horas de coaching $\bar x$ & 25.075277 \\
+      Media de unidades por hora $\bar y$ & 23.315500 \\
+      Correlación muestral $r$ & 0.910813 \\
+      Recta verdadera & $y=12+0.45x+\varepsilon$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Muestra observacional}
+    $x$ es horas de coaching esa semana. $y$ es unidades empacadas por
+    hora-labor. El coaching se observó, no se asignó al azar.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Nube, aún sin recta}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+x = coaching_hours
+y = units_per_hour
+r = corrcoef(x, y)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $n=40$, $r=0.910813$\\
+        $\bar x=25.075277$\\
+        $\bar y=23.315500$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/regresion_simple_01_dispersion.png}
+      \vspace{0.2em}
+      \scriptsize Nube de 40 semanas del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Los mínimos cuadrados minimizan huecos verticales}
+  \small
+  \[
+    b_1=\frac{S_{xy}}{S_{xx}}=0.405936,
+    \qquad
+    b_0=\bar y-b_1\bar x=13.136554.
+  \]
+  Recta ajustada: $\hat y=13.136554+0.405936\,x$. Pendiente verdadera
+  $0.45$; intercepto verdadero $12$. $SSE=113.102672$. scipy
+  \texttt{linregress} coincide con la pendiente y el intercepto manuales.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: La recta ajustada}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+b1 = Sxy / Sxx
+b0 = ybar - b1 * xbar
+yhat = b0 + b1 * x
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $b_1=0.405936$\\
+        $b_0=13.136554$\\
+        $SSE=113.102672$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/regresion_simple_02_minimos_cuadrados.png}
+      \vspace{0.2em}
+      \scriptsize Recta de mínimos cuadrados del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Una $R^2$ alta no es una palanca causal}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $SST=663.669939$, $SSR=550.567267$, $R^2=0.829580$.
+
+      \vspace{0.4em}
+      Ganancia ajustada de $+10$ horas: $4.059355$ unidades por hora.
+
+      \vspace{0.5em}
+      \textbf{Límite:} una $R^2$ alta no implica una palanca causal. El
+      coaching no se aleatorizó. La Lección 48 añade $EE(b_1)$, una prueba
+      $t$ y un punto influyente.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/regresion_simple_03_limite_r_cuadrada.png}
+      \vspace{0.2em}
+      \scriptsize Descomposición de $R^2$ del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Qué cantidad vertical minimizan los mínimos cuadrados?
+    \item ¿Por qué $b_1=0.405936$ puede diferir de la pendiente verdadera
+      $0.45$?
+    \item Verifique $SSR+SSE=SST$ a partir de las sumas de cuadrados
+      impresas.
+    \item ¿Por qué $R^2=0.829580$ no es razón para mandar 10 horas más de
+      coaching?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 48}
+    La sesión puede continuar directamente con inferencia de la pendiente,
+    gráficas de residuos y puntos influyentes.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Secciones 13.3--13.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

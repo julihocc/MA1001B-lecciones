@@ -1,0 +1,178 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 48: Regression Inference, Residuals, and Decisions}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 48: Regression Inference, Residuals, and Decisions\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Inference Question}
+  \begin{alertblock}{Guiding question}
+    Is a fitted overtime slope different from 0, and can one emergency
+    weekend create that significance by itself?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $SE(b_1)$ and the $t$ test of $H_0:\beta_1=0$;
+    \item read a residual-versus-fitted plot;
+    \item refit after deleting an influential week;
+    \item refuse to treat one weekend as ordinary-week policy.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All overtime hours and unit counts used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Thirty-Nine Ordinary Weeks and One Emergency}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Piece} & \textbf{In this sample} \\
+      \midrule
+      Ordinary weeks & 39, overtime in $[6,\ 22]$ \\
+      Emergency weekend & $(x,y)=(48,\ 42)$ \\
+      $H_0$ & $\beta_1=0$ \\
+      $H_1$ & $\beta_1\neq 0$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Why the weekend matters}
+    A high-leverage $x$ can tilt the least-squares line. Inference on all 40
+    weeks is not automatically inference about ordinary operations.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Slope, SE, and $t$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+t = slope / se_slope
+p = two_sided_t(t, df=38)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $b_1=0.434381$\\
+        $SE=0.072494$, $t=5.991932$\\
+        $p=5.839701\times10^{-7}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/regression_inference_01_slope_se_t.png}
+      \vspace{0.2em}
+      \scriptsize $n=40$ fitted line from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Residuals Locate the Unusual Week}
+  \small
+  Residual mean is $0.000000$ by the least-squares identity. Residual SD is
+  $3.140288$. The emergency-weekend residual is $8.570594$, the largest
+  absolute residual in the sample.
+  \[
+    e_i=y_i-\hat y_i=y_i-(12.579109+0.434381\,x_i).
+  \]
+  A residual plot is a decision tool: it can show a fan, a curve, or one week
+  that does not belong with the others.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Residual versus Fitted}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+e = y - (b0 + b1 * x)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Residual mean $0.000000$\\
+        Emergency $e=8.570594$\\
+        Largest $|e|$ is that week
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/regression_inference_02_residual_plot.png}
+      \vspace{0.2em}
+      \scriptsize Residual plot from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: The Significant Slope Vanishes}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Without the weekend: $n=39$, $b_1=0.088445$, $t=1.070131$,
+      $p=0.291492$, $R^2=0.030022$.
+
+      \vspace{0.4em}
+      Do not reject $H_0:\beta_1=0$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} an influential point can create a significant slope
+      that vanishes when removed. The $n=40$ test is not a decision about
+      ordinary overtime weeks.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/regression_inference_03_influential_point.png}
+      \vspace{0.2em}
+      \scriptsize $n=40$ versus $n=39$ lines from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Write the $t$ statistic for $H_0:\beta_1=0$ in terms of $b_1$ and
+      $SE(b_1)$.
+    \item Why is residual mean 0 not a diagnostic pass by itself?
+    \item What happens to $p$ when the emergency weekend is deleted?
+    \item Why is the $n=40$ slope the wrong ordinary-week policy number?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection}
+    This closes the simple-regression sequence. Multiple predictors and
+    designed experiments are later courses; the limit here is influence.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Sections 13.2 and 13.6. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

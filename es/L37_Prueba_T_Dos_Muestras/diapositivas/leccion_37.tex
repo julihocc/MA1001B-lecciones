@@ -1,0 +1,179 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 37: Dos medias independientes (t de dos muestras)}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 37: Dos medias independientes (t de dos muestras)\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de las medias de dos turnos}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se comparan los tiempos medios de recolección de dos turnos
+    independientes cuando cada grupo tiene su propia $s$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item mantener dos muestras independientes sin agrupar;
+    \item calcular un estadístico $t$ de Welch y $gl$ de Satterthwaite;
+    \item decidir $H_0:\mu_A=\mu_B$ a partir de un valor p bilateral;
+    \item rechazar una lectura causal de un agrupamiento observacional.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de recolección y valores de experiencia usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Dos muestras independientes, dos desviaciones estándar}
+  \small
+  Un almacén sintético muestrea $n_A=30$ recolecciones del turno A y
+  $n_B=32$ recolecciones del turno B. Los asociados no están pareados, y las
+  desviaciones estándar muestrales no tienen que ser iguales.
+
+  \[
+    t=\frac{\bar{x}_A-\bar{x}_B}{\sqrt{s_A^2/n_A+s_B^2/n_B}}.
+  \]
+
+  \begin{exampleblock}{Procedimiento declarado: Welch}
+    $H_0:\mu_A=\mu_B$ frente a $H_1:\mu_A\neq\mu_B$, $\alpha=0.05$. Los
+    grados de libertad son los de Satterthwaite, no $n_A+n_B-2$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Resúmenes de grupo}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+mean_a = times_a.mean()
+s_a = times_a.std(ddof=1)
+diff = mean_a - mean_b
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\bar{x}_A=48.100885$, $s_A=4.660494$\\
+        $\bar{x}_B=52.826941$, $s_B=6.325509$\\
+        $\bar{x}_A-\bar{x}_B=-4.726057$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_dos_muestras_01_resumenes_grupos.png}
+      \vspace{0.2em}
+      \scriptsize Diagramas de caja de turnos independientes del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{La $t$ de Welch no agrupa las varianzas}
+  \small
+  \[
+    EE=\sqrt{\frac{4.660494^2}{30}+\frac{6.325509^2}{32}}=1.405128,
+  \]
+  \[
+    t=\frac{-4.726057}{1.405128}=-3.363436,\qquad gl=56.900423.
+  \]
+  El valor p bilateral es $0.001382$. Como $|t|>t^*=2.002541$ y $p<\alpha$,
+  la prueba rechaza $H_0:\mu_A=\mu_B$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Decisión de Welch de dos muestras}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = sqrt(s_a**2/n_a + s_b**2/n_b)
+t = (mean_a - mean_b) / se
+p = 2 * t_dist.sf(abs(t), df)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $t=-3.363436$, $gl=56.900423$\\
+        $p=0.001382$\\
+        Decisión: rechazar $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_dos_muestras_02_prueba_welch.png}
+      \vspace{0.2em}
+      \scriptsize Colas $t$ de Welch del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Los grupos observacionales no son un experimento}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Experiencia media del turno A: $4.484559$ años.
+
+      \vspace{0.3em}
+      Experiencia media del turno B: $1.801265$ años.
+
+      \vspace{0.4em}
+      Los asociados no fueron asignados al azar a los turnos.
+
+      \vspace{0.5em}
+      \textbf{Límite:} un $p=0.001382$ de Welch significativo compara medias.
+      No identifica el turno como una causa. La Lección 38 estudia pares
+      emparejados antes-después.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_dos_muestras_03_limite_observacional.png}
+      \vspace{0.2em}
+      \scriptsize Confounder de experiencia del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué estos dos turnos son muestras independientes y no pares?
+    \item Escriba el error estándar de Welch usando $s_A$, $s_B$, $n_A$ y
+      $n_B$.
+    \item Si $p=0.001382$ y $\alpha=0.05$, ¿cuál es la decisión para
+      $H_0:\mu_A=\mu_B$?
+    \item ¿Por qué una diferencia de experiencia media bloquea una afirmación
+      causal?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 38}
+    La sesión puede continuar directamente con una prueba $t$ pareada, donde
+    las mismas unidades se miden antes y después de un cambio.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 10, Sección 10.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

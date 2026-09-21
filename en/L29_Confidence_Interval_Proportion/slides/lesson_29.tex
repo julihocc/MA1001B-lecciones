@@ -1,0 +1,190 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 29: Confidence Interval for a Population Proportion}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 29: Confidence Interval for a Population Proportion\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Binary Rate Question}
+  \begin{alertblock}{Guiding question}
+    How is a 95\% interval for an unknown proportion built from $x$ successes
+    in $n$ independent trials?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $\hat{p}=x/n$;
+    \item check $n\hat{p}$ and $n(1-\hat{p})$ before using $z$;
+    \item form the Wald interval $\hat{p}\pm 1.96\sqrt{\hat{p}(1-\hat{p})/n}$;
+    \item explain why a rare event with small $x$ makes Wald misleading.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All ticket counts used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Synthetic First-Contact Snapshot}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Quantity} & \textbf{Value} \\
+      \midrule
+      Tickets $n$ & 150 \\
+      First-contact resolutions $x$ & 27 \\
+      Not first-contact & 123 \\
+      Sample proportion $\hat{p}$ & $27/150=0.180000$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Success-failure check}
+    $n\hat{p}=27\ge 5$ and $n(1-\hat{p})=123\ge 5$. The normal approximation
+    to $\hat{p}$ is treated as usable for this snapshot.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Proportion}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+phat = x / n
+n_phat = n * phat
+n_qhat = n * (1 - phat)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\hat{p}=0.180000$\\
+        $n\hat{p}=27$\\
+        $n(1-\hat{p})=123$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/prop_ci_01_sample_proportion.png}
+      \vspace{0.2em}
+      \scriptsize First-contact counts from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Wald Interval After the Check Passes}
+  \small
+  Standard error and 95\% margin:
+  \[
+    \mathrm{SE}=\sqrt{\frac{0.18\times 0.82}{150}}=0.031369,
+  \]
+  \[
+    E=1.96\times 0.031369=0.061483.
+  \]
+  Interval:
+  \[
+    \hat{p}\pm E=[0.118517, 0.241483].
+  \]
+  The interval estimates the unknown population rate $p$, not the next ticket.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: The 95\% Wald Interval}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = np.sqrt(
+    phat * (1 - phat) / n
+)
+lower = phat - 1.96 * se
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\mathrm{SE}=0.031369$\\
+        Margin $=0.061483$\\
+        CI $[0.118517, 0.241483]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/prop_ci_02_wald_interval.png}
+      \vspace{0.2em}
+      \scriptsize Wald interval from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Rare Events Make Wald Misleading}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Now $x=3$, $n=150$, $\hat{p}=0.020000$.
+
+      \vspace{0.4em}
+      $n\hat{p}=3<5$. Conditions fail.
+
+      \vspace{0.4em}
+      Wald interval:
+      \[
+        [-0.002405, 0.042405].
+      \]
+      The lower bound is negative.
+
+      \vspace{0.5em}
+      \textbf{Limit:} a proportion cannot be negative. Small $x$ makes the
+      Wald interval misleading.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/prop_ci_03_rare_event_wald.png}
+      \vspace{0.2em}
+      \scriptsize Wald versus Wilson diagnostic from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $\hat{p}$ from $x=27$ and $n=150$.
+    \item Do $n\hat{p}=27$ and $n(1-\hat{p})=123$ pass the cutoff 5?
+    \item Why is a negative Wald bound a problem for a proportion?
+    \item What quantity fails the check when $x=3$ and $n=150$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 30}
+    The session can continue directly into choosing $n$ so that a target
+    margin of error is achievable under a budget.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 8, Section 8.3. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

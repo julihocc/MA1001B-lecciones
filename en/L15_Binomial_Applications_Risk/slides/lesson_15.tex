@@ -1,0 +1,174 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 15: Binomial Applications and Business Risk}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 15: Binomial Applications and Business Risk\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{Two Policies, One Mean}
+  \begin{alertblock}{Guiding question}
+    If two binomial inspection policies both have $np=2$, do they have the
+    same chance of many defectives?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item state Policy A ($n=50$, $p=0.04$) and Policy B ($n=20$, $p=0.10$);
+    \item compute $P(X\ge 3)$ for each;
+    \item compare $P(X=0)$ and $P(X\ge 8)$;
+    \item explain why matching $np$ does not match tail risk.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All policies used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Same $np$, Different $n$ and $p$}
+  \small
+  \begin{center}
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{Policy} & $n$ & $p$ & $np$ \\
+      \midrule
+      A & 50 & 0.04 & 2 \\
+      B & 20 & 0.10 & 2 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  Variances: $\Var(X_A)=1.920000$ and $\Var(X_B)=1.800000$. Policy A has more
+  room for extreme counts because $n$ is larger.
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Two Policies}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+n_a, p_a = 50, 0.04
+n_b, p_b = 20, 0.10
+mean_a = n_a * p_a
+mean_b = n_b * p_b
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $np_A=2.000000$\\
+        $np_B=2.000000$\\
+        $\Var_A=1.920000$\\
+        $\Var_B=1.800000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/binomial_risk_01_two_policies.png}
+      \vspace{0.2em}
+      \scriptsize Policy ingredients from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{$P(X\ge 3)$ Is Not the Whole Risk Story}
+  \small
+  \[
+    P(X_A\ge 3)=0.323286,\qquad P(X_B\ge 3)=0.323073.
+  \]
+  Those near-tail values almost match. The far tail does not:
+  \[
+    P(X_A\ge 8)=0.000781,\qquad P(X_B\ge 8)=0.000416.
+  \]
+  The ratio is $1.880028$. Policy A also has the larger clean-sample chance
+  $P(X=0)=0.129886$ versus $0.121577$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Tail Probabilities}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+p_ge3 = stats.binom.sf(2, n, p)
+p_ge8 = stats.binom.sf(7, n, p)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $P(X\ge 3)\approx 0.323$ both\\
+        $P_A(X\ge 8)=0.000781$\\
+        $P_B(X\ge 8)=0.000416$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/binomial_risk_02_tail_probabilities.png}
+      \vspace{0.2em}
+      \scriptsize $P(X=0)$ and $P(X\ge 8)$ from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Matching $np$ Hides a Heavier Far Tail}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Overlay the two PMFs. The $x\ge 8$ region is almost twice as likely under
+      Policy A.
+
+      \vspace{0.4em}
+      \textbf{Limit:} same mean $np$ can hide different tail probabilities.
+      Lesson 16 draws without replacement, so trials are no longer independent.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/binomial_risk_03_same_mean_different_tails.png}
+      \vspace{0.2em}
+      \scriptsize PMF overlay from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why do both policies have mean $2$?
+    \item Compute $P(X\ge 3)$ for Policy A from the verified output.
+    \item Why can $P(X\ge 3)$ match when $P(X\ge 8)$ does not?
+    \item Which policy has the heavier far tail?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 16}
+    The session can continue directly into the hypergeometric model for
+    sampling without replacement.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Section 4.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

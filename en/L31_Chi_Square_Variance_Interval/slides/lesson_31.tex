@@ -1,0 +1,185 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 31: Chi-Square and a Confidence Interval for Variance}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 31: Chi-Square and a Confidence Interval for Variance\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Variance-Interval Question}
+  \begin{alertblock}{Guiding question}
+    How is a 95\% interval for an unknown $\sigma^{2}$ built from $s^{2}$
+    when the population is treated as normal?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $s^{2}$ with divisor $n-1$;
+    \item obtain chi-square critical values with $\mathrm{df}=n-1$;
+    \item form $((n-1)s^{2}/\chi^{2}_{U},(n-1)s^{2}/\chi^{2}_{L})$;
+    \item explain why non-normal data invalidate the interval.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All cycle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Small Normal Sample of Cycle Times}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Quantity} & \textbf{Value} \\
+      \midrule
+      Sample size $n$ & 20 cycles \\
+      Degrees of freedom $n-1$ & 19 \\
+      Sample $s^{2}$ (seed 42) & 6.814885 \\
+      Hidden $\sigma^{2}$ & 9 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Pivot}
+    If the population is normal, $(n-1)s^{2}/\sigma^{2}\sim\chi^{2}_{n-1}$.
+    That pivot is inverted to obtain an interval for $\sigma^{2}$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Variance}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+s2 = np.var(sample, ddof=1)
+df = n - 1
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\mathrm{df}=19$\\
+        $s=2.610533$\\
+        $s^{2}=6.814885$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/chi2_var_01_sample_variance.png}
+      \vspace{0.2em}
+      \scriptsize Cycle-time histogram from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Invert the Chi-Square Pivot}
+  \small
+  Critical values from \texttt{scipy.stats.chi2.ppf}:
+  \[
+    \chi^{2}_{0.025,19}=8.906516,\qquad
+    \chi^{2}_{0.975,19}=32.852327.
+  \]
+  Interval:
+  \[
+    \left[\frac{19\times 6.814885}{32.852327},
+          \frac{19\times 6.814885}{8.906516}\right]
+    =[3.941359, 14.537986].
+  \]
+  The larger chi-square value produces the lower bound. This seed-42 interval
+  covers the hidden $\sigma^{2}=9$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: The 95\% Chi-Square Interval}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+lower = df * s2 / chi2_u
+upper = df * s2 / chi2_l
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\chi^{2}_{L}=8.906516$\\
+        $\chi^{2}_{U}=32.852327$\\
+        CI $[3.941359, 14.537986]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/chi2_var_02_variance_interval.png}
+      \vspace{0.2em}
+      \scriptsize Variance interval from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Non-Normal Data Invalidate the Interval}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      5000 replications, $n=20$.
+
+      \vspace{0.4em}
+      Normal cycles: coverage $0.949400$.
+
+      \vspace{0.4em}
+      Exponential cycles: coverage $0.737200$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} the chi-square interval for $\sigma^{2}$ assumes a
+      normal population. Skewed cycle times destroy the nominal 95\%.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/chi2_var_03_nonnormal_limit.png}
+      \vspace{0.2em}
+      \scriptsize Empirical coverage from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why does $s^{2}$ use divisor $n-1$ rather than $n$?
+    \item Which chi-square quantile sits in the denominator of the lower
+      bound?
+    \item Is the interval symmetric about $s^{2}=6.814885$?
+    \item What happens to coverage when cycle times are exponential?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 32}
+    The session can continue directly into the $F$ distribution and a
+    comparison of two variances.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 11, Section 11.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,196 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 28: Intervalo t de Student cuando sigma es desconocida}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 28: Intervalo t de Student cuando sigma es desconocida\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta del intervalo con sigma desconocida}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se construye un intervalo al 95\% para una media desconocida
+    cuando $\sigma$ debe sustituirse por la $s$ muestral?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $s$ y $\widehat{\mathrm{EE}}=s/\sqrt{n}$;
+    \item obtener $t^{*}$ de la distribución $t$ con $\mathrm{gl}=n-1$;
+    \item formar $\bar{x}\pm t^{*}\cdot s/\sqrt{n}$;
+    \item explicar cómo un atípico infla $s$ y el intervalo.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los volúmenes de llenado usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{La misma muestra, ahora con $\sigma$ desconocida}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Valor} \\
+      \midrule
+      Tamaño de muestra $n$ & 36 botellas \\
+      Grados de libertad $n-1$ & 35 \\
+      Estimación puntual $\bar{x}$ (semilla 42) & 502.738498 ml \\
+      $s$ muestral & 8.390375 ml \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Error estándar estimado}
+    \[
+      \widehat{\mathrm{EE}}=\frac{s}{\sqrt{n}}=\frac{8.390375}{\sqrt{36}}=1.398396.
+    \]
+    La incertidumbre extra en $s$ es la razón de que el valor crítico sea
+    $t$, no $z$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Desviación estándar muestral}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+s = np.std(sample, ddof=1)
+se_hat = s / np.sqrt(n)
+df = n - 1
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\mathrm{gl}=35$\\
+        $s=8.390375$ ml\\
+        $\widehat{\mathrm{EE}}=1.398396$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_ci_mean_01_sample_sd.png}
+      \vspace{0.2em}
+      \scriptsize Histograma y banda de EE estimado del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Sustituir $z^{*}$ por $t^{*}$ con $\mathrm{gl}=35$}
+  \small
+  De \texttt{scipy.stats.t.ppf}:
+  \[
+    t^{*}=t_{0.975,35}=2.030108 > z^{*}=1.96.
+  \]
+  Margen de error e intervalo:
+  \[
+    E=2.030108\times 1.398396=2.838894,
+  \]
+  \[
+    \bar{x}\pm E=[499.899604, 505.577392].
+  \]
+  Este intervalo con semilla 42 cubre la $\mu$ oculta $=502$. El valor
+  crítico $t$ es mayor que $1.96$; $s$ misma todavía puede ser menor que
+  $\sigma$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: El intervalo t al 95\%}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+t_star = stats.t.ppf(
+    0.975, df=35
+)
+margin = t_star * se_hat
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $t^{*}=2.030108$\\
+        Margen $=2.838894$\\
+        IC $[499.899604, 505.577392]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_ci_mean_02_t_interval.png}
+      \vspace{0.2em}
+      \scriptsize Intervalo t con sigma desconocida del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Un atípico infla $s$ y el intervalo}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Un llenado sustituido por $560$ ml.
+
+      \vspace{0.4em}
+      $s$ sube de $8.390375$ a $12.616189$.
+
+      \vspace{0.4em}
+      Intervalo contaminado:
+      \[
+        [499.767301, 508.304710].
+      \]
+      La anchura crece $2.859620$ ml.
+
+      \vspace{0.5em}
+      \textbf{Límite:} una observación extrema infla $s$ y el intervalo $t$.
+      La fórmula sigue corriendo; la estimación de escala no.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/t_ci_mean_03_outlier_inflates_s.png}
+      \vspace{0.2em}
+      \scriptsize Intervalos t limpio versus inflado por atípico del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué el valor crítico es $t_{0.975,35}$ en lugar de $1.96$?
+    \item Calcule $\widehat{\mathrm{EE}}=8.390375/\sqrt{36}$.
+    \item ¿Por qué este intervalo $t$ todavía puede ser más estrecho que el
+      intervalo z de la Lección 27?
+    \item ¿Qué le ocurre a $s$ cuando un llenado se sustituye por $560$ ml?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 29}
+    La sesión puede continuar directamente con un intervalo de confianza
+    para una proporción poblacional y las condiciones $np$, $n(1-p)$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 8, Sección 8.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,207 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 06: Técnicas de conteo I}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 06: Técnicas de conteo I\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de conteo}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo determinar el tamaño de un espacio muestral finito sin listar cada
+    resultado, y cómo detectar el sobreconteo?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item aplicar la regla del producto a etapas sucesivas de elección;
+    \item distinguir asignaciones ordenadas de subconjuntos no ordenados;
+    \item verificar fórmulas mediante enumeración exhaustiva;
+    \item diagnosticar conteo repetido cuando las restricciones interactúan.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todas las instalaciones, roles, personas y restricciones son sintéticos.
+\end{frame}
+
+\begin{frame}{Paso 1: Regla del producto para configuraciones completas}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Elegir un elemento de cada etapa:
+      \[
+        N=\prod_{i=1}^{m}n_i.
+      \]
+
+      \begin{block}{Configuración sintética de revisión}
+        3 centros de cumplimiento\\
+        4 etapas de flujo de trabajo\\
+        2 tipos de evidencia
+      \end{block}
+
+      \[
+        3\times4\times2=24
+      \]
+
+      La enumeración exhaustiva en Python también devuelve 24 ternas. Cada
+      centro aporta 8 configuraciones.
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/conteo_01_regla_producto.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 2: Permutaciones para roles distintos}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Asignar roles de Líder, Validación y Reportes a partir de seis
+      analistas.
+
+      \[
+        P(n,k)=\frac{n!}{(n-k)!}
+      \]
+      \[
+        P(6,3)=6\times5\times4=120
+      \]
+
+      \begin{exampleblock}{Por qué importa el orden}
+        Los mismos tres analistas en roles distintos crean una asignación
+        diferente. Python genera exactamente 120 ternas ordenadas.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/conteo_02_permutaciones.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Combinaciones para un panel sin ranking}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Seleccionar tres analistas para un panel de pares sin roles internos.
+
+      \[
+        \binom{n}{k}=\frac{n!}{k!(n-k)!}
+      \]
+      \[
+        \binom{6}{3}=20
+      \]
+
+      Cada subconjunto de tres personas tiene $3!=6$ ordenamientos posibles:
+      \[
+        \frac{P(6,3)}{3!}=\frac{120}{6}=20.
+      \]
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/conteo_03_combinaciones.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{El resultado determina el método de conteo}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.27\textwidth}p{0.26\textwidth}p{0.34\textwidth}}
+      \toprule
+      \textbf{Pregunta} & \textbf{Método} & \textbf{Resultado de la Lección 06} \\
+      \midrule
+      Una elección en cada etapa & Regla del producto & $3\times4\times2=24$ configuraciones \\
+      Posiciones distintas asignadas & Permutación & $P(6,3)=120$ asignaciones de roles \\
+      Subconjunto sin ranking & Combinación & $\binom{6}{3}=20$ paneles \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{alertblock}{Prueba de decisión}
+    Describa un resultado final antes de elegir una fórmula. Si intercambiar
+    dos elementos seleccionados cambia ese resultado, el orden importa.
+  \end{alertblock}
+
+  Una fórmula puede devolver un entero y aun así responder la pregunta de
+  conteo equivocada.
+\end{frame}
+
+\begin{frame}{Paso 4: El límite del sobreconteo}
+  \begin{columns}[T]
+    \begin{column}{0.43\textwidth}
+      \small
+      Elegir cuatro personas de cinco analistas de operaciones y cuatro
+      especialistas de datos. Exigir ambas disciplinas y excluir el par O1
+      con D1.
+
+      \vspace{0.4em}
+      \begin{alertblock}{Expresión ingenua}
+        $5\times4\times\binom{7}{2}=420$\\
+        El universo completo tiene solo $\binom{9}{4}=126$ grupos.
+      \end{alertblock}
+
+      \[
+        126-5-1-21=99
+      \]
+      La enumeración exhaustiva confirma 99 grupos válidos.
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/conteo_04_restricciones.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Un código de revisión usa 4 centros, 3 etapas y 2 tipos de
+      evidencia. ¿Cuántas configuraciones completas existen?
+    \item ¿Cuántas asignaciones ordenadas llenan dos roles distintos a
+      partir de cinco personas?
+    \item ¿Cuántos paneles de dos personas sin ranking se pueden seleccionar
+      de cinco personas?
+    \item ¿Por qué un resultado de 420 revela de inmediato un error cuando el
+      universo completo contiene solo 126 grupos únicos?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Conexión con la Lección 07}
+    La siguiente lección extiende el conteo a categorías repetidas y
+    asignaciones multinomiales, donde varios elementos comparten el mismo
+    tipo.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 3, Sección 3.1. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,208 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 04: Anomaly Detection and Boxplots}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 04: Anomaly Detection and Boxplots\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Screening Question}
+  \begin{alertblock}{Guiding question}
+    Which processing times deserve investigation, and what can a statistical
+    flag actually tell us?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item state when the empirical rule is appropriate;
+    \item apply Chebyshev's inequality without a shape assumption;
+    \item calculate and interpret 1.5-IQR boxplot fences;
+    \item separate a screening flag from a conclusion about its cause.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All 600 order records are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Three Distance Rules}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.22\textwidth}p{0.33\textwidth}p{0.34\textwidth}}
+      \toprule
+      \textbf{Rule} & \textbf{Condition} & \textbf{What it provides} \\
+      \midrule
+      Empirical rule & Bell-shaped and symmetric data & Approximate coverage within $1s$, $2s$, and $3s$ \\
+      Chebyshev & Any distribution, with $k>1$ & Lower bound $1-1/k^2$ within $ks$ \\
+      Boxplot fences & Ordered quantitative data & Values beyond the 1.5-IQR fences \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.7em}
+  \begin{exampleblock}{Shared limit}
+    Each rule describes statistical position. Record quality, operational
+    context, and business importance require additional evidence.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Step 1: Empirical Rule Under Its Condition}
+  \begin{columns}[T]
+    \begin{column}{0.37\textwidth}
+      \small
+      Bell-shaped synthetic times:
+
+      \vspace{0.4em}
+      $n=600$ orders\\
+      Mean $=44.87$ min\\
+      Sample $s=4.87$ min
+
+      \vspace{0.7em}
+      \begin{tabular}{lr}
+        \toprule
+        \textbf{Interval} & \textbf{Observed} \\
+        \midrule
+        Within $1s$ & 69.17\% \\
+        Within $2s$ & 94.83\% \\
+        Within $3s$ & 99.50\% \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      These values support the approximate 68\%, 95\%, and more than 99\%
+      pattern for this sample.
+    \end{column}
+    \begin{column}{0.63\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/anomaly_detection_01_empirical_rule.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 2: A Shape-Free Lower Bound}
+  \begin{columns}[T]
+    \begin{column}{0.39\textwidth}
+      \small
+      Queue delays create a right tail:
+
+      \vspace{0.3em}
+      59 delayed orders\\
+      Mean $=45.79$ min\\
+      Sample $s=5.84$ min\\
+      Skewness $=0.74$
+
+      \vspace{0.5em}
+      \[
+        \text{Minimum within }ks=1-\frac{1}{k^2}
+      \]
+
+      \begin{tabular}{lrr}
+        \toprule
+        & \textbf{Bound} & \textbf{Observed} \\
+        \midrule
+        Within $2s$ & 75.00\% & 95.33\% \\
+        Within $3s$ & 88.89\% & 98.67\% \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/anomaly_detection_02_chebyshev.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Boxplot Investigation Candidates}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \[
+        \mathrm{IQR}=Q_3-Q_1=6.71
+      \]
+      $Q_1=42.19$ min\\
+      $Q_3=48.89$ min\\
+      Lower fence $=32.13$ min\\
+      Upper fence $=58.96$ min
+
+      \vspace{0.8em}
+      \begin{alertblock}{Verified screening result}
+        The rule flags 24 orders. It captures all four injected extremes and
+        also flags 20 other observations.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/anomaly_detection_03_boxplot_flags.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{From Flag to Decision}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.21\textwidth}p{0.69\textwidth}}
+      \toprule
+      \textbf{Stage} & \textbf{Evidence needed} \\
+      \midrule
+      Statistical screen & A stated rule, reproducible calculation, and preserved original value \\
+      Record check & Correct unit, timestamp, identifier, and transformation history \\
+      Process context & Related events, operating conditions, and comparable records \\
+      Resolution & Documented reason to retain, correct, exclude, or model separately \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{exampleblock}{What the 20 other flags mean}
+    They satisfy the same 1.5-IQR rule and lack the known synthetic construction
+    label. Their causes remain unknown. Calling them errors or false positives
+    would require evidence that the statistical screen does not contain.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why would the empirical rule be questionable for the right-tailed
+      sample in Step 2?
+    \item Calculate the Chebyshev lower bound for $k=2$ and interpret it.
+    \item Using $Q_1=42.19$ and $Q_3=48.89$, reproduce the upper fence.
+    \item What evidence would you seek before changing a flagged record?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Connection to Lesson 05}
+    Set notation and sample spaces provide a precise language for events. They
+    will help us describe which records satisfy a rule and how events combine.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 2, Sections 2.1, 2.2, and 2.7. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

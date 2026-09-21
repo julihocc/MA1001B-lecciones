@@ -1,0 +1,211 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 04: Detección de anomalías y boxplots}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 04: Detección de anomalías y boxplots\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de cribado}
+  \begin{alertblock}{Pregunta guía}
+    ¿Qué tiempos de procesamiento merecen investigación y qué puede decirnos
+    realmente una bandera estadística?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item enunciar cuándo es apropiada la regla empírica;
+    \item aplicar la desigualdad de Chebyshov sin supuesto de forma;
+    \item calcular e interpretar las cercas 1.5-IQR de un boxplot;
+    \item separar una bandera de cribado de una conclusión sobre su causa.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Los 600 registros de pedidos son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Tres reglas de distancia}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.22\textwidth}p{0.33\textwidth}p{0.34\textwidth}}
+      \toprule
+      \textbf{Regla} & \textbf{Condición} & \textbf{Qué aporta} \\
+      \midrule
+      Regla empírica & Datos simétricos con forma de campana & Cobertura aproximada dentro de $1s$, $2s$ y $3s$ \\
+      Chebyshov & Cualquier distribución, con $k>1$ & Cota inferior $1-1/k^2$ dentro de $ks$ \\
+      Cercas de boxplot & Datos cuantitativos ordenados & Valores más allá de las cercas 1.5-IQR \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.7em}
+  \begin{exampleblock}{Límite compartido}
+    Cada regla describe posición estadística. La calidad del registro, el
+    contexto operativo y la importancia de negocio requieren evidencia
+    adicional.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Paso 1: Regla empírica bajo su condición}
+  \begin{columns}[T]
+    \begin{column}{0.37\textwidth}
+      \small
+      Tiempos sintéticos con forma de campana:
+
+      \vspace{0.4em}
+      $n=600$ pedidos\\
+      Media $=44.87$ min\\
+      $s$ muestral $=4.87$ min
+
+      \vspace{0.7em}
+      \begin{tabular}{lr}
+        \toprule
+        \textbf{Intervalo} & \textbf{Observado} \\
+        \midrule
+        Dentro de $1s$ & 69.17\% \\
+        Dentro de $2s$ & 94.83\% \\
+        Dentro de $3s$ & 99.50\% \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      Estos valores respaldan el patrón aproximado de 68\%, 95\% y más de
+      99\% para esta muestra.
+    \end{column}
+    \begin{column}{0.63\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/deteccion_anomalias_01_regla_empirica.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 2: Una cota inferior sin forma}
+  \begin{columns}[T]
+    \begin{column}{0.39\textwidth}
+      \small
+      Los retrasos de cola crean una cola derecha:
+
+      \vspace{0.3em}
+      59 pedidos retrasados\\
+      Media $=45.79$ min\\
+      $s$ muestral $=5.84$ min\\
+      Asimetría $=0.74$
+
+      \vspace{0.5em}
+      \[
+        \text{Mínimo dentro de }ks=1-\frac{1}{k^2}
+      \]
+
+      \begin{tabular}{lrr}
+        \toprule
+        & \textbf{Cota} & \textbf{Observado} \\
+        \midrule
+        Dentro de $2s$ & 75.00\% & 95.33\% \\
+        Dentro de $3s$ & 88.89\% & 98.67\% \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \includegraphics[width=0.97\textwidth]{../figuras/deteccion_anomalias_02_chebyshev.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Candidatos a investigación del boxplot}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \[
+        \mathrm{IQR}=Q_3-Q_1=6.71
+      \]
+      $Q_1=42.19$ min\\
+      $Q_3=48.89$ min\\
+      Cerca inferior $=32.13$ min\\
+      Cerca superior $=58.96$ min
+
+      \vspace{0.8em}
+      \begin{alertblock}{Resultado de cribado verificado}
+        La regla marca 24 pedidos. Captura los cuatro extremos inyectados y
+        también marca 20 observaciones más.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/deteccion_anomalias_03_banderas_boxplot.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{De la bandera a la decisión}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.21\textwidth}p{0.69\textwidth}}
+      \toprule
+      \textbf{Etapa} & \textbf{Evidencia necesaria} \\
+      \midrule
+      Cribado estadístico & Una regla enunciada, un cálculo reproducible y el valor original conservado \\
+      Revisión del registro & Unidad, marca de tiempo, identificador e historial de transformaciones correctos \\
+      Contexto del proceso & Eventos relacionados, condiciones operativas y registros comparables \\
+      Resolución & Razón documentada para retener, corregir, excluir o modelar por separado \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{exampleblock}{Qué significan las otras 20 banderas}
+    Cumplen la misma regla 1.5-IQR y carecen de la etiqueta de construcción
+    sintética conocida. Sus causas permanecen desconocidas. Llamarlas
+    errores o falsos positivos exigiría evidencia que el cribado
+    estadístico no contiene.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué la regla empírica sería cuestionable para la muestra con
+      cola derecha del Paso 2?
+    \item Calcule la cota inferior de Chebyshov para $k=2$ e interprétela.
+    \item Con $Q_1=42.19$ y $Q_3=48.89$, reproduzca la cerca superior.
+    \item ¿Qué evidencia buscaría antes de modificar un registro marcado?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Conexión con la Lección 05}
+    La notación de conjuntos y los espacios muestrales ofrecen un lenguaje
+    preciso para eventos. Ayudarán a describir qué registros satisfacen una
+    regla y cómo se combinan los eventos.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 2, Secciones 2.1, 2.2 y 2.7. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

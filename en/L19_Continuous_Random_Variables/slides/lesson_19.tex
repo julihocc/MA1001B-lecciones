@@ -1,0 +1,187 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 19: Continuous Random Variables: Density and Interval Probability}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 19: Continuous Random Variables\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Continuous Probability Question}
+  \begin{alertblock}{Guiding question}
+    If service time can take any value on $[2, 14]$ minutes, where does
+    probability live: at a point, or on an interval?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item distinguish a density $f(x)$ from a discrete PMF;
+    \item read $P(a<X<b)$ as area under $f$;
+    \item compute that area from $F(b)-F(a)$;
+    \item explain why $P(X=c)=0$ for continuous $X$.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All service times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Triangular Service-Time Density}
+  \small
+  Support $X\in[2,14]$ minutes, mode $6$. The peak height is
+  \[
+    f(6)=\frac{2}{14-2}=\frac{1}{6}=0.166667.
+  \]
+  The mean of a triangular density is
+  \[
+    E[X]=\frac{2+14+6}{3}=7.333333.
+  \]
+
+  \vspace{0.4em}
+  \begin{exampleblock}{Density versus probability}
+    $f(6)$ is a height. Probability is the area under $f$. The total area
+    on $[2,14]$ is $1$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Density Is a Height}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+model = triang(
+  c=1/3, loc=2, scale=12
+)
+f_mode = model.pdf(6)
+area = model.cdf(14) - model.cdf(2)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $f(2)=0.000000$\\
+        $f(6)=0.166667$\\
+        Mean $=7.333333$\\
+        Total area $=1.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/continuous_rv_01_density.png}
+      \vspace{0.2em}
+      \scriptsize Triangular density from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Interval Probability Is Area}
+  \small
+  For a continuous random variable,
+  \[
+    P(a<X<b)=F(b)-F(a)=\int_a^b f(x)\,dx.
+  \]
+  On the synthetic clock,
+  \[
+    F(4)=0.083333,\qquad F(10)=0.833333,
+  \]
+  \[
+    P(4<X<10)=0.833333-0.083333=0.750000.
+  \]
+  The closed interval $P(4\le X\le 10)$ returns the same value.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Shade $P(4<X<10)$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+area = (
+    model.cdf(10)
+    - model.cdf(4)
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $F(4)=0.083333$\\
+        $F(10)=0.833333$\\
+        $P(4<X<10)=0.750000$\\
+        $P(4\le X\le 10)=0.750000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/continuous_rv_02_interval_probability.png}
+      \vspace{0.2em}
+      \scriptsize Shaded interval from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: A Point Carries Probability 0}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $P(|X-6|<0.50)=0.158854$\\
+      $P(|X-6|<0.10)=0.033021$\\
+      $P(|X-6|<0.01)=0.003330$
+
+      \vspace{0.4em}
+      \[
+        F(6)=0.333333,\quad P(X=6)=0.
+      \]
+
+      \vspace{0.4em}
+      \textbf{Limit:} the CDF has no jump, so a single minute has mass 0.
+      Lesson 20 uses a flat uniform density and Monte Carlo.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/continuous_rv_03_point_mass_limit.png}
+      \vspace{0.2em}
+      \scriptsize CDF and shrinking windows from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is $f(6)=0.166667$ not equal to $P(X=6)$?
+    \item Compute $P(4<X<10)$ from $F(10)=0.833333$ and $F(4)=0.083333$.
+    \item Why do $P(4<X<10)$ and $P(4\le X\le 10)$ match?
+    \item What happens to $P(|X-6|<h)$ as $h\to 0$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 20}
+    The session can continue directly into the continuous uniform model and
+    a Monte Carlo check of interval probability.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 5, Section 5.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

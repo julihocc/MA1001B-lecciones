@@ -1,0 +1,192 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 27: Z Confidence Interval for a Mean (sigma known)}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 27: Z Confidence Interval for a Mean ($\sigma$ known)\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Known-Sigma Interval Question}
+  \begin{alertblock}{Guiding question}
+    How is a 95\% interval for an unknown mean built when $\sigma$ is treated
+    as known?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $\mathrm{SE}=\sigma/\sqrt{n}$ from a known $\sigma$;
+    \item form $\bar{x}\pm 1.96\cdot\sigma/\sqrt{n}$;
+    \item interpret the interval as a range for $\mu$, not for one bottle;
+    \item explain why unknown $\sigma$ makes this z procedure the wrong tool.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All fill volumes used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Synthetic Filling Line with Known $\sigma$}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Quantity} & \textbf{Value} \\
+      \midrule
+      Sample size $n$ & 36 bottles \\
+      Known $\sigma$ & 10 ml \\
+      Hidden $\mu$ (not used by the analyst) & 502 ml \\
+      Point estimate $\bar{x}$ (seed 42) & 502.738498 ml \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Standard error}
+    \[
+      \mathrm{SE}=\frac{\sigma}{\sqrt{n}}=\frac{10}{\sqrt{36}}=1.666667.
+    \]
+    The analyst knows $\sigma$ from long-run process capability and does not
+    know $\mu$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Mean and Standard Error}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+se = sigma / np.sqrt(n)
+xbar = np.mean(sample)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $n=36$, $\sigma=10$\\
+        $\bar{x}=502.738498$ ml\\
+        $\mathrm{SE}=1.666667$ ml
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/z_ci_mean_01_sample_standard_error.png}
+      \vspace{0.2em}
+      \scriptsize Histogram and SE band from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Multiply $z^{*}$ by the Standard Error}
+  \small
+  Textbook 95\% critical value:
+  \[
+    z^{*}=1.96.
+  \]
+  Margin of error and interval:
+  \[
+    E=1.96\times 1.666667=3.266667,
+  \]
+  \[
+    \bar{x}\pm E=[499.471831, 506.005165].
+  \]
+  This seed-42 interval covers the hidden $\mu=502$. Coverage in one sample
+  is not a probability statement about this realized interval.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: The 95\% Z Interval}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+margin = 1.96 * se
+lower = xbar - margin
+upper = xbar + margin
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $z^{*}=1.96$\\
+        Margin $=3.266667$\\
+        CI $[499.471831, 506.005165]$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/z_ci_mean_02_z_interval.png}
+      \vspace{0.2em}
+      \scriptsize Known-sigma z interval from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Unknown $\sigma$ Makes Z the Wrong Tool}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Sample $s=8.390375\neq 10$.
+
+      \vspace{0.5em}
+      Invalid z-with-$s$ interval:
+      \[
+        [499.997642, 505.479354].
+      \]
+
+      \vspace{0.4em}
+      Width drops from $6.533333$ to $5.481711$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} keeping $z^{*}=1.96$ after replacing $\sigma$ by $s$ is
+      not a z interval. Lesson 28 uses $t$ with $\mathrm{df}=n-1$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/z_ci_mean_03_unknown_sigma_limit.png}
+      \vspace{0.2em}
+      \scriptsize Valid z interval versus invalid z-with-$s$ from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is $\mathrm{SE}=10/\sqrt{36}$ and not $s/\sqrt{n}$ in this lesson?
+    \item Compute the 95\% margin $1.96\times 1.666667$.
+    \item Does covering $\mu=502$ in this sample mean the next sample will
+      cover $\mu$?
+    \item Why is $s=8.390375$ not a license to keep $z^{*}=1.96$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 28}
+    The session can continue directly into the Student $t$ interval, degrees
+    of freedom, and the effect of a single outlier on $s$.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 8, Section 8.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

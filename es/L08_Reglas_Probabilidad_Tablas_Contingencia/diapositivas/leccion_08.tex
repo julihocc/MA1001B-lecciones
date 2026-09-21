@@ -1,0 +1,204 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 08: Reglas de probabilidad y tablas de contingencia}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 08: Reglas de probabilidad y tablas de contingencia\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de probabilidad}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo puede una tabla de contingencia sostener probabilidades correctas de
+    Y, O y NO sin contar dos veces ni asumir independencia?
+  \end{alertblock}
+
+  \vspace{0.4em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item leer probabilidades marginales y conjuntas en una tabla de doble entrada;
+    \item aplicar las reglas de complemento y de adición general;
+    \item identificar el traslape en una probabilidad O;
+    \item explicar por qué multiplicar probabilidades marginales exige evidencia
+      de independencia.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los registros de pedidos y procesos operativos son sintéticos.
+\end{frame}
+
+\begin{frame}{Una tabla de contingencia organiza resultados conjuntos}
+  \small
+  Sea \(M\) revisión manual y \(L\) entrega retrasada.
+
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Proceso de enrutamiento} & \textbf{Retrasado} & \textbf{A tiempo} & \textbf{Total} \\
+      \midrule
+      Revisión manual & 48 & 72 & 120 \\
+      Automatizado & 32 & 248 & 280 \\
+      \midrule
+      Total & 80 & 320 & 400 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.6em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Probabilidades marginales}
+      \[
+        P(M)=\frac{120}{400}=0.30,\quad
+        P(L)=\frac{80}{400}=0.20.
+      \]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Probabilidad conjunta}
+      \[
+        P(M\cap L)=\frac{48}{400}=0.12.
+      \]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 1: Leer celdas y márgenes antes de aplicar reglas}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \small
+      \begin{block}{Salida verificada}
+        Pedidos sintéticos: 400\\
+        \(P(M)=0.30\)\\
+        \(P(L)=0.20\)\\
+        \(P(M\cap L)=0.12\)
+      \end{block}
+
+      Una celda representa dos condiciones a la vez. Los totales de fila y de
+      columna representan una condición sin importar la otra variable.
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=0.88\textwidth]{../figuras/probabilidad_01_tabla.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Reglas de complemento y adición}
+  \small
+  La regla del complemento da cuenta de todo lo que queda fuera de un evento:
+  \[
+    P(M^c)=1-P(M)=1-0.30=0.70.
+  \]
+
+  La regla general de adición elimina los resultados compartidos contados dos
+  veces:
+  \[
+    P(M\cup L)=P(M)+P(L)-P(M\cap L).
+  \]
+  \[
+    P(M\cup L)=0.30+0.20-0.12=0.38.
+  \]
+
+  \begin{alertblock}{Trampa frecuente}
+    La suma ingenua 0.50 incluye dos veces los 48 pedidos de revisión y
+    retraso. La suma simple aplica solo cuando los eventos son mutuamente
+    excluyentes.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 2: La regla de adición coincide con el conteo directo}
+  \begin{columns}[T]
+    \begin{column}{0.35\textwidth}
+      \small
+      \begin{block}{Comparación verificada}
+        Suma ingenua: 0.50\\
+        Traslape: 0.12\\
+        Unión corregida: 0.38\\
+        Conteo directo: 0.38
+      \end{block}
+
+      Contar de forma directa todos los pedidos en \(M\cup L\) da
+      \[
+        \frac{152}{400}=0.38.
+      \]
+    \end{column}
+    \begin{column}{0.65\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/probabilidad_02_adicion.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: El atajo de multiplicación tiene una condición}
+  \begin{columns}[T]
+    \begin{column}{0.38\textwidth}
+      \small
+      Regla general:
+      \[
+        P(M\cap L)=P(M)P(L\mid M).
+      \]
+      La tabla da \(P(L\mid M)=48/120=0.40\), de modo que
+      \[
+        0.30(0.40)=0.12.
+      \]
+
+      Multiplicar las marginales da \(0.30(0.20)=0.06\), que contradice la
+      intersección observada.
+
+      \textbf{Límite:} la independencia no se ha justificado.
+    \end{column}
+    \begin{column}{0.62\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/probabilidad_03_limite.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  Use la tabla de 400 pedidos de esta lección.
+  \begin{enumerate}
+    \item Encuentre \(P(\text{A tiempo})\).
+    \item Encuentre \(P(\text{Automatizado O Retrasado})\) con la regla de
+      adición.
+    \item ¿Por qué \(P(M)+P(L)=0.50\) no es la probabilidad de \(M\cup L\)?
+    \item ¿Qué evidencia muestra que \(P(M)P(L)\) no es válido para esta
+      intersección?
+  \end{enumerate}
+
+  \vspace{0.4em}
+  \begin{block}{Conexión con la Lección 09}
+    La siguiente lección desarrolla probabilidad condicional e independencia:
+    cómo un espacio muestral reducido cambia la probabilidad y cómo se prueba
+    la independencia.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 3, Secciones 3.1 y 3.3. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

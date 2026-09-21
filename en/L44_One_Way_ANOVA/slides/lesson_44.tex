@@ -1,0 +1,193 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 44: One-Way ANOVA: SS, MS, F}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 44: One-Way ANOVA: SS, MS, F\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Three-Mean Question}
+  \begin{alertblock}{Guiding question}
+    How can one $F$ ratio test whether three packing-method means differ
+    without running an unlabeled collection of $t$ tests?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item read $n$, $\bar y_i$, and $s_i$ for three independent samples;
+    \item decompose $SST=SSB+SSE$ and form $F=MSB/MSE$;
+    \item compare $F$ with $F_{0.05}(2,33)$ and a $p$-value;
+    \item explain why a significant $F$ still does not name a pair.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All cycle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Three Independent Samples}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Method} & $\mathbf{n}$ & \textbf{Mean} & $\mathbf{s}$ \\
+      \midrule
+      Standard & 12 & 49.547060 & 3.067311 \\
+      Guided & 12 & 48.331227 & 2.353358 \\
+      Automated & 12 & 43.830670 & 2.660249 \\
+      \midrule
+      Combined & 36 & 47.236319 &  \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Hypotheses}
+    $H_0$: $\mu_{\text{S}}=\mu_{\text{G}}=\mu_{\text{A}}$.
+    $H_1$: at least one mean differs. The factor is packing method; the
+    response is cycle time in seconds.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Group Summaries}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+mean_i = y[g == i].mean()
+s_i = y[g == i].std(ddof=1)
+grand = y.mean()
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Means $49.547$, $48.331$, $43.831$\\
+        $s=3.067$, $2.353$, $2.660$\\
+        Grand mean $47.236319$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/one_way_anova_01_group_summaries.png}
+      \vspace{0.2em}
+      \scriptsize Three-sample boxplots from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{SST, SSB, SSE, and the $F$ Ratio}
+  \small
+  \[
+    SST=SSB+SSE=459.901248,
+    \qquad
+    F=\frac{MSB}{MSE}=\frac{108.820749}{7.341205}=14.823283.
+  \]
+  \begin{center}
+    \begin{tabular}{lrrrr}
+      \toprule
+      \textbf{Source} & \textbf{SS} & \textbf{df} & \textbf{MS} & $\mathbf{F}$ \\
+      \midrule
+      Between & 217.641499 & 2 & 108.820749 & 14.823283 \\
+      Error & 242.259749 & 33 & 7.341205 &  \\
+      Total & 459.901248 & 35 &  &  \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: The ANOVA Table}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+MSB = SSB / (k - 1)
+MSE = SSE / (N - k)
+F = MSB / MSE
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $SSB=217.641499$\\
+        $SSE=242.259749$\\
+        Manual $F=14.823283$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/one_way_anova_02_ss_ms_table.png}
+      \vspace{0.2em}
+      \scriptsize Sum-of-squares decomposition from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: A Significant $F$ Does Not Name a Pair}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      scipy $F=14.823283$, matching the table.
+
+      \vspace{0.4em}
+      $p=2.550793\times10^{-5}$,
+      $F_{0.05}(2,33)=3.284918$. Reject $H_0$.
+
+      \vspace{0.4em}
+      Gaps: $1.215833$, $5.716390$, $4.500557$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} a significant $F$ does not say which pair differs.
+      Lesson 45 organizes that question as Tukey HSD.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/one_way_anova_03_f_test_limit.png}
+      \vspace{0.2em}
+      \scriptsize Omnibus $F$ and unlabeled gaps from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is $df$ between equal to $2$ in this experiment?
+    \item Verify $SSB+SSE=SST$ from the table values.
+    \item Why can $F=14.823283$ reject $H_0$ while Standard versus Guided
+      remains an open pairwise question?
+    \item What does \texttt{scipy.stats.f\_oneway} add after the manual table?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 45}
+    The session can continue directly into Tukey HSD, familywise error, and
+    which packing-method pairs differ.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Sections 12.2--12.3. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

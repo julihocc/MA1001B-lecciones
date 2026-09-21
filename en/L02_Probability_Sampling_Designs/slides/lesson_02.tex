@@ -1,0 +1,218 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 02: Probability Sampling Designs}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 02: Probability Sampling Designs\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Sampling-Design Question}
+  \begin{alertblock}{Guiding question}
+    Which units will be selected at random, and which parts of the population
+    will the resulting sample cover?
+  \end{alertblock}
+
+  \vspace{0.5em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item connect a probability sample to a sampling frame;
+    \item implement simple random and proportional stratified sampling;
+    \item identify the selected unit in one-stage cluster sampling;
+    \item compare designs without declaring a universal winner.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All records are synthetic. No real company or facility data are used.
+\end{frame}
+
+\begin{frame}{Three Probability Sampling Designs}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.20\textwidth}p{0.27\textwidth}p{0.39\textwidth}}
+      \toprule
+      \textbf{Design} & \textbf{Randomized unit} & \textbf{Construction} \\
+      \midrule
+      Simple random & Individual order & Select $n$ orders from one complete frame \\
+      Stratified & Order within a region & Partition into strata; sample from every stratum \\
+      One-stage cluster & Facility & Select facilities; include every order inside them \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.7em}
+  \begin{exampleblock}{Synthetic frame}
+    $12{,}000$ orders $=$ 24 facilities $\times$ 500 orders. Four regions define
+    strata; facilities define clusters.
+  \end{exampleblock}
+
+  \textbf{Probability design:} selection is governed by a known chance process,
+  not by which records happen to be easiest to reach.
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Simple Random Sampling}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+sample = population.sample(
+    n=240,
+    replace=False,
+    random_state=42,
+)
+
+inclusion_chance = n / N
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $N=12{,}000$, $n=240$\\
+        Inclusion chance $=2.00\%$\\
+        $\mu=47.67$, $\bar{x}=47.17$ min\\
+        Absolute error $=0.50$ min
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_designs_01_simple_random.png}
+      \vspace{0.15em}
+      \scriptsize Equal selection chance does not force exact regional balance.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Proportional Stratified Sampling}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \textbf{Allocation rule}
+      \[
+        n_h = n\frac{N_h}{N}
+      \]
+      Here $N_h=3{,}000$ for every region, so $n_h=60$.
+
+      \vspace{0.4em}
+      \begin{lstlisting}
+for region in regions:
+    stratum = population[
+        population.region == region
+    ]
+    sample 60 orders
+      \end{lstlisting}
+
+      SRS error: 0.50 min\\
+      Stratified error: 0.28 min
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_designs_02_stratified.png}
+      \vspace{0.15em}
+      \scriptsize Stratification guarantees representation, not the smallest
+      error in every possible sample.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: One-Stage Cluster Sampling}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Randomly selected facilities:
+      \[
+        \{\mathrm{F02},\mathrm{F11},\mathrm{F16},\mathrm{F18}\}
+      \]
+      Include all 500 orders from each selected facility.
+
+      \vspace{0.5em}
+      \begin{tabular}{lr}
+        \toprule
+        Orders included & 2,000 \\
+        Inclusion chance & 16.67\% \\
+        Regions present & 3 of 4 \\
+        Mean estimate & 48.76 min \\
+        Absolute error & 1.09 min \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      Nearby units can share a facility effect; a large cluster sample may carry
+      less independent information than its row count suggests.
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_designs_03_cluster.png}
+      \vspace{0.15em}
+      \scriptsize Pink bars mark the selected facilities in this seeded sample.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Choosing a Design}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.18\textwidth}p{0.23\textwidth}p{0.22\textwidth}p{0.22\textwidth}}
+      \toprule
+      \textbf{Design} & \textbf{Frame needed} & \textbf{Coverage} & \textbf{Operational tradeoff} \\
+      \midrule
+      Simple random & Complete order list & Random, not fixed by region & Units may be scattered \\
+      Stratified & Order list plus region & Every region sampled & Needs region labels \\
+      Cluster & Facility list & Selected facilities only & Fewer sites to reach \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  \begin{alertblock}{Interpret the comparison correctly}
+    The observed errors---0.50, 0.28, and 1.09 minutes---belong to one synthetic,
+    seeded realization. They illustrate consequences of population structure;
+    they do not rank the three designs for every setting.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item In the SRS, what is one order's inclusion chance, and what frame is
+      required to implement the design?
+    \item Why does the stratified sample contain every region while the SRS does
+      not guarantee exact regional counts?
+    \item In the cluster design, what is selected at random, and which orders
+      enter the sample afterward?
+    \item Why does this seeded comparison not prove that stratification is
+      always the most accurate design?
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{Connection to Lesson 03}
+    Once a defensible sample has been collected, numerical summaries describe
+    its center and variability.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 1, Section 1.2. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

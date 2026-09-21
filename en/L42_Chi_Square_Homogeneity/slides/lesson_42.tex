@@ -1,0 +1,178 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 42: Chi-Square Test of Homogeneity}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 42: Chi-Square Test of Homogeneity\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Shared-Mix Question}
+  \begin{alertblock}{Guiding question}
+    Do three independently sampled warehouses share one ticket-channel mix?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item treat row totals as fixed by the sampling plan;
+    \item compute a homogeneity $\chi^2$ with $df=(r-1)(c-1)$;
+    \item decide whether the sites share one mix;
+    \item contrast that story with a test of independence.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All ticket counts used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Three Planned Samples, Same Categories}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrrr}
+      \toprule
+      \textbf{Site} & \textbf{Phone} & \textbf{Chat} & \textbf{Email} & \textbf{$n$} \\
+      \midrule
+      North & 60 & 40 & 20 & 120 \\
+      Central & 35 & 40 & 25 & 100 \\
+      South & 25 & 30 & 35 & 90 \\
+      \midrule
+      Total & 120 & 110 & 80 & 310 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Homogeneity hypotheses}
+    $H_0$: the three sites share one mix versus $H_1$: at least one site
+    differs, with $\alpha=0.05$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Three Independent Mixes}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+shares = counts / n_site
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        North phone share $=0.500000$\\
+        Central phone share $=0.350000$\\
+        South phone share $=0.277778$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/homogeneity_01_three_samples.png}
+      \vspace{0.2em}
+      \scriptsize Within-site mixes from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Homogeneity Uses the Same $\chi^2$ Arithmetic}
+  \small
+  Expected counts still use the product of margins:
+  \[
+    E_{ij}=\frac{(\text{row total}_i)(\text{column total}_j)}{n}.
+  \]
+  \[
+    \chi^2=17.812605,\qquad df=(3-1)(3-1)=4,\qquad p=0.001343.
+  \]
+  Because $\chi^2>\chi^{2*}=9.487729$ and $p<\alpha$, the test rejects the
+  claim that the three sites share one mix.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Homogeneity Decision}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+chi2, p, df, E = chi2_contingency(table)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\chi^2=17.812605$, $df=4$\\
+        $p=0.001343$\\
+        Decision: reject $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/homogeneity_02_chi_square.png}
+      \vspace{0.2em}
+      \scriptsize Homogeneity cell contributions from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Same Statistic, Different Sampling Story}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Homogeneity: three planned samples. Row totals $120$, $100$, and $90$
+      were chosen first.
+
+      \vspace{0.4em}
+      Independence: one sample of $310$ tickets later classified by site and
+      channel.
+
+      \vspace{0.5em}
+      \textbf{Limit:} both stories produce $\chi^2=17.812605$ and
+      $p=0.001343$. The arithmetic is shared; the $H_0$ is not.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/homogeneity_03_sampling_story_limit.png}
+      \vspace{0.2em}
+      \scriptsize Two sampling stories from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why are the row totals $120$, $100$, and $90$ part of the design?
+    \item Compute $df$ for three sites and three categories.
+    \item If $p=0.001343$ and $\alpha=0.05$, what is the homogeneity
+      decision?
+    \item How can the same table be an independence problem instead?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 43}
+    The session can continue directly into experimental design: factors,
+    randomization, and why an observational site is not a treatment.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 11, Section 11.5. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

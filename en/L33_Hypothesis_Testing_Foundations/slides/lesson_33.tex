@@ -1,0 +1,192 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 33: Hypothesis Testing Foundations}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 33: Hypothesis Testing: $H_{0}$, $H_{1}$, Type I and Type II Errors\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Testing-Language Question}
+  \begin{alertblock}{Guiding question}
+    How are $H_{0}$, $H_{1}$, and $\alpha$ turned into a rejection rule, and
+    what do Type I and Type II errors mean?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item state $H_{0}:\mu=50$ versus $H_{1}:\mu>50$;
+    \item convert $\alpha=0.05$ into an $\bar{x}$ cutoff;
+    \item interpret a Type I error as rejecting a true $H_{0}$;
+    \item explain why failing to reject $H_{0}$ is not proof that $H_{0}$ is true.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All cycle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A One-Sided Mean Test}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Quantity} & \textbf{Value} \\
+      \midrule
+      $H_{0}$ & $\mu=50$ minutes \\
+      $H_{1}$ & $\mu>50$ minutes \\
+      $n$, known $\sigma$ & 36, 8 minutes \\
+      $\alpha$ & 0.05 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Cutoff}
+    \[
+      \mathrm{SE}=\frac{8}{\sqrt{36}}=1.333333,\qquad
+      z^{*}=1.644854,
+    \]
+    \[
+      \bar{x}_{\text{crit}}=50+1.644854\times 1.333333=52.193138.
+    \]
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Hypotheses and Alpha}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+z_crit = stats.norm.ppf(0.95)
+xbar_crit = (
+    mu0 + z_crit * se
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $z^{*}=1.644854$\\
+        Cutoff $=52.193138$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/ht_foundations_01_hypotheses_alpha.png}
+      \vspace{0.2em}
+      \scriptsize Rejection region from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Type I Error: Rejecting a True $H_{0}$}
+  \small
+  A Type I error occurs when $H_{0}$ is true and the sample still lands in
+  the rejection region. The long-run rate of that event is $\alpha$.
+
+  \vspace{0.5em}
+  Seed-42 simulation of $10{,}000$ samples from $\mu=50$:
+  \[
+    531 \text{ rejections},\qquad
+    \widehat{\alpha}=0.053100.
+  \]
+  The simulated rate sits near the nominal $0.05$. It is not identical to
+  $0.05$ in a finite Monte Carlo.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Simulated Type I Rate}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+xbars = samples.mean(axis=1)
+rate = np.mean(
+    xbars >= xbar_crit
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Rejections $=531$\\
+        Type I rate $=0.053100$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/ht_foundations_02_type_i_rate.png}
+      \vspace{0.2em}
+      \scriptsize $H_{0}$ sampling distribution from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Failing to Reject Is Not Proof}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Power at $\mu=53$: $0.724100$.
+
+      \vspace{0.4em}
+      Type II rate: $0.275900$.
+
+      \vspace{0.4em}
+      Nearby $\mu=51$ sample:
+      $\bar{x}=51.590798<52.193138$.
+      $H_{0}$ is not rejected.
+
+      \vspace{0.5em}
+      \textbf{Limit:} $H_{1}$ can be true and the test can still fail to
+      reject. That non-rejection is not proof that $\mu=50$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/ht_foundations_03_type_ii_not_proof.png}
+      \vspace{0.2em}
+      \scriptsize Power and Type II from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Write $H_{0}$ and $H_{1}$ for this packing-time test.
+    \item What is a Type I error in words?
+    \item Why is a simulated Type I rate of $0.053100$ acceptable here?
+    \item A nearby $\mu=51$ sample gives $\bar{x}=51.59$. Why is that not
+      proof that $\mu=50$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 34}
+    The session can continue directly into the one-sample z test: the $z$
+    statistic, the $p$-value, and the known-sigma assumption.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 9, Sections 9.1--9.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,183 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 36: Prueba de hipótesis para una proporción de negocio}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 36: Prueba de hipótesis para una proporción de negocio\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de una proporción}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se prueba una tasa reclamada de banderas de retraso $p=0.10$ a
+    partir de $x=28$ banderas en $n=200$ lotes?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item escribir $H_0:p=0.10$ frente a $H_1:p>0.10$;
+    \item comprobar $np_0>5$ y $n(1-p_0)>5$;
+    \item calcular $z$ con $p_0$ en el error estándar;
+    \item explicar por qué reemplazar $p_0$ por $\hat{p}$ es el estadístico
+      incorrecto.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los lotes y banderas de retraso usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Una tasa reclamada y un conteo muestral}
+  \small
+  Un proceso sintético de inspección de entrada afirma que el 10 por ciento
+  de los lotes se marcan con retraso. El registro observado es $x=28$
+  banderas de retraso en $n=200$ lotes.
+
+  \[
+    \hat{p}=\frac{28}{200}=0.14,\qquad
+    np_0=200\times0.10=20,\qquad
+    n(1-p_0)=180.
+  \]
+
+  \begin{exampleblock}{Hipótesis de cola derecha}
+    $H_0:p=0.10$ frente a $H_1:p>0.10$, con $\alpha=0.05$. La aproximación
+    normal $z$ se usa solo después de $np_0>5$ y $n(1-p_0)>5$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Proporción muestral y condiciones}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+phat = 28 / 200
+np0 = n * p0
+nq0 = n * (1 - p0)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\hat{p}=0.140000$\\
+        $np_0=20$, $n(1-p_0)=180$\\
+        Condiciones cumplidas: sí
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_proporcion_01_muestra_y_condiciones.png}
+      \vspace{0.2em}
+      \scriptsize $p_0$ hipotética frente a $\hat{p}$ del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{El error estándar de la prueba usa $p_0$}
+  \small
+  Bajo $H_0:p=p_0$ la varianza muestral es $p_0(1-p_0)/n$, no
+  $\hat{p}(1-\hat{p})/n$:
+  \[
+    z=\frac{\hat{p}-p_0}{\sqrt{p_0(1-p_0)/n}}
+    =\frac{0.14-0.10}{0.021213}=1.885618.
+  \]
+  El valor p de cola derecha es
+  \[
+    p=P(Z\ge 1.885618)=0.029673.
+  \]
+  Como $p<\alpha=0.05$ y $z>z^*=1.644854$, la prueba rechaza $H_0$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: $z$ y el valor p de cola derecha}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = sqrt(p0*(1-p0)/n)
+z = (phat - p0) / se
+p = norm.sf(z)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $EE=0.021213$, $z=1.885618$\\
+        $p=0.029673$, $z^*=1.644854$\\
+        Decisión: rechazar $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_proporcion_02_z_valor_p.png}
+      \vspace{0.2em}
+      \scriptsize Prueba $z$ de cola derecha del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: $\hat{p}$ en el EE es el estadístico incorrecto}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      El EE correcto usa $p_0$: $0.021213$, $z=1.885618$, $p=0.029673$,
+      rechazar.
+
+      \vspace{0.5em}
+      El EE incorrecto usa $\hat{p}$: $0.024536$, $z=1.630278$, $p=0.051521$,
+      no rechazar.
+
+      \vspace{0.5em}
+      \textbf{Límite:} una prueba de $H_0:p=p_0$ debe poner $p_0$ en el error
+      estándar. Usar $\hat{p}$ es un EE de intervalo de confianza y puede
+      invertir la decisión con $\alpha=0.05$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_proporcion_03_limite_ee_incorrecto.png}
+      \vspace{0.2em}
+      \scriptsize EE correcto frente a EE incorrecto del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Calcule $\hat{p}$ a partir de $x=28$ y $n=200$.
+    \item ¿Por qué se comprueba $np_0=20$ con $p_0=0.10$ y no con $\hat{p}$?
+    \item Escriba la fórmula $z$ que pertenece a esta prueba.
+    \item ¿Por qué usar $\hat{p}$ en el EE puede invertir la decisión con
+      $\alpha=0.05$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 37}
+    La sesión puede continuar directamente con una prueba $t$ de dos muestras
+    para dos medias independientes, donde cada grupo tiene su propia $s$ y
+    $n$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 9, Secciones 9.3--9.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

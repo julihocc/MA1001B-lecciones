@@ -1,0 +1,177 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 23: Sampling Distribution of the Mean}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 23: Sampling Distribution of the Mean\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Sample-Mean Question}
+  \begin{alertblock}{Guiding question}
+    If cycle times are $N(80,12)$, how much does $\bar x$ move when
+    $n=9$ versus $n=36$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item write $E[\bar x]=\mu$ and $\mathrm{SE}(\bar x)=\sigma/\sqrt{n}$;
+    \item compare sampling distributions for two sample sizes;
+    \item check the SE formula with a seeded simulation;
+    \item explain why clustered copies inflate the observed SE.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All cycle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Standard Error Shrinks with $n$}
+  \small
+  Population $X\sim N(80,12^2)$. For an iid sample,
+  \[
+    E[\bar x]=80,\qquad
+    \mathrm{SE}(\bar x)=\frac{12}{\sqrt{n}}.
+  \]
+  Then
+  \[
+    \mathrm{SE}(9)=\frac{12}{3}=4,\qquad
+    \mathrm{SE}(36)=\frac{12}{6}=2.
+  \]
+  Quadrupling $n$ halves the SE.
+
+  \vspace{0.3em}
+  \begin{exampleblock}{Synthetic cycle-time population}
+    $\sigma=12$ describes one observation. $\sigma/\sqrt{n}$ describes $\bar x$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Standard Error Formula}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+se_9 = 12 / sqrt(9)
+se_36 = 12 / sqrt(36)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        SE$(n=9)=4.000000$\\
+        SE$(n=36)=2.000000$\\
+        Ratio $=2.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_mean_01_standard_error.png}
+      \vspace{0.2em}
+      \scriptsize Population versus sampling densities from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Simulation Recovers the SE Formula}
+  \small
+  Draw 5{,}000 iid samples with seed 42.
+  \[
+    n=9:\ \text{mean of means}=80.036617,\ \widehat{\mathrm{SE}}=3.997160.
+  \]
+  \[
+    n=36:\ \text{mean of means}=79.994341,\ \widehat{\mathrm{SE}}=2.028859.
+  \]
+  Both empirical SEs sit next to the formulas 4 and 2.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $n=9$ versus $n=36$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+draws = rng.normal(
+  80, 12, size=(5000, n)
+)
+xbars = draws.mean(axis=1)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $n=9$ SE $=3.997160$\\
+        $n=36$ SE $=2.028859$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_mean_02_n9_vs_n36.png}
+      \vspace{0.2em}
+      \scriptsize Simulated sampling distributions from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: SE Assumes iid Draws}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Each ``sample'' of 36 is 6 cluster values copied 6 times.
+
+      \vspace{0.4em}
+      Formula SE for $n=36$ is $2$.\\
+      Clustered empirical SE $=4.992583$.\\
+      Formula SE for 6 clusters is $4.898979$.
+
+      \vspace{0.4em}
+      \textbf{Limit:} SE assumes iid draws from the defined population.
+      Lesson 24 invokes the CLT for a skewed clock.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/sampling_mean_03_iid_limit.png}
+      \vspace{0.2em}
+      \scriptsize iid versus clustered means from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $\mathrm{SE}(\bar x)$ for $n=9$ when $\sigma=12$.
+    \item Why does quadrupling $n$ from 9 to 36 halve the SE?
+    \item The $n=36$ empirical SE is $2.028859$. Does that replace $2$?
+    \item Why is a sample of 36 clustered copies closer to $n=6$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 24}
+    The session can continue directly into the central limit theorem for a
+    right-skewed population.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 7, Section 7.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

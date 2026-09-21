@@ -1,0 +1,182 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 13: Discrete Random Variables: PMF, CDF, Expectation, Variance}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 13: Discrete Random Variables\par}
+  \vspace{0.15cm}
+  {\large PMF, CDF, Expectation, Variance\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{A Defect Count as a Random Variable}
+  \begin{alertblock}{Guiding question}
+    How is a discrete random variable specified, and why is $E[X^2]$ not the
+    same number as $(E[X])^2$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item check that a PMF has nonnegative masses that sum to 1;
+    \item accumulate the PMF into a CDF;
+    \item compute $E[X]$ and $E[X^2]$ as weighted sums;
+    \item obtain $\Var(X)=E[X^2]-(E[X])^2$.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All defect counts used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Support and Probability Masses}
+  \small
+  Let $X$ be the defect count on a synthetic lot, $X\in\{0,1,2,3\}$.
+  \[
+    P(X=0)=0.50,\quad
+    P(X=1)=0.30,\quad
+    P(X=2)=0.15,\quad
+    P(X=3)=0.05.
+  \]
+  A function $p$ is a PMF when $p(x)\ge 0$ for every $x$ and
+  $\sum_x p(x)=1$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Probability Mass Function}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+support = [0, 1, 2, 3]
+pmf = [0.50, 0.30, 0.15, 0.05]
+mass_sum = sum(pmf)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $P(X=0)=0.500000$\\
+        $P(X=1)=0.300000$\\
+        $P(X=2)=0.150000$\\
+        Sum $=1.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/discrete_rv_01_pmf.png}
+      \vspace{0.2em}
+      \scriptsize PMF stem plot from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The CDF Accumulates the PMF}
+  \small
+  \[
+    F(x)=P(X\le x)=\sum_{t\le x}P(X=t).
+  \]
+  Verified values:
+  \[
+    F(0)=0.50,\quad F(1)=0.80,\quad F(2)=0.95,\quad F(3)=1.00.
+  \]
+  Interval probabilities come from differences:
+  \[
+    P(1<X\le 3)=F(3)-F(1)=0.20.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Cumulative Distribution Function}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+cdf = np.cumsum(pmf)
+p_hi = cdf[3] - cdf[1]
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $F(1)=0.800000$\\
+        $F(3)=1.000000$\\
+        $P(1<X\le 3)=0.200000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/discrete_rv_02_cdf.png}
+      \vspace{0.2em}
+      \scriptsize Step-function CDF from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: $E[X^2]$ Is Not $(E[X])^2$}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \[
+        E[X]=0.750000,
+      \]
+      \[
+        (E[X])^2=0.562500,
+      \]
+      \[
+        E[X^2]=1.350000,
+      \]
+      \[
+        \Var(X)=0.787500.
+      \]
+
+      \vspace{0.3em}
+      \textbf{Limit:} $E[X^2]\ne(E[X])^2$. Lesson 14 specializes this language
+      to Bernoulli trials and the binomial model.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/discrete_rv_03_expectation_variance.png}
+      \vspace{0.2em}
+      \scriptsize Moments and variance from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is $P(X=4)=0$ for this $X$?
+    \item Compute $F(2)$ from the PMF.
+    \item Compute $E[X]$ from the four masses.
+    \item Why is $1.350000$ not equal to $0.562500$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 14}
+    The session can continue directly into Bernoulli trials, the binomial
+    PMF, and a constant-success-probability assumption.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Statistics 2e},
+  Sections 4.1--4.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

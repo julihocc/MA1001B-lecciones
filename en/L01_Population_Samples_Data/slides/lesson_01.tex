@@ -1,0 +1,208 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 01: Population, Samples, and Data Types}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 01: Population, Samples, and Data Types\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Statistical Question}
+  \begin{alertblock}{Guiding question}
+    How can a limited set of observations support a claim about a larger
+    business population?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item define the target population and the observed sample;
+    \item connect a population parameter with its sample statistic;
+    \item classify variables from their analytical meaning;
+    \item identify why sample size alone cannot remove selection bias.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All records used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Population, Sample, Parameter, and Statistic}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.19\textwidth}p{0.32\textwidth}p{0.32\textwidth}}
+      \toprule
+      \textbf{Role} & \textbf{Population} & \textbf{Sample} \\
+      \midrule
+      Observations & All units defined by the question & Units actually selected \\
+      Size & $N$ & $n$ \\
+      Numerical summary & Parameter, such as $\mu$ & Statistic, such as $\bar{x}$ \\
+      Status & Fixed for the defined population & Changes across samples \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.6em}
+  \begin{exampleblock}{Synthetic operations question}
+    What is the mean processing time for all $12{,}000$ orders in the planning
+    period? A random sample of 200 orders provides $\bar{x}$ as an estimate of
+    the population mean $\mu$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: A Sample Estimates a Population Quantity}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \small
+      \begin{lstlisting}
+population = build_population()
+sample = draw_random_sample(population)
+
+mu = population[variable].mean()
+x_bar = sample[variable].mean()
+error = abs(x_bar - mu)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $N=12{,}000$ and $n=200$\\
+        $\mu=45.26$ minutes\\
+        $\bar{x}=46.11$ minutes\\
+        Absolute error $=0.85$ minutes
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/data_foundations_01_population_sample.png}
+      \vspace{0.2em}
+      \scriptsize Population and random-sample distributions from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Business Data Types}
+  \small
+  \begin{center}
+    \begin{tabular}{p{0.23\textwidth}p{0.28\textwidth}p{0.34\textwidth}}
+      \toprule
+      \textbf{Type} & \textbf{Question} & \textbf{Lesson example} \\
+      \midrule
+      Categorical & Which group or label? & Channel, region \\
+      Quantitative discrete & How many countable units? & Items per order \\
+      \shortstack[l]{Quantitative\\continuous} & How much was measured? & Processing time, order value \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.7em}
+  \begin{alertblock}{Analytical meaning controls the classification}
+    \texttt{order\_id} contains digits, but arithmetic on an identifier has no
+    business meaning. It acts as a label rather than a quantitative measurement.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: One Table Contains Several Data Types}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+roles = {
+  "channel": "Categorical",
+  "items_per_order":
+      "Quantitative discrete",
+  "processing_time_minutes":
+      "Quantitative continuous",
+}
+      \end{lstlisting}
+
+      The same 200-row sample supports different summaries because each variable
+      answers a different kind of question.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/data_foundations_02_data_types.png}
+      \vspace{0.2em}
+      \scriptsize Counts suit categories and discrete values; a histogram suits
+      a measured continuous value.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: A Larger Biased Sample Has More Error Here}
+  \begin{columns}[T]
+    \begin{column}{0.43\textwidth}
+      \small
+      Population parameter: $\mu=45.26$ minutes
+
+      \vspace{0.5em}
+      \begin{tabular}{lrr}
+        \toprule
+        \textbf{Sample} & \textbf{$n$} & \textbf{Error} \\
+        \midrule
+        Random & 200 & 0.85 min \\
+        Convenience & 1,000 & 6.24 min \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.7em}
+      The convenience sample contains only readily available Web orders. Its
+      larger size does not restore the missing channels.
+
+      \vspace{0.5em}
+      \textbf{Limit:} This deterministic example demonstrates possible selection
+      bias. It does not claim that every convenience sample has this exact error.
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/data_foundations_03_sampling_bias.png}
+      \vspace{0.2em}
+      \scriptsize Sample size and estimation error from the same synthetic population
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item An analyst studies all orders completed this month and inspects 300 of
+      them. Identify the population and the sample.
+    \item The 300 orders have a mean value of MXN 1,840. Is this value a
+      parameter or a statistic? Explain why.
+    \item Classify customer segment, number of items, and delivery time.
+    \item Why can 1,000 conveniently available records provide a worse estimate
+      than 200 randomly selected records?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 02}
+    The session can continue directly into simple random, stratified, and cluster
+    sampling designs.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 1, Sections 1.1 and 1.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

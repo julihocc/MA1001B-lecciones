@@ -1,0 +1,180 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 35: Prueba t para una media con varianza desconocida}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 35: Prueba t para una media con varianza desconocida\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de la media con sigma desconocida}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se prueba $H_0:\mu=50$ cuando solo está disponible la desviación
+    estándar muestral $s$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item reemplazar una $z$ de sigma conocida por la $t$ de Student y $gl=n-1$;
+    \item calcular $t=(\bar{x}-\mu_0)/(s/\sqrt{n})$;
+    \item leer un valor p bilateral y decidir con $\alpha=0.05$;
+    \item explicar por qué $n=8$ más sesgo hace frágil ese valor p.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de ciclo de empaque usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{De $z$ a $t$ cuando $\sigma$ es desconocida}
+  \small
+  Una línea de empaque de salida sintética afirma un tiempo medio de ciclo de
+  $50$ minutos. Operaciones muestrea $n=40$ empaques completados. La $\sigma$
+  poblacional no se da, así que el error estándar usa $s$ y la curva de
+  referencia es $t_{n-1}$.
+
+  \[
+    t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}},\qquad gl=n-1.
+  \]
+
+  \begin{exampleblock}{Hipótesis bilaterales}
+    $H_0:\mu=50$ frente a $H_1:\mu\neq 50$, con $\alpha=0.05$. Ambas colas de
+    $t_{39}$ cuentan hacia el valor p.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: $s$ muestral y el estadístico $t$}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+se = s / sqrt(n)
+t = (xbar - 50) / se
+df = n - 1
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\bar{x}=52.229590$\\
+        $s=4.955099$, $EE=0.783470$\\
+        $gl=39$, $t=2.845789$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_t_media_01_error_estandar_muestral.png}
+      \vspace{0.2em}
+      \scriptsize Histograma de $n=40$ tiempos de empaque del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Valor p bilateral de $t_{39}$}
+  \small
+  El estadístico observado se compara con la $t$ de Student con $39$ grados
+  de libertad, no con una normal estándar:
+  \[
+    p=2P(T_{39}\ge 2.845789)=0.007026.
+  \]
+  El valor crítico bilateral con $\alpha=0.05$ es
+  \[
+    t^{*}=t_{39,0.975}=2.022691.
+  \]
+  Como $|t|>t^{*}$ y $p<\alpha$, la prueba rechaza $H_0:\mu=50$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Decisión bilateral}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+p = 2 * t.sf(abs(t), df)
+t_star = t.ppf(0.975, df)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $p=0.007026$ (manual y scipy)\\
+        $t^{*}=2.022691$\\
+        Decisión: rechazar $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_t_media_02_valor_p_bilateral.png}
+      \vspace{0.2em}
+      \scriptsize Colas t bilaterales del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: $n=8$ más sesgo hace frágil $p$}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Un seguimiento apresurado $n=8$ tiene sesgo $1.935033$ y Shapiro-Wilk
+      $p=0.001286$.
+
+      \vspace{0.4em}
+      Muestra completa: $t=0.307397$, $p=0.767485$.
+
+      \vspace{0.4em}
+      Omitir el retraso de $83.174379$ minutos: $p=0.081584$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} con $n$ pequeña y una cola larga, una observación
+      mueve $p$ en un orden de magnitud. El valor p de $n=40$ se mantiene
+      entre $0.001481$ y $0.013087$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/prueba_t_media_03_limite_n_pequena_sesgo.png}
+      \vspace{0.2em}
+      \scriptsize Valores p dejando uno fuera del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué la curva de referencia es $t_{39}$ y no $N(0,1)$?
+    \item Calcule $EE=s/\sqrt{n}$ a partir de $s=4.955099$ y $n=40$.
+    \item Si $p=0.007026$ y $\alpha=0.05$, ¿cuál es la decisión bilateral?
+    \item ¿Por qué omitir un retraso largo cambia tanto el valor p de $n=8$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 36}
+    La sesión puede continuar directamente con una prueba de hipótesis para
+    una proporción de negocio, donde el error estándar usa $p_0$ y no
+    $\hat{p}$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 9, Secciones 9.3--9.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

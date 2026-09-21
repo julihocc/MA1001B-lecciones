@@ -1,0 +1,198 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 10: Tree Diagrams and Sample-Space Decomposition}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 10: Tree Diagrams and Sample-Space Decomposition\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Sequential Probability Question}
+  \begin{alertblock}{Guiding question}
+    How can a two-stage experiment be decomposed into branches so that joint
+    and reversed conditionals stay visible?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item draw a tree of mutually exclusive terminal paths;
+    \item label branches with frequencies or probabilities;
+    \item multiply along a path and add disjoint paths;
+    \item explain why $P(B\mid A)$ can be a branch while $P(A\mid B)$ is not.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All lots and inspection flags used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Two-Stage Sample Space}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Lot status} & \textbf{Flagged} & \textbf{Not flagged} & \textbf{Total} \\
+      \midrule
+      Defective & 8 & 2 & 10 \\
+      Clean & 9 & 81 & 90 \\
+      \midrule
+      Total & 17 & 83 & 100 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Synthetic inspection register}
+    Stage 1 is lot status. Stage 2 is the inspection result. The four terminal
+    cells are mutually exclusive paths that exhaust the 100-lot sample space.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Frequency Tree}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+joints = {
+  "def_flag": 8,
+  "def_miss": 2,
+  "clean_flag": 9,
+  "clean_clear": 81,
+}
+flagged = 8 + 9
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $100$ lots; $10$ defective\\
+        Terminal counts $8$, $2$, $9$, $81$\\
+        Flagged total $=17$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/tree_diagrams_01_frequency_tree.png}
+      \vspace{0.2em}
+      \scriptsize Frequency tree from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Multiply Along Branches; Add Disjoint Paths}
+  \small
+  First-stage branches:
+  \[
+    P(D)=\frac{10}{100}=0.10,\qquad P(C)=\frac{90}{100}=0.90.
+  \]
+  Second-stage branches:
+  \[
+    P(F\mid D)=\frac{8}{10}=0.80,\qquad P(F\mid C)=\frac{9}{90}=0.10.
+  \]
+  One path product and the flagged total:
+  \[
+    P(D\cap F)=0.10\times 0.80=0.08,
+  \]
+  \[
+    P(F)=0.08+0.09=0.17.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Path Probabilities}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+p_def_flag = p_d * p_f_given_d
+p_flag = (
+    p_def_flag
+    + p_clean_flag
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $P(D\cap F)=0.080000$\\
+        $P(C\cap F)=0.090000$\\
+        $P(F)=0.170000$\\
+        Four-path sum $=1.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/tree_diagrams_02_path_probabilities.png}
+      \vspace{0.2em}
+      \scriptsize Terminal-path probabilities from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: The Reverse Conditional Is Not a Branch}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      $P(F\mid D)=0.800000$ is a downward branch.
+
+      \vspace{0.5em}
+      \[
+        P(D\mid F)=\frac{8}{17}=0.470588.
+      \]
+
+      \vspace{0.4em}
+      Seed-42 simulation of $100{,}000$ lots: $0.469551$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} a time-ordered tree does not display $P(D\mid F)$ as a
+      single branch. Lesson 11 names that inversion as Bayes' theorem.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/tree_diagrams_03_reverse_conditional.png}
+      \vspace{0.2em}
+      \scriptsize Branch label versus reversed conditional from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why must the four terminal counts sum to 100 in this tree?
+    \item Compute $P(C\cap F)$ from the branch labels $0.90$ and $0.10$.
+    \item Which probability is a single second-stage branch: $P(F\mid D)$ or
+      $P(D\mid F)$?
+    \item Why is $P(D\mid F)=8/17$ not equal to $P(F\mid D)=0.80$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 11}
+    The session can continue directly into Bayes' theorem, prior and posterior
+    probabilities, and base-rate weighting.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 3, Section 3.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

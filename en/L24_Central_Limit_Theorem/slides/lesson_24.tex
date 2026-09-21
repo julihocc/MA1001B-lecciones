@@ -1,0 +1,180 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 24: Central Limit Theorem}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 24: Central Limit Theorem\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Skewed-Population Question}
+  \begin{alertblock}{Guiding question}
+    If delay times are exponential rather than bell-shaped, when is the
+    sampling distribution of $\bar x$ still approximately normal?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item recognize a right-skewed population that is not normal;
+    \item compare $\bar x$ histograms for $n=4$ and $n=40$;
+    \item state the CLT for the sample mean;
+    \item explain why a two-SE tail fails at small $n$.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All delay times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{An Exponential Delay Clock}
+  \small
+  $X\sim\mathrm{Exponential}(\text{mean}=10)$:
+  \[
+    E[X]=\sigma=10,\qquad \text{skewness}=2,\qquad \text{median}=6.931472.
+  \]
+  The right tail is long: $P(X>20)=0.135335$.
+  For iid samples,
+  \[
+    E[\bar x]=10,\qquad \mathrm{SE}(\bar x)=10/\sqrt{n}.
+  \]
+
+  \vspace{0.3em}
+  \begin{exampleblock}{CLT target}
+    The CLT is a statement about $\bar x$, not about the original delays
+    becoming normal.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Skewed Population}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+model = expon(scale=10)
+mean = model.mean()
+skew = model.stats(
+  moments="s"
+)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Mean $=$ sd $=10$\\
+        Median $=6.931472$\\
+        Skewness $=2.000000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/clt_01_skewed_population.png}
+      \vspace{0.2em}
+      \scriptsize Exponential delay density from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Larger $n$ Pulls $\bar x$ Toward a Bell}
+  \small
+  5{,}000 seed-42 samples:
+  \[
+    n=4:\ \widehat{\mathrm{SE}}=5.076401,\ \widehat{\mathrm{skew}}=1.049897.
+  \]
+  \[
+    n=40:\ \widehat{\mathrm{SE}}=1.574371,\ \widehat{\mathrm{skew}}=0.332572.
+  \]
+  Theoretical skew of an exponential mean is $2/\sqrt{n}$. That value is
+  $1$ at $n=4$ and $0.316228$ at $n=40$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: $n=4$ versus $n=40$}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+draws = model.rvs(
+  size=(5000, n)
+)
+xbars = draws.mean(axis=1)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $n=4$ skew $=1.049897$\\
+        $n=40$ skew $=0.332572$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/clt_02_means_n4_n40.png}
+      \vspace{0.2em}
+      \scriptsize Sampling histograms from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Small $n$ Makes the Tail Wrong}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Exact law: $\bar x\sim\mathrm{Gamma}$.
+      Event: $\bar x>\mu+2\,\mathrm{SE}$.
+
+      \vspace{0.4em}
+      $n=4$: exact $0.042380$ versus normal $0.022750$.\\
+      $n=40$: exact $0.030560$ versus normal $0.022750$.
+
+      \vspace{0.4em}
+      \textbf{Limit:} small $n$ plus skew makes the CLT a poor
+      approximation. Lesson 25 studies $\hat p$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/clt_03_small_n_skew_limit.png}
+      \vspace{0.2em}
+      \scriptsize Exact versus normal two-SE tails from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is the delay population not a normal model?
+    \item What happens to the skewness of $\bar x$ as $n$ grows?
+    \item At $n=4$, compare the exact two-SE tail with $0.022750$.
+    \item Does $n=40$ make the normal tail exact?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 25}
+    The session can continue directly into the sampling distribution of a
+    sample proportion $\hat p$.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 7, Sections 7.1--7.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

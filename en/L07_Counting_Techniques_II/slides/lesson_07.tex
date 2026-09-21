@@ -1,0 +1,197 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 07: Counting Techniques II}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 07: Repeated Categories and Allocations\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Allocation Question}
+  \begin{alertblock}{Guiding question}
+    How do repeated categories change a count, and when does a correct count
+    still fail to determine a probability?
+  \end{alertblock}
+
+  \vspace{0.4em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item count sequences with repeated category labels;
+    \item interpret multinomial coefficients as fixed-size allocations;
+    \item count nonnegative allocations with stars and bars;
+    \item explain why possible profiles need not be equally likely.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All requests, queues, centers, and routing mechanisms are synthetic.
+\end{frame}
+
+\begin{frame}{Repeated Permutations Remove Duplicate Rearrangements}
+  \small
+  Eight queue labels contain three Priority, three Standard, and two Audit
+  entries. Exchanging two equal labels does not create a new sequence.
+
+  \[
+    \frac{n!}{n_1!n_2!\cdots n_k!}
+    =\frac{8!}{3!3!2!}=560
+  \]
+
+  \begin{alertblock}{The naive count overstates the sample space}
+    \(8!=40{,}320\) treats repeated labels as distinguishable. Every distinct
+    sequence appears \(3!3!2!=72\) times in that count.
+  \end{alertblock}
+
+  \textbf{Decision test:} Which exchanges change the final outcome?
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Formula and Enumeration Agree}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+labels = (
+    ["Priority"] * 3
+    + ["Standard"] * 3
+    + ["Audit"] * 2
+)
+distinct = set(permutations(labels))
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Naive count: 40,320\\
+        Formula: 560\\
+        Enumerated sequences: 560\\
+        Duplicate factor: 72
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/allocations_01_repeated_permutations.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 2: The Same Coefficient Allocates Labeled Requests}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Allocate eight labeled requests to three labeled queues with sizes
+      3, 3, and 2:
+      \[
+        \binom{8}{3,3,2}=\frac{8!}{3!3!2!}=560.
+      \]
+
+      Across all 560 allocations, R01 appears in:
+      \begin{itemize}
+        \item Priority: 210;
+        \item Standard: 210;
+        \item Audit: 140.
+      \end{itemize}
+
+      The 3:3:2 split follows the fixed queue sizes.
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/allocations_02_multinomial_categories.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Counting Occupancy Profiles}
+  \small
+  Distribute \(m\) identical units among \(r\) labeled categories. A profile
+  \((x_1,\ldots,x_r)\) satisfies
+  \[
+    x_1+\cdots+x_r=m, \qquad x_i\geq0.
+  \]
+
+  The number of profiles is
+  \[
+    \binom{m+r-1}{r-1}.
+  \]
+
+  For eight units and four labeled service centers:
+  \[
+    \binom{8+4-1}{4-1}=\binom{11}{3}=165.
+  \]
+
+  \begin{exampleblock}{Verified computational evidence}
+    Exhaustive Python enumeration also returns 165 ordered nonnegative
+    occupancy profiles.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{The Limit: A Possible Profile Is Not Necessarily Equiprobable}
+  \begin{columns}[T]
+    \begin{column}{0.37\textwidth}
+      \small
+      Treating all 165 profiles as equally likely gives
+      \[
+        \frac{1}{165}=0.00606061.
+      \]
+
+      Uniform independent routing instead gives
+      \[
+        P(x)=\frac{8!}{x_1!\cdots x_4!}
+        \left(\frac14\right)^8.
+      \]
+
+      Seed-42 estimates from 500,000 simulations closely track these unequal
+      exact probabilities.
+    \end{column}
+    \begin{column}{0.63\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/allocations_03_star_bars_probability_limit.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item How many sequences contain three P labels, two S labels, and two A
+      labels?
+    \item Why does the same coefficient count allocations of seven labeled
+      requests to labeled queues of sizes 3, 2, and 2?
+    \item How many ways can eight identical buffer units be distributed among
+      three labeled centers?
+    \item Are those occupancy profiles equally likely when eight labeled
+      requests route independently? Explain.
+  \end{enumerate}
+
+  \vspace{0.4em}
+  \begin{block}{Connection to Lesson 08}
+    The next lesson formalizes probability rules and contingency tables. A
+    count becomes a probability only after the probability model is justified.
+  \end{block}
+
+  \vfill
+  \scriptsize Probability foundation: OpenStax,
+  \textit{Introductory Business Statistics 2e}, Chapter 3, Section 3.1.
+  Combinatorial formulas are a course-developed extension. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

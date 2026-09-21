@@ -1,0 +1,169 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 14: Ensayos de Bernoulli y el modelo binomial}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 14: Ensayos de Bernoulli y el modelo binomial\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{De un ensayo a un conteo}
+  \begin{alertblock}{Pregunta guía}
+    Si cada una de $n=20$ inspecciones es defectuosa con chance $p=0.08$,
+    ¿cuál es $P(X=0)$, y qué se rompe si $p$ no es el mismo en cada lote?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item enunciar el ensayo de Bernoulli y los supuestos binomiales;
+    \item calcular $P(X=0)$ y $P(X\le 2)$;
+    \item reportar $np$ y $np(1-p)$;
+    \item explicar por qué tipos de lote mezclados no son binomiales.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todas las inspecciones usadas hoy son sintéticas. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Ensayo de Bernoulli, luego $n$ copias independientes}
+  \small
+  Una inspección: $P(\text{defectuoso})=p=0.08$, $P(\text{limpio})=q=0.92$.
+  Repita $n=20$ veces, de forma independiente, con el mismo $p$. Entonces
+  $X\sim\mathrm{Binomial}(n=20,p=0.08)$ y
+  \[
+    E[X]=np=1.6,\qquad \Var(X)=np(1-p)=1.472.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Ensayos de Bernoulli}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+p = 0.08
+q = 1 - p
+n = 20
+mean = n * p
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $p=0.080000$\\
+        $q=0.920000$\\
+        $n=20$\\
+        $np=1.600000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/binomial_01_ensayos_bernoulli.png}
+      \vspace{0.2em}
+      \scriptsize Una inspección de Bernoulli del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Cola izquierda binomial}
+  \small
+  \[
+    P(X=0)=(0.92)^{20}=0.188693,
+  \]
+  \[
+    P(X\le 2)=0.787946.
+  \]
+  Estos valores usan \texttt{scipy.stats.binom} con $n=20$ y $p=0.08$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: FMP, FDA, momentos}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+model = stats.binom(n=20, p=0.08)
+p0 = model.pmf(0)
+p2 = model.cdf(2)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $P(X=0)=0.188693$\\
+        $P(X\le 2)=0.787946$\\
+        $\Var(X)=1.472000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/binomial_02_fmp_fda.png}
+      \vspace{0.2em}
+      \scriptsize FMP binomial del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: $p$ no constante entre lotes}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      La mitad de los lotes tiene $p=0.02$ y la mitad tiene $p=0.14$. El $p$
+      promedio sigue siendo $0.08$, y $E[X]$ sigue siendo $1.600000$.
+
+      \vspace{0.4em}
+      $P(X=0)$ de la mezcla $=0.358291$ versus binomial $0.188693$. Varianza
+      de la mezcla $2.840000$ versus $1.472000$.
+
+      \vspace{0.3em}
+      \textbf{Límite:} $p$ no constante entre lotes rompe el binomial. La
+      Lección 15 compara dos políticas binomiales con la misma media.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/binomial_03_p_no_constante.png}
+      \vspace{0.2em}
+      \scriptsize Mezcla versus binomial del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Cuáles son los dos resultados de una inspección de Bernoulli aquí?
+    \item Calcule $np$ para $n=20$ y $p=0.08$.
+    \item ¿Por qué $P(X=0)=(0.92)^{20}$?
+    \item ¿Por qué promediar $p=0.02$ y $p=0.14$ no restaura el binomial?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 15}
+    La sesión puede continuar directamente con dos políticas binomiales que
+    comparten $np$ pero no el mismo riesgo de cola.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Sección 4.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

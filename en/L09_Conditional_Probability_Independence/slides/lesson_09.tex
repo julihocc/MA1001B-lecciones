@@ -1,0 +1,183 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 09: Conditional Probability and Independence}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 09: Conditional Probability and Independence\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Conditional Probability Question}
+  \begin{alertblock}{Guiding question}
+    How does knowing one event occurred change the relevant sample space, and
+    when does that knowledge leave another probability unchanged?
+  \end{alertblock}
+
+  \vspace{0.4em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item calculate and interpret conditional probabilities;
+    \item explain why reversing a condition changes the question;
+    \item test independence with equivalent probability equalities;
+    \item update a sequence probability when sampling without replacement.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All order records and operating processes are synthetic.
+\end{frame}
+
+\begin{frame}{Conditioning Reduces the Sample Space}
+  \small
+  Let $M$ be manual review and $L$ be late delivery.
+
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Routing process} & \textbf{Late} & \textbf{On time} & \textbf{Total} \\
+      \midrule
+      Manual review & 48 & 72 & 120 \\
+      Automated & 32 & 248 & 280 \\
+      \midrule
+      Total & 80 & 320 & 400 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \[
+    P(L\mid M)=\frac{P(L\cap M)}{P(M)}=\frac{48}{120}=0.40.
+  \]
+
+  The condition $M$ makes the 120 manually reviewed orders the new reference
+  group, rather than all 400 orders.
+\end{frame}
+
+\begin{frame}{Step 1: Direction Changes the Denominator}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \small
+      \begin{block}{Verified output}
+        $P(L\mid M)=0.400000$\\
+        $P(L\mid A)=0.114286$\\
+        $P(M\mid L)=0.600000$
+      \end{block}
+
+      $P(L\mid M)$ asks about late orders within manual review. $P(M\mid L)$
+      asks about manual review within late orders. They need not match.
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=0.93\textwidth]{../figures/conditional_01_rates.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Independence Means No Probability Update}
+  \small
+  Events $M$ and $L$ are independent if any equivalent test holds:
+  \[
+    P(L\mid M)=P(L),
+    \qquad
+    P(M\cap L)=P(M)P(L).
+  \]
+
+  For the synthetic orders:
+  \[
+    0.40\ne0.20,
+    \qquad
+    0.12\ne(0.30)(0.20)=0.06.
+  \]
+
+  \begin{alertblock}{Interpretation limit}
+    The table shows an association between routing and delivery status. It does
+    not show that manual review causes late delivery.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Step 2: Two Equivalent Tests Reach One Decision}
+  \begin{columns}[T]
+    \begin{column}{0.34\textwidth}
+      \small
+      \begin{block}{Verified comparison}
+        Conditional: $0.40\ne0.20$\\
+        Product: $0.12\ne0.06$\\[0.2em]
+        Independent: \textbf{False}
+      \end{block}
+
+      Only one failed equality is needed to reject independence. The second is
+      a consistency check.
+    \end{column}
+    \begin{column}{0.66\textwidth}
+      \centering
+      \includegraphics[width=0.98\textwidth]{../figures/conditional_02_independence.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Without Replacement Creates Dependence}
+  \begin{columns}[T]
+    \begin{column}{0.39\textwidth}
+      \small
+      In a 10-order batch, 4 are flagged. For two selections without
+      replacement,
+      \[
+        P(F_1\cap F_2)=\frac{4}{10}\frac{3}{9}=0.133333.
+      \]
+
+      Naive independence gives $0.4^2=0.160000$. A seed-42 simulation of
+      500,000 selections gives \textbf{0.132938}.
+
+      \textbf{Limit:} longer sequences require explicit branches.
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/conditional_03_sequence.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  Use the synthetic order table and inspection batch.
+  \begin{enumerate}
+    \item What denominator belongs in $P(L\mid M)$?
+    \item Why is $P(L\mid M)=0.40$ different from $P(M\mid L)=0.60$?
+    \item Are $M$ and $L$ independent? Support the decision with one
+      equality test.
+    \item After one flagged order is selected without replacement, why does the
+      next flagged probability become $3/9$?
+  \end{enumerate}
+
+  \begin{block}{Connection to Lesson 10}
+    Tree diagrams make changing conditional probabilities and multi-stage
+    sample spaces visible, branch by branch.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 3, Sections 3.1--3.3. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

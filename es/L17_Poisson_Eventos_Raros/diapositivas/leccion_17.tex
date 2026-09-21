@@ -1,0 +1,165 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 17: Modelo de Poisson para eventos raros}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 17: Modelo de Poisson para eventos raros\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{Conteos en un turno}
+  \begin{alertblock}{Pregunta guía}
+    Si las paradas ocurren a tasa media $\lambda=3.2$ por turno, ¿cuáles son
+    $P(X=0)$ y $P(X\ge 6)$, y qué ocurre si los eventos se agrupan?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item usar la propiedad Poisson de media igual a varianza;
+    \item calcular $P(X=0)$ y $P(X\ge 6)$;
+    \item comparar esos valores con una simulación de semilla $42$;
+    \item explicar la sobredispersión cuando los eventos se agrupan.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los turnos usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Poisson($\lambda=3.2$)}
+  \small
+  $X$ es el número de eventos en un turno.
+  \[
+    E[X]=\lambda=3.2,\qquad \Var(X)=\lambda=3.2,
+  \]
+  \[
+    P(X=0)=e^{-3.2}=0.040762,\qquad P(X\ge 6)=0.105408.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: FMP de Poisson}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+model = stats.poisson(mu=3.2)
+p0 = model.pmf(0)
+p6 = model.sf(5)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $\lambda=3.200000$\\
+        $P(X=0)=0.040762$\\
+        $P(X\ge 6)=0.105408$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/poisson_01_fmp.png}
+      \vspace{0.2em}
+      \scriptsize FMP de Poisson del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Diez mil turnos simulados}
+  \small
+  Semilla $42$, $n=10{,}000$ extracciones de Poisson:
+  \[
+    \widehat{P}(X=0)=0.040000,\qquad
+    \widehat{P}(X\ge 6)=0.109000.
+  \]
+  La media simulada $3.209300$ y la varianza $3.256094$ se sitúan cerca de
+  $\lambda=3.2$.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Comprobación por simulación}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+rng = np.random.default_rng(42)
+x = rng.poisson(3.2, 10000)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $P(X=0)$ simulada $=0.040000$\\
+        $P(X\ge 6)$ simulada $=0.109000$\\
+        Media $=3.209300$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/poisson_02_simular_turnos.png}
+      \vspace{0.2em}
+      \scriptsize Histograma frente a FMP del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: El agrupamiento produce sobredispersión}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Turnos en calma $\lambda=2.0$ ($70\%$) y turnos ocupados $\lambda=6.0$
+      ($30\%$) conservan la media $3.2$ pero elevan la varianza a $6.560000$
+      en teoría y $6.811382$ en la mezcla con semilla $42$.
+
+      \vspace{0.4em}
+      \textbf{Límite:} si los eventos se agrupan, la varianza excede
+      $\lambda$. La Lección 18 modela tiempos de espera hasta el primer o el
+      $r$-ésimo éxito.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/poisson_03_sobdispersion.png}
+      \vspace{0.2em}
+      \scriptsize Sobredispersión del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Cuál es $\mathrm{Var}(X)$ para una variable Poisson($3.2$)?
+    \item Calcule $P(X=0)$ a partir de $e^{-3.2}$.
+    \item ¿Por qué una tasa simulada de $0.040000$ no sustituye a $0.040762$?
+    \item ¿Por qué una mezcla de $\lambda=2$ y $\lambda=6$ sobredispersa?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 18}
+    La sesión puede continuar directamente con tiempos de espera geométricos
+    y binomiales negativos.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Sección 4.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

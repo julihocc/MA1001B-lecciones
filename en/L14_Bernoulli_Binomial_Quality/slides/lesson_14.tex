@@ -1,0 +1,169 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 14: Bernoulli Trials and the Binomial Model}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 14: Bernoulli Trials and the Binomial Model\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{From One Trial to a Count}
+  \begin{alertblock}{Guiding question}
+    If each of $n=20$ inspections is defective with chance $p=0.08$, what is
+    $P(X=0)$, and what breaks if $p$ is not the same on every lot?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item state the Bernoulli trial and the binomial assumptions;
+    \item compute $P(X=0)$ and $P(X\le 2)$;
+    \item report $np$ and $np(1-p)$;
+    \item explain why mixed lot types are not binomial.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All inspections used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Bernoulli Trial, Then $n$ Independent Copies}
+  \small
+  One inspection: $P(\text{defective})=p=0.08$, $P(\text{clean})=q=0.92$.
+  Repeat $n=20$ times, independently, with the same $p$. Then
+  $X\sim\mathrm{Binomial}(n=20,p=0.08)$ and
+  \[
+    E[X]=np=1.6,\qquad \Var(X)=np(1-p)=1.472.
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Bernoulli Trials}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+p = 0.08
+q = 1 - p
+n = 20
+mean = n * p
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $p=0.080000$\\
+        $q=0.920000$\\
+        $n=20$\\
+        $np=1.600000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/binomial_01_bernoulli_trials.png}
+      \vspace{0.2em}
+      \scriptsize One Bernoulli inspection from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Binomial Left Tail}
+  \small
+  \[
+    P(X=0)=(0.92)^{20}=0.188693,
+  \]
+  \[
+    P(X\le 2)=0.787946.
+  \]
+  These values use \texttt{scipy.stats.binom} with $n=20$ and $p=0.08$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: PMF, CDF, Moments}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+model = stats.binom(n=20, p=0.08)
+p0 = model.pmf(0)
+p2 = model.cdf(2)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $P(X=0)=0.188693$\\
+        $P(X\le 2)=0.787946$\\
+        $\Var(X)=1.472000$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/binomial_02_pmf_cdf.png}
+      \vspace{0.2em}
+      \scriptsize Binomial PMF from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: $p$ Not Constant Across Lots}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Half the lots have $p=0.02$ and half have $p=0.14$. The average $p$ is
+      still $0.08$, and $E[X]$ is still $1.600000$.
+
+      \vspace{0.4em}
+      Mixture $P(X=0)=0.358291$ versus binomial $0.188693$. Mixture variance
+      $2.840000$ versus $1.472000$.
+
+      \vspace{0.3em}
+      \textbf{Limit:} $p$ not constant across lots breaks the binomial.
+      Lesson 15 compares two binomial policies with the same mean.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/binomial_03_nonconstant_p.png}
+      \vspace{0.2em}
+      \scriptsize Mixture versus binomial from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item What are the two outcomes of one Bernoulli inspection here?
+    \item Compute $np$ for $n=20$ and $p=0.08$.
+    \item Why is $P(X=0)=(0.92)^{20}$?
+    \item Why does averaging $p=0.02$ and $p=0.14$ fail to restore the binomial?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 15}
+    The session can continue directly into two binomial policies that share
+    $np$ but not the same tail risk.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Section 4.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

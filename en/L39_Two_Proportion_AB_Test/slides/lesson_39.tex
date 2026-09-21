@@ -1,0 +1,177 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 39: Two Proportions in A/B Tests}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 39: Two Proportions in A/B Tests\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Two-Version Conversion Question}
+  \begin{alertblock}{Guiding question}
+    How do we compare conversion rates from two independent A/B arms, and
+    what goes wrong if we peek at $p$ mid-experiment?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item compute $\hat{p}_A$, $\hat{p}_B$, and the pooled $\hat{p}$;
+    \item form the $z$ statistic for $p_A-p_B$;
+    \item decide $H_0:p_A=p_B$ from a two-sided p-value;
+    \item explain why peeking inflates type I error.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All visitors and conversion flags used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{Two Independent Conversion Arms}
+  \small
+  A synthetic checkout test records $x_A=72$ conversions in $n_A=400$
+  visitors and $x_B=61$ conversions in $n_B=410$ visitors.
+
+  \[
+    \hat{p}_A=\frac{72}{400}=0.18,\qquad
+    \hat{p}_B=\frac{61}{410}=0.148780,\qquad
+    \hat{p}=\frac{133}{810}=0.164198.
+  \]
+
+  \begin{exampleblock}{Two-sided hypotheses}
+    $H_0:p_A=p_B$ versus $H_1:p_A\neq p_B$, with $\alpha=0.05$. The arms are
+    independent samples, not paired visitors.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Sample Rates}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+phat_a = 72 / 400
+phat_b = 61 / 410
+p_pool = (72 + 61) / 810
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\hat{p}_A=0.180000$\\
+        $\hat{p}_B=0.148780$\\
+        $p_{\mathrm{pool}}=0.164198$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/two_proportion_01_sample_rates.png}
+      \vspace{0.2em}
+      \scriptsize Observed conversion rates from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Pooled $z$ for $p_A-p_B$}
+  \small
+  \[
+    z=\frac{\hat{p}_A-\hat{p}_B}{\sqrt{\hat{p}(1-\hat{p})(1/n_A+1/n_B)}}
+    =\frac{0.031220}{0.026035}=1.199141.
+  \]
+  The two-sided p-value is $0.230473$. Because $|z|<z^*=1.959964$ and
+  $p>\alpha$, the test does not reject $H_0:p_A=p_B$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Pooled $z$ Decision}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = sqrt(p*(1-p)*(1/n_a + 1/n_b))
+z = (phat_a - phat_b) / se
+p = 2 * norm.sf(abs(z))
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $SE=0.026035$, $z=1.199141$\\
+        $p=0.230473$\\
+        Decision: do not reject $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/two_proportion_02_pooled_z.png}
+      \vspace{0.2em}
+      \scriptsize Two-sided $z$ tails from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Peeking Inflates Type I Error}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Seed-42 simulation of $8000$ null A/B tests, each with a shared
+      conversion probability $0.16$.
+
+      \vspace{0.4em}
+      One final look: type I rate $=0.047250$.
+
+      \vspace{0.3em}
+      Four peeks (25, 50, 75, 100 percent): type I rate $=0.124250$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} stopping at the first $p<0.05$ is not an
+      $\alpha=0.05$ test.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/two_proportion_03_peeking_limit.png}
+      \vspace{0.2em}
+      \scriptsize Peeking type I inflation from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute $\hat{p}_A$ from $x_A=72$ and $n_A=400$.
+    \item Why does the test SE use a pooled $\hat{p}$ rather than two
+      separate Wald SEs?
+    \item If $p=0.230473$ and $\alpha=0.05$, what is the A/B decision?
+    \item Why does four-look peeking raise the false-positive rate to
+      $0.124250$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 40}
+    The session can continue directly into a chi-square goodness-of-fit test
+    for more than two categories.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 10, Section 10.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

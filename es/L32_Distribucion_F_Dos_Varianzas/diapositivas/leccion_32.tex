@@ -1,0 +1,185 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 32: Distribución F y comparación de dos varianzas}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 32: Distribución F y comparación de dos varianzas\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de las dos varianzas}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se comparan dos varianzas muestrales independientes mediante una
+    razón $F$ y una probabilidad de cola superior?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item calcular $s_{1}^{2}$ y $s_{2}^{2}$ a partir de dos muestras;
+    \item formar $F=s_{1}^{2}/s_{2}^{2}$ con un par de grados de libertad;
+    \item leer $p$ de \texttt{scipy.stats.f.sf};
+    \item explicar por qué la prueba $F$ de dos varianzas es sensible a la no
+      normalidad.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de ciclo usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Dos estaciones de empaque independientes}
+  \small
+  \begin{center}
+    \begin{tabular}{lrr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Estación A} & \textbf{Estación B} \\
+      \midrule
+      Tamaño de muestra & $n_{1}=25$ & $n_{2}=25$ \\
+      Grados de libertad & 24 & 24 \\
+      Varianza muestral & $s_{1}^{2}=44.205731$ & $s_{2}^{2}=12.024693$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Hipótesis}
+    $H_{0}:\sigma_{1}^{2}=\sigma_{2}^{2}$ frente a $H_{1}:\sigma_{1}^{2}>\sigma_{2}^{2}$.
+    Las estaciones son independientes. Las medias no son el objetivo de esta prueba.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Dos varianzas muestrales}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+s1_sq = np.var(a, ddof=1)
+s2_sq = np.var(b, ddof=1)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $s_{1}^{2}=44.205731$\\
+        $s_{2}^{2}=12.024693$\\
+        $\mathrm{gl}=(24,24)$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/f_dos_var_01_varianzas_muestrales.png}
+      \vspace{0.2em}
+      \scriptsize Diagramas de caja de las estaciones del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{La razón $F$ y la cola superior}
+  \small
+  \[
+    F=\frac{s_{1}^{2}}{s_{2}^{2}}=\frac{44.205731}{12.024693}=3.676246.
+  \]
+  Valor crítico y valor $p$:
+  \[
+    F_{0.05}(24,24)=1.983760,
+  \]
+  \[
+    p=\texttt{f.sf}(3.676246,24,24)=0.001125.
+  \]
+  Como $p<\alpha=0.05$, se rechaza $H_{0}$: la estación A es más variable
+  en esta instantánea sintética.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: $F$ y \texttt{f.sf}}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+F = s1_sq / s2_sq
+p = stats.f.sf(F, 24, 24)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $F=3.676246$\\
+        $p=0.001125$\\
+        Rechazar $H_{0}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/f_dos_var_02_prueba_f.png}
+      \vspace{0.2em}
+      \scriptsize Cola superior $F$ del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: $F$ es sensible a la no normalidad}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Varianzas iguales, 5000 pruebas, $\alpha=0.05$.
+
+      \vspace{0.4em}
+      Muestras normales: tasa de tipo I $0.052200$.
+
+      \vspace{0.4em}
+      Muestras $t(3)$: tasa de tipo I $0.202400$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} las colas pesadas inflan los rechazos falsos aun cuando
+      las dos varianzas son iguales. La prueba $F$ de dos varianzas no es
+      robusta.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/f_dos_var_03_sensibilidad_no_normal.png}
+      \vspace{0.2em}
+      \scriptsize Tasas de tipo I del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Calcule $F$ a partir de $s_{1}^{2}=44.205731$ y $s_{2}^{2}=12.024693$.
+    \item ¿Cuáles son los dos grados de libertad para $n_{1}=n_{2}=25$?
+    \item ¿$p=0.001125$ compara medias o varianzas?
+    \item ¿Por qué una tasa de tipo I de $0.202400$ es un problema con
+      $\alpha=0.05$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 33}
+    La sesión puede continuar directamente con $H_{0}$, $H_{1}$, errores de
+    tipo I y tipo II como marco general de pruebas.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 12, Sección 12.1. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

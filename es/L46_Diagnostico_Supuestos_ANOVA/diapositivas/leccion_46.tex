@@ -1,0 +1,181 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 46: Supuestos y diagnósticos de ANOVA}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 46: Supuestos y diagnósticos de ANOVA\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de supuestos}
+  \begin{alertblock}{Pregunta guía}
+    Tras un $F$ significativo y un seguimiento Tukey, ¿qué debe seguir
+    siendo cierto de residuos, dispersiones y el diseño de muestreo?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item formar residuos $e_{ij}=y_{ij}-\bar y_i$ e inspeccionar su
+      histograma;
+    \item usar la prueba de Levene y gráficas residuo-frente-a-ajustado;
+    \item tratar la independencia como una afirmación de diseño;
+    \item explicar por qué $n$ igual no rescata una heterocedasticidad
+      fuerte.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de ciclo usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Tres supuestos, un residuo}
+  \small
+  \begin{center}
+    \begin{tabular}{ll}
+      \toprule
+      \textbf{Supuesto} & \textbf{Qué chequeamos} \\
+      \midrule
+      Normalidad & Histograma de $e_{ij}=y_{ij}-\bar y_i$ \\
+      Varianzas iguales & Levene y residuo frente a ajustado \\
+      Independencia & Estaciones aleatorizadas, no una gráfica \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Experimento de empaque equilibrado}
+    $n=12$ estaciones en cada método. La media residual es $0.000000$ por
+    construcción dentro de cada grupo.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Normalidad de residuos}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+e = y - group_mean
+W, p = shapiro(e)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        DE residual $2.630914$\\
+        Shapiro $W=0.977891$\\
+        $p=0.673807$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diagnostico_anova_01_normalidad_residuos.png}
+      \vspace{0.2em}
+      \scriptsize Histograma de residuos del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{La dispersión igual es un segundo chequeo, separado}
+  \small
+  DE muestrales: $3.067311$ (Estándar), $2.353358$ (Guiado), $2.660249$
+  (Automatizado).
+  \[
+    \text{Levene }W=0.457821,\qquad p=0.636619.
+  \]
+  Residuo frente a ajustado no debería abrirse en abanico. La
+  independencia se hereda de la asignación aleatoria de estaciones: una
+  gráfica de residuos no puede probarla.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Levene y residuo frente a ajustado}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+W, p = levene(s, g, a)
+e = y - fitted
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Levene $p=0.636619$\\
+        DE $3.067$, $2.353$, $2.660$\\
+        Sin evidencia de dispersión desigual
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diagnostico_anova_02_levene_homocedasticidad.png}
+      \vspace{0.2em}
+      \scriptsize Gráfica residuo-frente-a-ajustado del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: $n$ igual no rescata una heterocedasticidad fuerte}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Sigue $n=12$ por método. DE $1.534$, $1.324$, $9.976$.
+
+      \vspace{0.4em}
+      Levene $p=2.455155\times10^{-4}$. ANOVA $F=9.678598$,
+      $p=4.924585\times10^{-4}$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} ANOVA de $n$ igual no es inmune a una desigualdad
+      fuerte de varianzas. La Lección 47 pasa de medias de grupo a una
+      recta ajustada.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/diagnostico_anova_03_limite_varianzas_desiguales.png}
+      \vspace{0.2em}
+      \scriptsize Ejemplo heterocedástico de $n$ igual del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué la media residual es exactamente 0 dentro de cada método
+      de empaque?
+    \item ¿Qué dice Levene $p=0.636619$, y qué no dice?
+    \item ¿Por qué una gráfica de residuos no puede probar independencia?
+    \item En el Paso 3, $n=12$ en cada grupo. ¿Por qué el $F$ significativo
+      sigue siendo poco confiable?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 47}
+    La sesión puede continuar directamente con regresión lineal simple,
+    mínimos cuadrados y $R^2$.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Secciones 12.2 y 12.4. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

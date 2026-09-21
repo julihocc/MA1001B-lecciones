@@ -1,0 +1,194 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 44: ANOVA de un factor: SS, MS, F}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 44: ANOVA de un factor: SS, MS, F\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de tres medias}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo puede un cociente $F$ contrastar si tres medias de método de
+    empaque difieren sin correr una colección sin etiquetar de pruebas $t$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item leer $n$, $\bar y_i$ y $s_i$ para tres muestras independientes;
+    \item descomponer $SST=SSB+SSE$ y formar $F=MSB/MSE$;
+    \item comparar $F$ con $F_{0.05}(2,33)$ y un $p$-valor;
+    \item explicar por qué un $F$ significativo aún no nombra un par.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de ciclo usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Tres muestras independientes}
+  \small
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Método} & $\mathbf{n}$ & \textbf{Media} & $\mathbf{s}$ \\
+      \midrule
+      Estándar & 12 & 49.547060 & 3.067311 \\
+      Guiado & 12 & 48.331227 & 2.353358 \\
+      Automatizado & 12 & 43.830670 & 2.660249 \\
+      \midrule
+      Combinado & 36 & 47.236319 &  \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Hipótesis}
+    $H_0$: $\mu_{\text{E}}=\mu_{\text{G}}=\mu_{\text{A}}$.
+    $H_1$: al menos una media difiere. El factor es el método de empaque; la
+    respuesta es el tiempo de ciclo en segundos.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Resúmenes de grupo}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+mean_i = y[g == i].mean()
+s_i = y[g == i].std(ddof=1)
+grand = y.mean()
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Medias $49.547$, $48.331$, $43.831$\\
+        $s=3.067$, $2.353$, $2.660$\\
+        Media general $47.236319$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/anova_un_factor_01_resumenes_grupo.png}
+      \vspace{0.2em}
+      \scriptsize Diagramas de caja de tres muestras del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{SST, SSB, SSE y el cociente $F$}
+  \small
+  \[
+    SST=SSB+SSE=459.901248,
+    \qquad
+    F=\frac{MSB}{MSE}=\frac{108.820749}{7.341205}=14.823283.
+  \]
+  \begin{center}
+    \begin{tabular}{lrrrr}
+      \toprule
+      \textbf{Fuente} & \textbf{SS} & \textbf{gl} & \textbf{MS} & $\mathbf{F}$ \\
+      \midrule
+      Entre & 217.641499 & 2 & 108.820749 & 14.823283 \\
+      Error & 242.259749 & 33 & 7.341205 &  \\
+      Total & 459.901248 & 35 &  &  \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: La tabla ANOVA}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+MSB = SSB / (k - 1)
+MSE = SSE / (N - k)
+F = MSB / MSE
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $SSB=217.641499$\\
+        $SSE=242.259749$\\
+        $F$ manual $=14.823283$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/anova_un_factor_02_tabla_ss_ms.png}
+      \vspace{0.2em}
+      \scriptsize Descomposición de sumas de cuadrados del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Un $F$ significativo no nombra un par}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      scipy $F=14.823283$, coincidiendo con la tabla.
+
+      \vspace{0.4em}
+      $p=2.550793\times10^{-5}$,
+      $F_{0.05}(2,33)=3.284918$. Rechazar $H_0$.
+
+      \vspace{0.4em}
+      Brechas: $1.215833$, $5.716390$, $4.500557$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} un $F$ significativo no dice qué par difiere. La
+      Lección 45 organiza esa pregunta como Tukey HSD.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/anova_un_factor_03_limite_prueba_f.png}
+      \vspace{0.2em}
+      \scriptsize $F$ ómnibus y brechas sin etiquetar del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Por qué $gl$ entre es igual a $2$ en este experimento?
+    \item Verifique $SSB+SSE=SST$ a partir de los valores de la tabla.
+    \item ¿Por qué $F=14.823283$ puede rechazar $H_0$ mientras Estándar
+      frente a Guiado sigue siendo una pregunta por pares abierta?
+    \item ¿Qué añade \texttt{scipy.stats.f\_oneway} después de la tabla
+      manual?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 45}
+    La sesión puede continuar directamente con Tukey HSD, error familiar y
+    qué pares de método de empaque difieren.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Secciones 12.2--12.3. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,192 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 33: Fundamentos de pruebas de hipótesis}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 33: Pruebas de hipótesis: $H_{0}$, $H_{1}$, errores de tipo I y tipo II\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta del lenguaje de pruebas}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo se convierten $H_{0}$, $H_{1}$ y $\alpha$ en una regla de rechazo, y
+    qué significan los errores de tipo I y tipo II?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item enunciar $H_{0}:\mu=50$ frente a $H_{1}:\mu>50$;
+    \item convertir $\alpha=0.05$ en un corte de $\bar{x}$;
+    \item interpretar un error de tipo I como rechazar una $H_{0}$ verdadera;
+    \item explicar por qué no rechazar $H_{0}$ no prueba que $H_{0}$ sea verdadera.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todos los tiempos de ciclo usados hoy son sintéticos. No se usan datos reales de empresa.
+\end{frame}
+
+\begin{frame}{Una prueba unilateral de media}
+  \small
+  \begin{center}
+    \begin{tabular}{lr}
+      \toprule
+      \textbf{Cantidad} & \textbf{Valor} \\
+      \midrule
+      $H_{0}$ & $\mu=50$ minutos \\
+      $H_{1}$ & $\mu>50$ minutos \\
+      $n$, $\sigma$ conocida & 36, 8 minutos \\
+      $\alpha$ & 0.05 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{exampleblock}{Corte}
+    \[
+      \mathrm{EE}=\frac{8}{\sqrt{36}}=1.333333,\qquad
+      z^{*}=1.644854,
+    \]
+    \[
+      \bar{x}_{\text{crit}}=50+1.644854\times 1.333333=52.193138.
+    \]
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: Hipótesis y alfa}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+z_crit = stats.norm.ppf(0.95)
+xbar_crit = (
+    mu0 + z_crit * se
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        $z^{*}=1.644854$\\
+        Corte $=52.193138$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/fundamentos_ph_01_hipotesis_alfa.png}
+      \vspace{0.2em}
+      \scriptsize Región de rechazo del Paso 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Error de tipo I: rechazar una $H_{0}$ verdadera}
+  \small
+  Un error de tipo I ocurre cuando $H_{0}$ es verdadera y la muestra aún cae
+  en la región de rechazo. La tasa de largo plazo de ese evento es $\alpha$.
+
+  \vspace{0.5em}
+  Simulación con semilla 42 de $10{,}000$ muestras de $\mu=50$:
+  \[
+    531 \text{ rechazos},\qquad
+    \widehat{\alpha}=0.053100.
+  \]
+  La tasa simulada se sitúa cerca del $0.05$ nominal. No es idéntica a
+  $0.05$ en un Monte Carlo finito.
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2: Tasa simulada de tipo I}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+xbars = samples.mean(axis=1)
+rate = np.mean(
+    xbars >= xbar_crit
+)
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Rechazos $=531$\\
+        Tasa de tipo I $=0.053100$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/fundamentos_ph_02_tasa_tipo_i.png}
+      \vspace{0.2em}
+      \scriptsize Distribución muestral bajo $H_{0}$ del Paso 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: No rechazar no es una prueba}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Potencia en $\mu=53$: $0.724100$.
+
+      \vspace{0.4em}
+      Tasa de tipo II: $0.275900$.
+
+      \vspace{0.4em}
+      Muestra cercana $\mu=51$:
+      $\bar{x}=51.590798<52.193138$.
+      No se rechaza $H_{0}$.
+
+      \vspace{0.5em}
+      \textbf{Límite:} $H_{1}$ puede ser verdadera y la prueba aún puede no
+      rechazar. Ese no rechazo no prueba que $\mu=50$.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/fundamentos_ph_03_tipo_ii_no_prueba.png}
+      \vspace{0.2em}
+      \scriptsize Potencia y tipo II del Paso 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item Escriba $H_{0}$ y $H_{1}$ para esta prueba de tiempo de empaque.
+    \item ¿Qué es un error de tipo I en palabras?
+    \item ¿Por qué es aceptable aquí una tasa simulada de tipo I de $0.053100$?
+    \item Una muestra cercana $\mu=51$ da $\bar{x}=51.59$. ¿Por qué eso no
+      prueba que $\mu=50$?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Conexión con la Lección 34}
+    La sesión puede continuar directamente con la prueba z de una muestra: el
+    estadístico $z$, el valor $p$ y el supuesto de sigma conocida.
+  \end{block}
+
+  \vfill
+  \scriptsize Fuente: OpenStax, \textit{Introductory Business Statistics 2e},
+  Capítulo 9, Secciones 9.1--9.2. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

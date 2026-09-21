@@ -1,0 +1,200 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 08: Probability Rules and Contingency Tables}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 08: Probability Rules and Contingency Tables\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Probability Question}
+  \begin{alertblock}{Guiding question}
+    How can one contingency table support correct AND, OR, and NOT
+    probabilities without double-counting or assuming independence?
+  \end{alertblock}
+
+  \vspace{0.4em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item read marginal and joint probabilities from a two-way table;
+    \item apply complement and general addition rules;
+    \item identify the overlap in an OR probability;
+    \item explain why multiplying marginal probabilities requires evidence of
+      independence.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All order records and operating processes are synthetic.
+\end{frame}
+
+\begin{frame}{A Contingency Table Organizes Joint Outcomes}
+  \small
+  Let \(M\) be manual review and \(L\) be late delivery.
+
+  \begin{center}
+    \begin{tabular}{lrrr}
+      \toprule
+      \textbf{Routing process} & \textbf{Late} & \textbf{On time} & \textbf{Total} \\
+      \midrule
+      Manual review & 48 & 72 & 120 \\
+      Automated & 32 & 248 & 280 \\
+      \midrule
+      Total & 80 & 320 & 400 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.6em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Marginal probabilities}
+      \[
+        P(M)=\frac{120}{400}=0.30,\quad
+        P(L)=\frac{80}{400}=0.20.
+      \]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Joint probability}
+      \[
+        P(M\cap L)=\frac{48}{400}=0.12.
+      \]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 1: Read Cells and Margins Before Applying Rules}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \small
+      \begin{block}{Verified output}
+        Synthetic orders: 400\\
+        \(P(M)=0.30\)\\
+        \(P(L)=0.20\)\\
+        \(P(M\cap L)=0.12\)
+      \end{block}
+
+      A cell represents two conditions at once. Row and column totals represent
+      one condition regardless of the other variable.
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=0.88\textwidth]{../figures/probability_01_table.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Complement and Addition Rules}
+  \small
+  The complement rule accounts for everything outside an event:
+  \[
+    P(M^c)=1-P(M)=1-0.30=0.70.
+  \]
+
+  The general addition rule removes the shared outcomes counted twice:
+  \[
+    P(M\cup L)=P(M)+P(L)-P(M\cap L).
+  \]
+  \[
+    P(M\cup L)=0.30+0.20-0.12=0.38.
+  \]
+
+  \begin{alertblock}{Common trap}
+    The naive sum 0.50 includes the 48 manual-and-late orders twice. The simple
+    sum applies only when the events are mutually exclusive.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Step 2: The Addition Rule Matches Direct Counting}
+  \begin{columns}[T]
+    \begin{column}{0.35\textwidth}
+      \small
+      \begin{block}{Verified comparison}
+        Naive sum: 0.50\\
+        Overlap: 0.12\\
+        Corrected union: 0.38\\
+        Direct table count: 0.38
+      \end{block}
+
+      Directly counting all orders in \(M\cup L\) gives
+      \[
+        \frac{152}{400}=0.38.
+      \]
+    \end{column}
+    \begin{column}{0.65\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/probability_02_addition.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: The Multiplication Shortcut Has a Condition}
+  \begin{columns}[T]
+    \begin{column}{0.38\textwidth}
+      \small
+      General rule:
+      \[
+        P(M\cap L)=P(M)P(L\mid M).
+      \]
+      The table gives \(P(L\mid M)=48/120=0.40\), so
+      \[
+        0.30(0.40)=0.12.
+      \]
+
+      Multiplying marginals gives \(0.30(0.20)=0.06\), which contradicts the
+      observed intersection.
+
+      \textbf{Limit:} independence has not been justified.
+    \end{column}
+    \begin{column}{0.62\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/probability_03_limit.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  Use the 400-order table from this lesson.
+  \begin{enumerate}
+    \item Find \(P(\text{On time})\).
+    \item Find \(P(\text{Automated OR Late})\) using the addition rule.
+    \item Why is \(P(M)+P(L)=0.50\) not the probability of \(M\cup L\)?
+    \item What evidence shows that \(P(M)P(L)\) is not valid for this
+      intersection?
+  \end{enumerate}
+
+  \vspace{0.4em}
+  \begin{block}{Connection to Lesson 09}
+    The next lesson develops conditional probability and independence: how a
+    reduced sample space changes probability and how independence is tested.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 3, Sections 3.1 and 3.3. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

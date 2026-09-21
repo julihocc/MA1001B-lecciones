@@ -1,0 +1,198 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{spanish}
+
+\title{MA1001B - Modelación Estadística para la Toma de Decisiones}
+\subtitle{Lección 07: Técnicas de conteo II}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Modelación Estadística para la Toma de Decisiones\par}
+  \vspace{0.7cm}
+  {\large Lección 07: Categorías repetidas y asignaciones\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  Facultad MA1001B\\[0.3cm]
+  Periodo\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{La pregunta de asignación}
+  \begin{alertblock}{Pregunta guía}
+    ¿Cómo cambian las categorías repetidas un conteo, y cuándo un conteo
+    correcto aún no determina una probabilidad?
+  \end{alertblock}
+
+  \vspace{0.4em}
+  Al final de esta lección, usted puede:
+  \begin{itemize}
+    \item contar secuencias con etiquetas de categoría repetidas;
+    \item interpretar coeficientes multinomiales como asignaciones de tamaño fijo;
+    \item contar asignaciones no negativas con estrellas y barras;
+    \item explicar por qué los perfiles posibles no tienen que ser igualmente
+      probables.
+  \end{itemize}
+
+  \vfill
+  \scriptsize Todas las solicitudes, colas, centros y mecanismos de enrutamiento son sintéticos.
+\end{frame}
+
+\begin{frame}{Las permutaciones con repetición eliminan duplicados}
+  \small
+  Ocho etiquetas de cola contienen tres Prioridad, tres Estándar y dos
+  Auditoría. Intercambiar dos etiquetas iguales no crea una secuencia nueva.
+
+  \[
+    \frac{n!}{n_1!n_2!\cdots n_k!}
+    =\frac{8!}{3!3!2!}=560
+  \]
+
+  \begin{alertblock}{El conteo ingenuo sobreestima el espacio muestral}
+    \(8!=40{,}320\) trata las etiquetas repetidas como distinguibles. Cada
+    secuencia distinta aparece \(3!3!2!=72\) veces en ese conteo.
+  \end{alertblock}
+
+  \textbf{Prueba de decisión:} ¿Qué intercambios cambian el resultado final?
+\end{frame}
+
+\begin{frame}[fragile]{Paso 1: La fórmula y la enumeración coinciden}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+labels = (
+    ["Prioridad"] * 3
+    + ["Estandar"] * 3
+    + ["Auditoria"] * 2
+)
+distinct = set(permutations(labels))
+      \end{lstlisting}
+
+      \begin{block}{Salida verificada}
+        Conteo ingenuo: 40,320\\
+        Fórmula: 560\\
+        Secuencias enumeradas: 560\\
+        Factor de duplicado: 72
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/asignaciones_01_permutaciones_repetidas.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 2: El mismo coeficiente asigna solicitudes etiquetadas}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      Asigne ocho solicitudes etiquetadas a tres colas etiquetadas con tamaños
+      3, 3 y 2:
+      \[
+        \binom{8}{3,3,2}=\frac{8!}{3!3!2!}=560.
+      \]
+
+      En las 560 asignaciones, R01 aparece en:
+      \begin{itemize}
+        \item Prioridad: 210;
+        \item Estándar: 210;
+        \item Auditoría: 140.
+      \end{itemize}
+
+      La partición 3:3:2 sigue los tamaños fijos de cola.
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/asignaciones_02_categorias_multinomiales.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Contar perfiles de ocupación}
+  \small
+  Distribuya \(m\) unidades idénticas entre \(r\) categorías etiquetadas. Un
+  perfil \((x_1,\ldots,x_r)\) cumple
+  \[
+    x_1+\cdots+x_r=m, \qquad x_i\geq0.
+  \]
+
+  El número de perfiles es
+  \[
+    \binom{m+r-1}{r-1}.
+  \]
+
+  Para ocho unidades y cuatro centros de servicio etiquetados:
+  \[
+    \binom{8+4-1}{4-1}=\binom{11}{3}=165.
+  \]
+
+  \begin{exampleblock}{Evidencia computacional verificada}
+    La enumeración exhaustiva en Python también devuelve 165 perfiles de
+    ocupación ordenados no negativos.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{El límite: un perfil posible no es necesariamente equiprobable}
+  \begin{columns}[T]
+    \begin{column}{0.37\textwidth}
+      \small
+      Tratar los 165 perfiles como igualmente probables da
+      \[
+        \frac{1}{165}=0.00606061.
+      \]
+
+      El enrutamiento uniforme independiente da
+      \[
+        P(x)=\frac{8!}{x_1!\cdots x_4!}
+        \left(\frac14\right)^8.
+      \]
+
+      Las estimaciones con semilla 42 de 500{,}000 simulaciones siguen de
+      cerca estas probabilidades exactas desiguales.
+    \end{column}
+    \begin{column}{0.63\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figuras/asignaciones_03_estrellas_barras_limite_probabilidad.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Verificación de conceptos}
+  \begin{enumerate}
+    \item ¿Cuántas secuencias contienen tres etiquetas P, dos S y dos A?
+    \item ¿Por qué el mismo coeficiente cuenta asignaciones de siete
+      solicitudes etiquetadas a colas de tamaños 3, 2 y 2?
+    \item ¿De cuántas formas se pueden distribuir ocho unidades idénticas de
+      búfer entre tres centros etiquetados?
+    \item ¿Son esos perfiles de ocupación igualmente probables cuando ocho
+      solicitudes etiquetadas se enrutan de forma independiente? Explique.
+  \end{enumerate}
+
+  \vspace{0.4em}
+  \begin{block}{Conexión con la Lección 08}
+    La siguiente lección formaliza las reglas de probabilidad y las tablas de
+    contingencia. Un conteo se vuelve probabilidad solo después de justificar
+    el modelo de probabilidad.
+  \end{block}
+
+  \vfill
+  \scriptsize Fundamento de probabilidad: OpenStax,
+  \textit{Introductory Business Statistics 2e}, Capítulo 3, Sección 3.1.
+  Las fórmulas combinatorias son una extensión del curso. CC BY-NC-SA 4.0.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

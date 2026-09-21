@@ -1,0 +1,175 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 40: Chi-Square Goodness of Fit}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 40: Chi-Square Goodness of Fit\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Claimed Mix Question}
+  \begin{alertblock}{Guiding question}
+    How do we test whether $n=200$ tickets follow the hypothesized mix
+    $0.40$, $0.30$, $0.20$, $0.10$?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item form expected counts $E=np$;
+    \item compute $\chi^2=\sum(O-E)^2/E$ with $df=k-1$;
+    \item read a right-tailed p-value at $\alpha=0.05$;
+    \item explain why $E<5$ makes the approximation poor.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All ticket counts used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{A Four-Category Hypothesized Mix}
+  \small
+  A synthetic support desk claims that tickets arrive as 40 percent phone,
+  30 percent chat, 20 percent email, and 10 percent app. The sample is
+  $n=200$ with observed counts $100$, $50$, $30$, and $20$.
+
+  \[
+    E_i = np_i \quad\Rightarrow\quad 80,\ 60,\ 40,\ 20.
+  \]
+
+  \begin{exampleblock}{Goodness-of-fit hypotheses}
+    $H_0$: the mix equals $(0.40,0.30,0.20,0.10)$ versus $H_1$: the mix
+    differs, with $\alpha=0.05$ and $df=3$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Observed versus Expected}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+p = [0.40, 0.30, 0.20, 0.10]
+expected = n * p
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        Observed: $100$, $50$, $30$, $20$\\
+        Expected: $80$, $60$, $40$, $20$\\
+        All $E\ge 5$: yes
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/goodness_of_fit_01_observed_expected.png}
+      \vspace{0.2em}
+      \scriptsize Observed versus expected counts from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Chi-Square with $df=3$}
+  \small
+  \[
+    \chi^2=\frac{(100-80)^2}{80}+\frac{(50-60)^2}{60}
+    +\frac{(30-40)^2}{40}+\frac{(20-20)^2}{20}=9.166667.
+  \]
+  \[
+    df=4-1=3,\qquad p=P(\chi^2_3\ge 9.166667)=0.027155.
+  \]
+  Because $\chi^2>\chi^{2*}=7.814728$ and $p<\alpha$, the test rejects $H_0$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: The Goodness-of-Fit Decision}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+contrib = (O - E)**2 / E
+chi2 = contrib.sum()
+p = chi2_dist.sf(chi2, 3)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\chi^2=9.166667$, $df=3$\\
+        $p=0.027155$\\
+        Decision: reject $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/goodness_of_fit_02_chi_square.png}
+      \vspace{0.2em}
+      \scriptsize Cell contributions from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: $E<5$ Makes the Approximation Poor}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      A rushed $n=20$ follow-up has expected counts $8$, $6$, $4$, and $2$.
+
+      \vspace{0.3em}
+      Two cells have $E<5$. The App observed count is $0$.
+
+      \vspace{0.3em}
+      That App cell contributes $2.000000$ if $O=0$ and $0.500000$ if $O=1$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} one ticket moves $\chi^2$ by $1.5$ when $E=2$. The
+      large-sample curve is not a stable decision tool here.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/goodness_of_fit_03_small_expected_limit.png}
+      \vspace{0.2em}
+      \scriptsize Expected counts below 5 from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Compute the expected phone count from $n=200$ and $p=0.40$.
+    \item Why is goodness of fit right-tailed?
+    \item If $\chi^2=9.166667$, $df=3$, and $p=0.027155$, what is the
+      decision at $\alpha=0.05$?
+    \item Why is $E=2$ a problem even if software still prints a p-value?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 41}
+    The session can continue directly into a chi-square test of independence
+    in a two-way contingency table.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 11, Section 11.3. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}

@@ -1,0 +1,177 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\selectlanguage{english}
+
+\title{MA1001B - Statistical Modeling for Decision Making}
+\subtitle{Lesson 38: Paired Samples (Before-After t)}
+\author{}
+\institute{Tecnol\'ogico de Monterrey}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{1.2cm}
+  {\Large\bfseries MA1001B - Statistical Modeling for Decision Making\par}
+  \vspace{0.7cm}
+  {\large Lesson 38: Paired Samples (Before-After t)\par}
+  \vspace{0.7cm}
+  {\color{TecRojo}\rule{\textwidth}{1.2pt}}
+  \vspace{0.8cm}
+
+  MA1001B Faculty\\[0.3cm]
+  Term\\[0.3cm]
+  Tecnol\'ogico de Monterrey
+\end{frame}
+
+\begin{frame}{The Before-After Question}
+  \begin{alertblock}{Guiding question}
+    How do we test a layout change when the same 25 stations are measured
+    before and after?
+  \end{alertblock}
+
+  \vspace{0.6em}
+  By the end of this lesson, you can:
+  \begin{itemize}
+    \item form paired differences $d=\text{before}-\text{after}$;
+    \item run a one-sample $t$ test of $H_0:\mu_d=0$;
+    \item contrast the paired SE with an unpaired two-sample SE;
+    \item explain why unpaired analysis ignores the matching.
+  \end{itemize}
+
+  \vfill
+  \scriptsize All handle times used today are synthetic. No real company data are used.
+\end{frame}
+
+\begin{frame}{The Unit Is the Station, Not the Column}
+  \small
+  A synthetic packing cell records handle time on the same 25 stations
+  before and after a layout change. The observational unit is the station.
+
+  \[
+    d_i = \text{before}_i - \text{after}_i,\qquad i=1,\ldots,25.
+  \]
+
+  \begin{exampleblock}{Paired hypotheses}
+    $H_0:\mu_d=0$ versus $H_1:\mu_d\neq 0$, with $\alpha=0.05$. This is a
+    one-sample $t$ on the 25 differences, not a two-sample $t$ on 50 times.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Matched Differences}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      \begin{lstlisting}
+d = before - after
+dbar = d.mean()
+s_d = d.std(ddof=1)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $\bar{d}=2.720813$\\
+        $s_d=1.525772$\\
+        $r=0.973356$
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/paired_t_01_differences.png}
+      \vspace{0.2em}
+      \scriptsize Matched before-after lines from Step 1
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paired $t$ Is One-Sample $t$ on $d$}
+  \small
+  \[
+    t=\frac{\bar{d}}{s_d/\sqrt{n}}=\frac{2.720813}{0.305154}=8.916186,
+    \qquad df=24.
+  \]
+  \[
+    p=2P(T_{24}\ge 8.916186)=4.395592\times 10^{-9}.
+  \]
+  Because $|t|>t^*=2.063899$ and $p<\alpha$, the paired test rejects
+  $H_0:\mu_d=0$.
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Paired Decision}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{lstlisting}
+se = s_d / sqrt(n)
+t = dbar / se
+p = 2 * t_dist.sf(abs(t), 24)
+      \end{lstlisting}
+
+      \begin{block}{Verified output}
+        $SE=0.305154$, $t=8.916186$\\
+        $p=4.395592\times 10^{-9}$\\
+        Decision: reject $H_0$
+      \end{block}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/paired_t_02_paired_test.png}
+      \vspace{0.2em}
+      \scriptsize Histogram of differences from Step 2
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Step 3: Unpaired Analysis Ignores the Matching}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \small
+      Paired SE $=0.305154$, $p=4.395592\times 10^{-9}$, reject.
+
+      \vspace{0.4em}
+      Unpaired Welch SE $=1.847143$, $p=0.147291$, do not reject.
+
+      \vspace{0.4em}
+      Before-after correlation: $0.973356$.
+
+      \vspace{0.5em}
+      \textbf{Limit:} treating the two columns as independent samples
+      discards the pairing and can flip the $\alpha=0.05$ decision.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{../figures/paired_t_03_unpaired_limit.png}
+      \vspace{0.2em}
+      \scriptsize Paired versus unpaired p-values from Step 3
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Concept Check}
+  \begin{enumerate}
+    \item Why is $d_i=\text{before}_i-\text{after}_i$ the right observational
+      unit here?
+    \item Compute $SE=s_d/\sqrt{n}$ from $s_d=1.525772$ and $n=25$.
+    \item If $p=4.395592\times 10^{-9}$ and $\alpha=0.05$, what is the paired
+      decision?
+    \item Why does the unpaired $p=0.147291$ not refute the paired finding?
+  \end{enumerate}
+
+  \vspace{0.6em}
+  \begin{block}{Connection to Lesson 39}
+    The session can continue directly into two independent proportions in an
+    A/B test, where the samples are not paired.
+  \end{block}
+
+  \vfill
+  \scriptsize Source: OpenStax, \textit{Introductory Business Statistics 2e},
+  Chapter 10, Section 10.6. CC BY-NC-SA.
+\end{frame}
+
+\appendix
+
+
+
+\end{document}
