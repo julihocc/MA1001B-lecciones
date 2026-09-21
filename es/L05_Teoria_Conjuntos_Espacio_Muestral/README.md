@@ -344,6 +344,40 @@ uv run jupyter nbconvert --execute --to notebook --inplace es/L05_Teoria_Conjunt
 También puede subirse directamente a Google Colab o abrirse con el kernel de
 Colab en VS Code.
 
+## Libreta breve para explicar en 40 minutos
+
+La [libreta de clase de 40 minutos](notebooks/leccion_05_teoria_conjuntos_espacio_muestral_clase_40min.ipynb)
+es una compañera de la guía extensa, no un reemplazo. Conserva el ejemplo de
+despachos sintéticos, `SEMILLA = 42` y los resultados canónicos, pero reduce la
+ruta a 16 celdas (7 de código) con una secuencia explícita: contexto (00–04),
+espacio muestral (04–12), operaciones (12–25), disyunción y exhaustividad
+(25–33), integración Exprés retrasado (33–38) y comprobación oral (38–40).
+
+La guía extensa sigue siendo la referencia para autoestudio: conserva las
+recetas incrementales, las tres figuras, prácticas, respuestas y trazabilidad
+detallada. La libreta breve es autocontenida, no importa los scripts ni lee
+archivos externos y muestra sólo las tablas necesarias para conducir la
+explicación. Ambas mantienen separados los ocho resultados posibles de las 480
+observaciones sintéticas.
+
+Para ejecutarla desde la raíz del repositorio:
+
+```powershell
+uv run jupyter nbconvert --execute --to notebook --inplace `
+  es/L05_Teoria_Conjuntos_Espacio_Muestral/notebooks/leccion_05_teoria_conjuntos_espacio_muestral_clase_40min.ipynb
+```
+
+### Validación de la libreta breve
+
+La libreta breve ejecutó sus 16 celdas, incluidas las siete de código, dos
+veces desde copias en directorios temporales y kernels limpios. Las salidas
+fueron idénticas y no se crearon archivos laterales. Las aserciones comprueban
+8 posibilidades, 480 registros, frecuencias 196/16/71/25/89/30/38/15,
+cardinalidades 4/4/2/6/4, conteos 172/86/45/213/308, clasificación A–B/C–D
+y la integración F con 2 posibilidades y 40 registros. El HTML fue exportado
+y su estructura textual comprobada; la inspección visual integral del HTML
+queda pendiente porque el navegador bloqueó la apertura de archivos locales.
+
 ## Atribución a OpenStax
 
 La base conceptual y las definiciones siguen a Alexander Holmes, Barbara
