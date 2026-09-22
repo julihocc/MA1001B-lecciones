@@ -181,7 +181,8 @@ retained evidence produced by the standalone scripts.
 L06_Counting_Techniques_I/
 |-- README.md
 |-- notebooks/
-|   `-- lesson_06_counting_techniques_i.ipynb
+|   |-- lesson_06_counting_techniques_i.ipynb
+|   `-- lesson_06_compact.ipynb
 |-- src/
 |   |-- counting_01_product_rule.py
 |   |-- counting_02_permutations.py
@@ -194,7 +195,9 @@ L06_Counting_Techniques_I/
 |   `-- counting_04_restrictions.png
 `-- slides/
     |-- lesson_06.tex
-    `-- lesson_06.pdf
+    |-- lesson_06.pdf
+    |-- lesson_06_compact.tex
+    `-- lesson_06_compact.pdf
 ```
 
 ## Running the Lesson

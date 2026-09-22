@@ -194,7 +194,8 @@ retenida producida por los scripts autónomos.
 L06_Tecnicas_Conteo_I/
 |-- README.md
 |-- notebooks/
-|   `-- leccion_06_tecnicas_conteo_i.ipynb
+|   |-- leccion_06_tecnicas_conteo_i.ipynb
+|   `-- leccion_06_compacta.ipynb
 |-- src/
 |   |-- conteo_01_regla_producto.py
 |   |-- conteo_02_permutaciones.py
@@ -207,7 +208,9 @@ L06_Tecnicas_Conteo_I/
 |   `-- conteo_04_restricciones.png
 `-- diapositivas/
     |-- leccion_06.tex
-    `-- leccion_06.pdf
+    |-- leccion_06.pdf
+    |-- leccion_06_compacta.tex
+    `-- leccion_06_compacta.pdf
 ```
 
 ## Ejecución
