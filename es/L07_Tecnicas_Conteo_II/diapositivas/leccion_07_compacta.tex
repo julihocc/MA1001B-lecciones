@@ -1,0 +1,158 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\selectlanguage{spanish}
+\shorthandoff{"}
+\title{L07: Técnicas de conteo II}
+\subtitle{Ruta de clase -- 40 minutos}
+\author{}
+\date{}
+\begin{document}
+
+\begin{frame}{Categorías repetidas y asignaciones}
+\framesubtitle{Ruta de clase -- 40 minutos}
+\textbf{Pregunta:} ¿Qué cambia cuando se repiten categorías y por qué un conteo correcto puede dar una probabilidad incorrecta?
+\begin{block}{Al terminar podrás}
+Contar secuencias distintas con etiquetas repetidas, interpretar asignaciones multinomiales de tamaño fijo, contar perfiles de ocupación y explicar por qué no son equiprobables.
+\end{block}
+\smallskip
+Todas las solicitudes, colas, centros y reglas de enrutamiento son supuestos didácticos sintéticos.
+\end{frame}
+
+\begin{frame}{Ruta de 40 minutos}
+\small
+\begin{tabular}{p{.43\linewidth}rp{.38\linewidth}}
+\toprule Tema & Min & Comprobación observable \\ \midrule
+Definir el resultado & 4 & Separar solicitudes y etiquetas.\\
+Permutaciones repetidas & 8 & Derivar y enumerar 560.\\
+Asignación multinomial & 9 & Verificar 210--210--140.\\
+Estrellas y barras; probabilidad & 15 & Contar 165; rechazar $1/165$.\\
+Integración & 4 & Explicar por qué hacen falta pesos.\\ \bottomrule
+\end{tabular}
+\par\medskip
+Ejecuta las celdas preparadas de \texttt{leccion\_07\_compacta.ipynb} junto a estas diapositivas. El código tarda segundos; la estimación incluye derivaciones y comprobaciones. Las figuras y prácticas adicionales permanecen en los materiales extensos.
+\end{frame}
+
+\begin{frame}{Define qué es distinto}
+\small
+Ocho \textbf{solicitudes etiquetadas} $R01,\ldots,R08$ reciben etiquetas de cola con tamaños fijos: tres Prioridad, tres Estándar y dos Auditoría.
+\par\medskip
+En una secuencia de \emph{etiquetas de cola}, intercambiar dos entradas Prioridad no cambia nada. En una asignación de \emph{solicitudes}, $R01$ y $R02$ son objetos distintos. Contaremos ambas perspectivas con el mismo coeficiente, pero con distinta interpretación.
+\par\medskip
+\textbf{Comprobación:} ¿Intercambiar etiquetas de cola iguales crea otra secuencia? No. ¿Intercambiar solicitudes etiquetadas entre colas cambia la asignación? Sí.
+\end{frame}
+
+\begin{frame}{Las permutaciones repetidas eliminan duplicados}
+\begin{columns}[T]
+\begin{column}{.49\textwidth}
+\small
+Tratar las ocho etiquetas como distintas produce $8!=40{,}320$, pero cada secuencia única aparece $3!3!2!=72$ veces.
+\[
+\frac{8!}{3!3!2!}=560.
+\]
+La libreta enumera las secuencias únicas y confirma 560. El denominador elimina intercambios de etiquetas iguales; no es un peso probabilístico.
+\par\smallskip
+\textbf{Comprobación:} ¿Por qué $8!$ es demasiado grande?
+\end{column}
+\begin{column}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/asignaciones_01_permutaciones_repetidas.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Código: fórmula y enumeración}
+\small
+Ambos cálculos responden la misma pregunta sobre secuencias de etiquetas distintas:
+\begin{lstlisting}
+from itertools import permutations
+from math import factorial
+etiquetas = (["Prioridad"] * 3
+             + ["Estandar"] * 3
+             + ["Auditoria"] * 2)
+formula = factorial(8) // (factorial(3)
+                           * factorial(3)
+                           * factorial(2))
+enumeradas = len(set(permutations(etiquetas)))
+assert formula == enumeradas == 560
+\end{lstlisting}
+La enumeración verifica este caso pequeño; la fórmula explica la regla general.
+\end{frame}
+
+\begin{frame}{El mismo coeficiente asigna solicitudes}
+\begin{columns}[T]
+\begin{column}{.48\textwidth}
+\small
+Elegimos tres de ocho solicitudes etiquetadas para Prioridad, tres de las cinco restantes para Estándar y las dos últimas para Auditoría:
+\[
+\binom83\binom53\binom22=56\times10\times1=560.
+\]
+En las 560 asignaciones, $R01$ aparece 210 veces en Prioridad, 210 en Estándar y 140 en Auditoría: $3/8$, $3/8$ y $2/8$ de las asignaciones.
+\par\smallskip
+\textbf{Comprobación:} El coeficiente es igual; ¿qué cambió? La interpretación de un resultado.
+\end{column}
+\begin{column}{.50\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/asignaciones_02_categorias_multinomiales.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Estrellas y barras cuenta perfiles de ocupación}
+\small
+Ahora dirigimos ocho solicitudes a \textbf{cuatro centros etiquetados}. Un perfil $(n_1,n_2,n_3,n_4)$ registra cuántas recibe cada centro; $n_i\geq0$ y $\sum_i n_i=8$.
+\[
+\#\{(n_1,n_2,n_3,n_4)\}=\binom{8+4-1}{4-1}=\binom{11}{3}=165.
+\]
+Las solicitudes están etiquetadas, pero aquí sólo contamos los \emph{vectores de frecuencias} posibles. Por ejemplo, $(8,0,0,0)$ y $(0,8,0,0)$ difieren porque los centros tienen nombre.
+\par\medskip
+\textbf{Comprobación:} ¿Basta 165 para conocer la probabilidad de un perfil? No; cuenta posibilidades sin asignarles pesos.
+\end{frame}
+
+\begin{frame}{El enrutamiento aleatorio no iguala los perfiles}
+\small
+Supongamos que cada solicitud etiquetada elige independientemente uno de cuatro centros con probabilidad $1/4$. Para el perfil $\boldsymbol n=(n_1,n_2,n_3,n_4)$,
+\[
+P(\boldsymbol n)=\frac{8!}{n_1!n_2!n_3!n_4!}\left(\frac14\right)^8.
+\]
+El factor factorial cuenta cuántas asignaciones de solicitudes etiquetadas producen ese perfil.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule Perfil & $P$ exacta & $1/165$ incorrecta \\ \midrule
+$(5,1,1,1)$ & 0.00512695 & 0.00606061\\
+$(3,2,2,1)$ & 0.02563477 & 0.00606061\\ \bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Compara el cálculo y la simulación}
+\begin{columns}[T]
+\begin{column}{.43\textwidth}
+\small
+La libreta enumera 165 perfiles, calcula probabilidades exactas seleccionadas y simula 500 000 veces con semilla 42.
+\par\medskip
+Para $(5,1,1,1)$, la simulación devuelve 0.005288; para $(3,2,2,1)$, 0.025894. Se aproximan a valores exactos distintos, no a un mismo $1/165$.
+\par\smallskip
+\textbf{Comprobación:} ¿Qué contamos en el numerador de una probabilidad? Las asignaciones etiquetadas que producen el perfil, dado el modelo de enrutamiento.
+\end{column}
+\begin{column}{.55\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/asignaciones_03_estrellas_barras_limite_probabilidad.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Cuenta los objetos adecuados y declara el modelo}
+\small
+\begin{enumerate}
+\item Etiquetas repetidas: elimina intercambios que no cambian la secuencia.
+\item Colas de tamaño fijo: asigna solicitudes etiquetadas mediante un conteo multinomial.
+\item Perfiles de ocupación: estrellas y barras cuenta vectores posibles.
+\item Probabilidades: indica cómo se enrutan las solicitudes y cuántas asignaciones conducen a cada vector.
+\end{enumerate}
+\par\medskip
+\textbf{Comprobación final:} ¿Por qué hay 165 perfiles pero $(3,2,2,1)$ es mucho más probable que $(5,1,1,1)$? Bajo el enrutamiento uniforme independiente, más asignaciones etiquetadas generan el primero.
+\par\smallskip
+\textbf{Siguiente:} L08 desarrolla reglas de probabilidad para eventos sin suponer que toda categoría contada es equiprobable.
+\end{frame}
+\end{document}

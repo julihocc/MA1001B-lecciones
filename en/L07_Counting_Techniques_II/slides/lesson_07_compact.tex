@@ -1,0 +1,157 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\selectlanguage{english}
+\title{L07: Counting Techniques II}
+\subtitle{Class route -- 40 minutes}
+\author{}
+\date{}
+\begin{document}
+
+\begin{frame}{Repeated categories and allocations}
+\framesubtitle{Class route -- 40 minutes}
+\textbf{Question:} What changes when categories repeat, and why can a correct count still give a wrong probability?
+\begin{block}{By the end, you can}
+Count distinct repeated-label sequences, interpret fixed-size multinomial allocations, count occupancy profiles, and explain why profiles need not be equally likely.
+\end{block}
+\smallskip
+All requests, queues, service centers, and routing rules are synthetic teaching assumptions.
+\end{frame}
+
+\begin{frame}{A 40-minute route}
+\small
+\begin{tabular}{p{.43\linewidth}rp{.38\linewidth}}
+\toprule Topic & Min & Observable check \\ \midrule
+Define the outcome & 4 & Separate requests and labels.\\
+Repeated permutations & 8 & Derive and enumerate 560.\\
+Multinomial allocation & 9 & Verify 210--210--140.\\
+Stars and bars; probability & 15 & Count 165; reject $1/165$.\\
+Integration & 4 & Explain why counts need weights.\\ \bottomrule
+\end{tabular}
+\par\medskip
+Run the prepared cells in \texttt{lesson\_07\_compact.ipynb} alongside these slides. Code takes seconds; the estimate includes derivation and checks. Additional figures and practice remain in the extended materials.
+\end{frame}
+
+\begin{frame}{Define what is distinct}
+\small
+Eight \textbf{labeled requests} $R01,\ldots,R08$ receive queue labels with fixed sizes: three Priority, three Standard, and two Audit.
+\par\medskip
+In a sequence of \emph{queue labels}, swapping two Priority entries changes nothing. In an allocation of \emph{requests}, $R01$ and $R02$ are different items. We will count both views with the same coefficient but interpret them differently.
+\par\medskip
+\textbf{Check:} Does exchanging two identical queue labels create a new sequence? No. Does exchanging two labeled requests between queues change the allocation? Yes.
+\end{frame}
+
+\begin{frame}{Repeated permutations remove duplicates}
+\begin{columns}[T]
+\begin{column}{.49\textwidth}
+\small
+Treating all eight labels as distinct gives $8!=40{,}320$, but each unique sequence appears $3!3!2!=72$ times.
+\[
+\frac{8!}{3!3!2!}=560.
+\]
+The notebook enumerates the unique sequences and confirms 560. The denominator removes exchanges of equal labels, not a probability weight.
+\par\smallskip
+\textbf{Check:} Why is $8!$ too large?
+\end{column}
+\begin{column}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/allocations_01_repeated_permutations.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Code check: formula and enumeration}
+\small
+The two calculations answer the same question about distinct label sequences:
+\begin{lstlisting}
+from itertools import permutations
+from math import factorial
+labels = (["Priority"] * 3
+          + ["Standard"] * 3
+          + ["Audit"] * 2)
+formula = factorial(8) // (factorial(3)
+                           * factorial(3)
+                           * factorial(2))
+observed = len(set(permutations(labels)))
+assert formula == observed == 560
+\end{lstlisting}
+Enumeration verifies the model for this small case; the formula explains the general rule.
+\end{frame}
+
+\begin{frame}{The same coefficient allocates requests}
+\begin{columns}[T]
+\begin{column}{.48\textwidth}
+\small
+Choose three of eight labeled requests for Priority, three of the remaining five for Standard, and the last two for Audit:
+\[
+\binom83\binom53\binom22=56\times10\times1=560.
+\]
+Across all 560 allocations, $R01$ is in Priority 210 times, Standard 210 times, and Audit 140 times. These are $3/8$, $3/8$, and $2/8$ of the allocations.
+\par\smallskip
+\textbf{Check:} The coefficient is the same as before; what changed? The interpretation of one outcome.
+\end{column}
+\begin{column}{.50\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/allocations_02_multinomial_categories.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Stars and bars counts occupancy profiles}
+\small
+Now route eight requests to \textbf{four labeled centers}. A profile $(n_1,n_2,n_3,n_4)$ records how many each center receives, with $n_i\geq0$ and $\sum_i n_i=8$.
+\[
+\#\{(n_1,n_2,n_3,n_4)\}=\binom{8+4-1}{4-1}=\binom{11}{3}=165.
+\]
+The requests are labeled, but this calculation counts only the possible \emph{count vectors}. For example, $(8,0,0,0)$ and $(0,8,0,0)$ differ because centers are labeled.
+\par\medskip
+\textbf{Check:} Does 165 alone tell us the probability of a particular profile? No; it counts possibilities without assigning weights.
+\end{frame}
+
+\begin{frame}{Random routing does not make profiles equal}
+\small
+Suppose every labeled request independently chooses one of four centers with probability $1/4$. For profile $\boldsymbol n=(n_1,n_2,n_3,n_4)$,
+\[
+P(\boldsymbol n)=\frac{8!}{n_1!n_2!n_3!n_4!}\left(\frac14\right)^8.
+\]
+The factorial factor counts how many labeled-request assignments produce that profile.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule Profile & Exact $P$ & Incorrect $1/165$ \\ \midrule
+$(5,1,1,1)$ & 0.00512695 & 0.00606061\\
+$(3,2,2,1)$ & 0.02563477 & 0.00606061\\ \bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Compare calculation and simulation}
+\begin{columns}[T]
+\begin{column}{.43\textwidth}
+\small
+The notebook enumerates 165 profiles, computes their selected exact probabilities, and uses 500,000 seed-42 simulations.
+\par\medskip
+For $(5,1,1,1)$, the simulation gives 0.005288; for $(3,2,2,1)$ it gives 0.025894. These approximate different exact values, not a common $1/165$.
+\par\smallskip
+\textbf{Check:} Which count is appropriate for a probability numerator? The number of labeled assignments producing the profile, given the routing model.
+\end{column}
+\begin{column}{.55\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/allocations_03_star_bars_probability_limit.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Count the right objects; state the probability model}
+\small
+\begin{enumerate}
+\item Repeated labels: divide out exchanges that do not change the sequence.
+\item Fixed-size queues: allocate labeled requests with a multinomial count.
+\item Occupancy profiles: stars and bars counts possible vectors.
+\item Probabilities: specify how requests are routed and how many assignments lead to each vector.
+\end{enumerate}
+\par\medskip
+\textbf{Final check:} Why are there 165 profiles but $(3,2,2,1)$ is much more likely than $(5,1,1,1)$? More labeled-request assignments produce the former under independent uniform routing.
+\par\smallskip
+\textbf{Next:} L08 develops probability rules for events rather than treating all counted categories as equally likely.
+\end{frame}
+\end{document}

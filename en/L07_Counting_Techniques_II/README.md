@@ -2,7 +2,7 @@
 
 ## Repeated Categories and Allocations
 
-This 50-minute micro-lesson extends counting from distinct objects to repeated
+This lesson extends counting from distinct objects to repeated
 categories. One fully synthetic service-network scenario connects repeated
 permutations, multinomial allocations, and combinations with repetition. The
 final step exposes the central limit of counting: possible occupancy profiles
@@ -26,7 +26,25 @@ By the end of the lesson, students can:
   Lesson 06;
 - basic Python functions, tuples, loops, and bar charts.
 
-## 50-Minute Facilitation Route
+## Current 40-Minute Class Route
+
+The teacher uses [the compact notebook](notebooks/lesson_07_compact.ipynb) and
+[compact slides](slides/lesson_07_compact.pdf) together. The notebook includes
+executable enumeration and seeded simulation; the slides carry the visible
+derivations and questions. This estimate fits within the 100-minute S02 class.
+
+| Time | Compact focus | Check and transition |
+|---:|---|---|
+| 00-04 | Define labeled requests and repeated queue labels. | Name one outcome before selecting a rule. |
+| 04-12 | Repeated permutations: $8!/(3!3!2!)=560$. | Check by enumeration; reinterpret the same coefficient. |
+| 12-21 | Multinomial allocation: 560, including the 210-210-140 split for R01. | Identify labeled requests and category sizes. |
+| 21-36 | Stars and bars: 165 profiles; compare exact routing probabilities with seed-42 simulation. | Explain why profiles are not equally likely. |
+| 36-40 | Concept check and bridge to L08. | State what extra model information probability needs. |
+
+## Earlier 50-Minute Reference Route
+
+The following timing records the original package and is retained only as
+historical context.
 
 | Time | Activity | Evidence |
 |---:|---|---|
@@ -120,6 +138,10 @@ request sequences that produce it. Counting profiles alone therefore cannot
 justify a probability assignment.
 
 ## Study Notebook
+
+The compact notebook and slides above are teacher presentation material. The
+following extensive notebook remains the student study guide; the original
+scripts, figures, and extensive slides are retained.
 
 The student guide
 [`notebooks/lesson_07_counting_techniques_ii.ipynb`](notebooks/lesson_07_counting_techniques_ii.ipynb)

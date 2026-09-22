@@ -2,7 +2,7 @@
 
 ## Categorías repetidas y asignaciones
 
-Esta microlección de 50 minutos extiende el conteo de objetos distintos a
+Esta lección extiende el conteo de objetos distintos a
 categorías repetidas. Un escenario sintético de red de servicio conecta
 permutaciones con repetición, asignaciones multinomiales y combinaciones con
 repetición. El paso final expone el límite central del conteo: los perfiles de
@@ -27,7 +27,26 @@ Al final de la lección, un estudiante puede:
   la Lección 06;
 - funciones básicas de Python, tuplas, ciclos y gráficas de barras.
 
-## Ruta de facilitación de 50 minutos
+## Ruta vigente de 40 minutos
+
+El profesor usa conjuntamente [la libreta compacta](notebooks/leccion_07_compacta.ipynb)
+y [la presentación compacta](diapositivas/leccion_07_compacta.pdf).
+La libreta incluye enumeración ejecutable y simulación con semilla; la
+presentación expone derivaciones y preguntas. Esta estimación cabe en la sesión
+S02 de 100 minutos.
+
+| Tiempo | Enfoque compacto | Verificación y transición |
+|---:|---|---|
+| 00-04 | Definir solicitudes etiquetadas y etiquetas de cola repetidas. | Nombrar un resultado antes de elegir regla. |
+| 04-12 | Permutaciones repetidas: $8!/(3!3!2!)=560$. | Verificar por enumeración y reinterpretar el coeficiente. |
+| 12-21 | Asignación multinomial: 560 y distribución 210-210-140 para R01. | Identificar solicitudes etiquetadas y tamaños de categoría. |
+| 21-36 | Estrellas y barras: 165 perfiles; comparar probabilidades exactas con simulación de semilla 42. | Explicar por qué los perfiles no son equiprobables. |
+| 36-40 | Verificación conceptual y enlace con L08. | Decir qué información adicional necesita la probabilidad. |
+
+## Ruta anterior de 50 minutos
+
+Se conserva la distribución original como antecedente histórico; no es la
+ruta de exposición vigente.
 
 | Tiempo | Actividad | Evidencia |
 |---:|---|---|
@@ -124,6 +143,10 @@ número de secuencias de solicitudes etiquetadas que lo producen. Contar
 perfiles por sí solo no justifica una asignación de probabilidad.
 
 ## Libreta de estudio
+
+La libreta y la presentación compactas son material de exposición del profesor.
+La siguiente libreta extensa sigue siendo la guía de estudio del alumnado; se
+conservan los scripts, las figuras y la presentación extensa originales.
 
 La guía estudiantil
 [`notebooks/leccion_07_tecnicas_conteo_ii.ipynb`](notebooks/leccion_07_tecnicas_conteo_ii.ipynb)
