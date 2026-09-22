@@ -187,7 +187,8 @@ retenida producida por los scripts autónomos.
 L07_Tecnicas_Conteo_II/
 |-- README.md
 |-- notebooks/
-|   `-- leccion_07_tecnicas_conteo_ii.ipynb
+|   |-- leccion_07_tecnicas_conteo_ii.ipynb
+|   `-- leccion_07_compacta.ipynb
 |-- src/
 |   |-- asignaciones_01_permutaciones_repetidas.py
 |   |-- asignaciones_02_categorias_multinomiales.py
@@ -198,7 +199,9 @@ L07_Tecnicas_Conteo_II/
 |   `-- asignaciones_03_estrellas_barras_limite_probabilidad.png
 `-- diapositivas/
     |-- leccion_07.tex
-    `-- leccion_07.pdf
+    |-- leccion_07.pdf
+    |-- leccion_07_compacta.tex
+    `-- leccion_07_compacta.pdf
 ```
 
 ## Ejecución

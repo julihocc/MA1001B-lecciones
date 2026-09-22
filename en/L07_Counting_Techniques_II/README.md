@@ -179,7 +179,8 @@ retained evidence produced by the standalone scripts.
 L07_Counting_Techniques_II/
 |-- README.md
 |-- notebooks/
-|   `-- lesson_07_counting_techniques_ii.ipynb
+|   |-- lesson_07_counting_techniques_ii.ipynb
+|   `-- lesson_07_compact.ipynb
 |-- src/
 |   |-- allocations_01_repeated_permutations.py
 |   |-- allocations_02_multinomial_categories.py
@@ -190,7 +191,9 @@ L07_Counting_Techniques_II/
 |   `-- allocations_03_star_bars_probability_limit.png
 `-- slides/
     |-- lesson_07.tex
-    `-- lesson_07.pdf
+    |-- lesson_07.pdf
+    |-- lesson_07_compact.tex
+    `-- lesson_07_compact.pdf
 ```
 
 ## Execution
