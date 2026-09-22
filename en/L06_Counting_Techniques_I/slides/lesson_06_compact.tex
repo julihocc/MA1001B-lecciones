@@ -1,0 +1,170 @@
+\documentclass[aspectratio=169,10pt,english]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\selectlanguage{english}
+\title{L06: Counting Techniques I}
+\subtitle{Class route -- 40 minutes}
+\author{}
+\date{}
+\begin{document}
+
+\begin{frame}{Counting Techniques I}
+\framesubtitle{Class route -- 40 minutes}
+\textbf{Question:} What counts as one outcome, and how can we count outcomes without double-counting them?
+\begin{block}{By the end, you can}
+Apply the product rule, distinguish permutations from combinations, check a formula by enumeration, and reject an overcounted answer.
+\end{block}
+\smallskip
+All facilities, analysts, roles, and restrictions in this lesson are synthetic teaching assumptions.
+\end{frame}
+
+\begin{frame}{A 40-minute route}
+\small
+\begin{tabular}{p{.42\linewidth}rp{.39\linewidth}}
+\toprule Topic & Min & Observable check \\ \midrule
+Define an outcome & 3 & Identify whether roles matter.\\
+Product rule & 7 & Count 24 configurations.\\
+Permutations & 8 & Count 120 role assignments.\\
+Combinations & 7 & Count 20 unranked panels.\\
+Restrictions & 11 & Reject 420 and derive 99.\\
+Integration & 4 & Choose and justify a method.\\ \bottomrule
+\end{tabular}
+\par\medskip
+Use the prepared code cells in \texttt{lesson\_06\_compact.ipynb} at each step. Execution takes seconds; the time includes reasoning and checks. Extended study remains in the full notebook and deck.
+\end{frame}
+
+\begin{frame}{First define the outcome}
+\textbf{Experiment 1:} Configure one synthetic review by choosing a fulfillment center, a workflow stage, and an evidence type.
+\[
+\omega=(\text{center},\text{stage},\text{evidence type}).
+\]
+There are three centers, four stages, and two evidence types. Two tuples that differ in any position are distinct configurations.
+\par\medskip
+\textbf{Question:} If we instead assign people to named roles, would swapping two people change the outcome?
+\par\smallskip
+\textbf{Check:} Yes. Role names become part of the outcome; that leads to permutations.
+\end{frame}
+
+\begin{frame}[fragile]{Product rule: successive choices}
+\begin{columns}[T]
+\begin{column}{.47\textwidth}
+\small
+One choice from each stage produces
+\[
+N=\prod_i n_i=3\times4\times2=24.
+\]
+\begin{lstlisting}
+from itertools import product
+space = list(product(centers,
+                     stages, evidence))
+assert len(space) == 24
+\end{lstlisting}
+The notebook verifies eight configurations per center. The factors count components of one tuple, not alternative cases.
+\end{column}
+\begin{column}{.51\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/counting_01_product_rule.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Permutations: distinct roles}
+\begin{columns}[T]
+\begin{column}{.46\textwidth}
+\small
+Assign Lead, Validation, and Reporting to three of six analysts. The roles are different positions, so order matters:
+\[
+P(6,3)=\frac{6!}{(6-3)!}=6\times5\times4=120.
+\]
+The notebook enumerates 120 ordered assignments. Swapping Lead and Reporting creates another outcome.
+\par\smallskip
+\textbf{Check:} Do we divide by $3!$ here? No: the roles distinguish the arrangements.
+\end{column}
+\begin{column}{.52\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/counting_02_permutations.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Combinations: an unranked panel}
+\begin{columns}[T]
+\begin{column}{.48\textwidth}
+\small
+Choose three of the same six analysts for a panel with no roles. Internal order no longer creates a new outcome:
+\[
+\binom{6}{3}=\frac{6!}{3!3!}=20.
+\]
+The 120 ordered assignments collapse into 20 panels because each panel appears in $3!=6$ orders. The notebook enumerates all 20 subsets.
+\par\smallskip
+\textbf{Decision test:} Is the result a list of named positions or just a set of people?
+\end{column}
+\begin{column}{.50\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/counting_03_combinations.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Restrictions: define the universe first}
+\small
+A four-person group is chosen from five operations analysts $O_1,\ldots,O_5$ and four data specialists $D_1,\ldots,D_4$.
+\begin{enumerate}
+\item The group must contain both disciplines.
+\item $O_1$ and $D_1$ cannot both belong to the group.
+\end{enumerate}
+No roles exist inside the final group, so the universe contains
+\[
+|U|=\binom{9}{4}=126
+\]
+unranked groups. Any proposed count above 126 is impossible.
+\par\smallskip
+\textbf{Check:} Which earlier method applies to the unrestricted universe? Combinations.
+\end{frame}
+
+\begin{frame}{Why the tempting 420 is wrong}
+\small
+The proposal $5\times4\times\binom{7}{2}=420$ first designates one operations analyst and one data specialist, then chooses two more people.
+\begin{alertblock}{Sanity check}
+$420>126=|U|$, so this cannot count distinct four-person groups.
+\end{alertblock}
+The designated people have no special roles in the final group. A group with two people from each discipline can be generated $2\times2=4$ times.
+\par\smallskip
+\textbf{Repair:} Count all groups once and subtract invalid groups.
+\end{frame}
+
+\begin{frame}{Complement counting gives 99}
+\begin{columns}[T]
+\begin{column}{.49\textwidth}
+\small
+Single-discipline groups: $\binom54+\binom44=5+1=6$.
+\[
+\text{Mixed}=126-6=120.
+\]
+Groups containing both $O_1$ and $D_1$: choose two of the seven remaining people, $\binom72=21$. Such groups are mixed already.
+\[
+\text{Valid}=120-21=99.
+\]
+The notebook checks all 126 candidate subsets and confirms 99 valid ones.
+\end{column}
+\begin{column}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figures/counting_04_restrictions.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Choose a method, then verify it}
+\small
+\begin{enumerate}
+\item One choice at each successive stage: \textbf{product rule}.
+\item People fill distinct named roles: \textbf{permutations}.
+\item A panel has no internal roles: \textbf{combinations}.
+\item Interacting restrictions: define the universe, count invalid groups, then \textbf{subtract without overlap errors}.
+\end{enumerate}
+\par\medskip
+\textbf{Check:} Why does enumeration support the answer 99 but not choose the formula for us? It compares generated outcomes with the model; we must first define what one outcome is and which restrictions apply.
+\par\smallskip
+\textbf{Next:} L07 counts repeated category labels and asks when a count does not determine a probability.
+\end{frame}
+\end{document}

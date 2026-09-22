@@ -1,12 +1,12 @@
 # Lección 06 - Técnicas de conteo I
 
-Esta microlección de 50 minutos usa un programa sintético de revisión de
+Esta lección usa un programa sintético de revisión de
 operaciones para contar espacios muestrales finitos. Los estudiantes aplican
 la regla del producto, distinguen permutaciones de combinaciones, verifican
 fórmulas mediante enumeración exhaustiva en Python y diagnostican un error
 de sobreconteo cuando las restricciones interactúan.
 
-- **Duración objetivo:** 50 minutos.
+- **Ruta vigente de clase:** 40 minutos con libreta y presentación compactas.
 - **Referencia canónica:** OpenStax, *Introductory Business Statistics 2e*,
   Capítulo 3, en especial la Sección 3.1 para espacios muestrales y eventos.
 - **Prerrequisitos:** Espacios muestrales, eventos, complementos y conjuntos
@@ -31,7 +31,27 @@ Al final de la lección, un estudiante puede:
 5. Explicar por qué seleccionar primero categorías obligatorias puede contar
    el mismo grupo final más de una vez.
 
-## Ruta de facilitación de 50 minutos
+## Ruta vigente de 40 minutos
+
+El profesor usa conjuntamente [la libreta compacta](notebooks/leccion_06_compacta.ipynb)
+y [la presentación compacta](diapositivas/leccion_06_compacta.pdf).
+La libreta conserva verificaciones ejecutables y la presentación muestra las
+derivaciones y preguntas. Los tiempos son estimaciones de esta lección dentro
+de la sesión S02 de 100 minutos.
+
+| Tiempo | Enfoque compacto | Verificación y transición |
+|---:|---|---|
+| 00-03 | Definir un resultado y el escenario sintético. | Preguntar qué contiene una configuración completa. |
+| 03-10 | Regla del producto: $3\times4\times2=24$. | Enumerar y pasar de etapas a roles distintos. |
+| 10-18 | Permutaciones: $P(6,3)=120$. | Justificar por qué importa el orden; quitar los roles. |
+| 18-25 | Combinaciones: $\binom{6}{3}=20$. | Explicar la reducción por $3!$; agregar restricciones. |
+| 25-36 | Grupos restringidos: rechazar 420 frente a un universo de 126 y derivar 99. | Identificar grupos duplicados y exclusiones disjuntas. |
+| 36-40 | Elegir una regla y enlazar con L07. | Enunciar resultado, orden y restricciones antes de elegir fórmula. |
+
+## Ruta anterior de 50 minutos
+
+Se conserva la distribución original como antecedente histórico; no es la
+ruta de exposición vigente de S02.
 
 | Tiempo | Movimiento en clase | Trabajo observable del estudiante |
 |---:|---|---|
@@ -41,7 +61,9 @@ Al final de la lección, un estudiante puede:
 | 31-44 | Agregar restricciones de categoría y conflicto y ejecutar el Paso 4 | Rechazar 420 por ser mayor que el universo de 126 elementos y derivar 99. |
 | 44-50 | Verificación de conceptos y transición | Elegir un método de conteo y enunciar cómo el mismo grupo podría sobrecontearse. |
 
-La presentación contiene ocho diapositivas centrales más un apéndice de
+La presentación extensa contiene ocho diapositivas centrales más un apéndice de
+respuestas sugeridas. La verificación conceptual puede enlazar con L07 en la
+misma sesión de 100 minutos.
 
 ## Programa sintético de revisión de operaciones
 
@@ -131,6 +153,10 @@ introduce un segundo traslape.
 
 ## Libreta de estudio
 
+La libreta y la presentación compactas son material de exposición del profesor.
+La siguiente libreta extensa sigue siendo la guía de estudio del alumnado; se
+conservan los scripts, las figuras y la presentación extensa originales.
+
 La guía estudiantil
 [`notebooks/leccion_06_tecnicas_conteo_i.ipynb`](notebooks/leccion_06_tecnicas_conteo_i.ipynb)
 integra los cuatro pasos conceptuales en un solo estado determinista acumulativo.
@@ -210,7 +236,8 @@ pdflatex -interaction=nonstopmode -halt-on-error leccion_06.tex
 pdflatex -interaction=nonstopmode -halt-on-error leccion_06.tex
 ```
 
-El PDF retenido contiene el núcleo de ocho diapositivas y el apéndice de
+El PDF extenso retenido contiene el núcleo de ocho diapositivas y el apéndice de
+respuestas sugeridas. Los PDF se almacenan mediante Git LFS.
 
 ## Atribución OpenStax
 

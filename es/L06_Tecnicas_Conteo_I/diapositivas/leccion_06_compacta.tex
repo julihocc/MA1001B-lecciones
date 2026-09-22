@@ -1,0 +1,171 @@
+\documentclass[aspectratio=169,10pt,spanish]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\selectlanguage{spanish}
+\shorthandoff{"}
+\title{L06: Técnicas de conteo I}
+\subtitle{Ruta de clase -- 40 minutos}
+\author{}
+\date{}
+\begin{document}
+
+\begin{frame}{Técnicas de conteo I}
+\framesubtitle{Ruta de clase -- 40 minutos}
+\textbf{Pregunta:} ¿Qué cuenta como un resultado y cómo contamos sin duplicarlo?
+\begin{block}{Al terminar podrás}
+Aplicar la regla del producto, distinguir permutaciones de combinaciones, comprobar una fórmula por enumeración y rechazar un sobreconteo.
+\end{block}
+\smallskip
+Todas las instalaciones, personas, funciones y restricciones son supuestos didácticos sintéticos.
+\end{frame}
+
+\begin{frame}{Ruta de 40 minutos}
+\small
+\begin{tabular}{p{.42\linewidth}rp{.39\linewidth}}
+\toprule Tema & Min & Comprobación observable \\ \midrule
+Definir un resultado & 3 & Decidir si importan los roles.\\
+Regla del producto & 7 & Contar 24 configuraciones.\\
+Permutaciones & 8 & Contar 120 asignaciones.\\
+Combinaciones & 7 & Contar 20 comités sin roles.\\
+Restricciones & 11 & Rechazar 420 y derivar 99.\\
+Integración & 4 & Elegir y justificar el método.\\ \bottomrule
+\end{tabular}
+\par\medskip
+Ejecuta las celdas preparadas de \texttt{leccion\_06\_compacta.ipynb} en cada paso. El cómputo tarda segundos; el tiempo incluye razonamiento y comprobaciones. El estudio extenso permanece en la libreta y el mazo completos.
+\end{frame}
+
+\begin{frame}{Primero define el resultado}
+\textbf{Experimento 1:} Configurar una revisión sintética eligiendo un centro de cumplimiento, una etapa del proceso y un tipo de evidencia.
+\[
+\omega=(\text{centro},\text{etapa},\text{tipo de evidencia}).
+\]
+Hay tres centros, cuatro etapas y dos tipos de evidencia. Dos ternas que difieren en alguna posición son configuraciones distintas.
+\par\medskip
+\textbf{Pregunta:} Si asignamos personas a funciones con nombre, ¿intercambiar a dos personas cambia el resultado?
+\par\smallskip
+\textbf{Comprobación:} Sí. Las funciones distinguen los resultados; por ello usaremos permutaciones.
+\end{frame}
+
+\begin{frame}[fragile]{Regla del producto: elecciones sucesivas}
+\begin{columns}[T]
+\begin{column}{.47\textwidth}
+\small
+Una elección de cada etapa produce
+\[
+N=\prod_i n_i=3\times4\times2=24.
+\]
+\begin{lstlisting}
+from itertools import product
+espacio = list(product(centros,
+                       etapas, evidencias))
+assert len(espacio) == 24
+\end{lstlisting}
+La libreta verifica ocho configuraciones por centro. Los factores cuentan componentes de una terna, no casos alternativos.
+\end{column}
+\begin{column}{.51\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/conteo_01_regla_producto.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Permutaciones: funciones distintas}
+\begin{columns}[T]
+\begin{column}{.46\textwidth}
+\small
+Asignamos las funciones Líder, Validación y Reportes a tres de seis analistas. Las posiciones son distintas; importa el orden:
+\[
+P(6,3)=\frac{6!}{(6-3)!}=6\times5\times4=120.
+\]
+La libreta enumera 120 asignaciones ordenadas. Intercambiar Líder y Reportes crea otro resultado.
+\par\smallskip
+\textbf{Comprobación:} ¿Dividimos aquí entre $3!$? No: las funciones distinguen las asignaciones.
+\end{column}
+\begin{column}{.52\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/conteo_02_permutaciones.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Combinaciones: un comité sin roles}
+\begin{columns}[T]
+\begin{column}{.48\textwidth}
+\small
+Elegimos tres de los mismos seis analistas para un comité sin funciones internas. El orden ya no crea un resultado nuevo:
+\[
+\binom{6}{3}=\frac{6!}{3!3!}=20.
+\]
+Las 120 asignaciones ordenadas se reducen a 20 comités porque cada uno aparece en $3!=6$ órdenes. La libreta enumera los 20 subconjuntos.
+\par\smallskip
+\textbf{Prueba de decisión:} ¿El resultado contiene posiciones con nombre o sólo un conjunto de personas?
+\end{column}
+\begin{column}{.50\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/conteo_03_combinaciones.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Restricciones: primero define el universo}
+\small
+Elegimos un grupo de cuatro personas entre cinco analistas de operaciones $O_1,\ldots,O_5$ y cuatro especialistas de datos $D_1,\ldots,D_4$.
+\begin{enumerate}
+\item El grupo debe incluir ambas disciplinas.
+\item $O_1$ y $D_1$ no pueden estar juntos en el grupo.
+\end{enumerate}
+No hay funciones internas en el grupo, así que el universo contiene
+\[
+|U|=\binom{9}{4}=126
+\]
+grupos sin orden. Una cuenta mayor que 126 es imposible.
+\par\smallskip
+\textbf{Comprobación:} ¿Qué método anterior cuenta el universo sin restricciones? Combinaciones.
+\end{frame}
+
+\begin{frame}{Por qué falla la tentación de 420}
+\small
+La propuesta $5\times4\times\binom{7}{2}=420$ primero designa a un analista de operaciones y a uno de datos, y luego elige dos personas más.
+\begin{alertblock}{Comprobación de plausibilidad}
+$420>126=|U|$, por lo que no puede contar grupos distintos de cuatro personas.
+\end{alertblock}
+Las personas designadas no tienen funciones especiales en el grupo final. Un grupo con dos personas de cada disciplina puede generarse $2\times2=4$ veces.
+\par\smallskip
+\textbf{Corrección:} Contar cada grupo una sola vez y restar los inválidos.
+\end{frame}
+
+\begin{frame}{El complemento produce 99}
+\begin{columns}[T]
+\begin{column}{.49\textwidth}
+\small
+Grupos de una sola disciplina: $\binom54+\binom44=5+1=6$.
+\[
+\text{Mixtos}=126-6=120.
+\]
+Grupos que contienen a $O_1$ y $D_1$: elegimos otras dos personas de las siete restantes, $\binom72=21$. Todos esos grupos ya son mixtos.
+\[
+\text{Válidos}=120-21=99.
+\]
+La libreta examina los 126 subconjuntos candidatos y confirma 99 válidos.
+\end{column}
+\begin{column}{.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{../figuras/conteo_04_restricciones.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Elige el método y luego compruébalo}
+\small
+\begin{enumerate}
+\item Una elección por cada etapa sucesiva: \textbf{regla del producto}.
+\item Personas en funciones distintas: \textbf{permutaciones}.
+\item Comité sin roles internos: \textbf{combinaciones}.
+\item Restricciones que interactúan: definir el universo, contar grupos inválidos y \textbf{restar sin errores de traslape}.
+\end{enumerate}
+\par\medskip
+\textbf{Comprobación:} ¿Por qué la enumeración respalda 99 pero no elige la fórmula por nosotros? Compara los resultados generados con el modelo; primero debemos definir un resultado y las restricciones.
+\par\smallskip
+\textbf{Siguiente:} L07 cuenta categorías repetidas y pregunta cuándo un conteo no determina una probabilidad.
+\end{frame}
+\end{document}

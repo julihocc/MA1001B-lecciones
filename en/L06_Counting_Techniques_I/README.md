@@ -1,11 +1,11 @@
 # Lesson 06 - Counting Techniques I
 
-This 50-minute micro-lesson uses one fully synthetic operations-review program
+This lesson uses one fully synthetic operations-review program
 to count finite sample spaces. Students apply the product rule, distinguish
 permutations from combinations, verify formulas through exhaustive Python
 enumeration, and diagnose an overcounting error when restrictions interact.
 
-- **Target duration:** 50 minutes.
+- **Current class route:** 40 minutes with the compact notebook and slides.
 - **Canonical reference:** OpenStax, *Introductory Business Statistics 2e*,
   Chapter 3, especially Section 3.1 for sample spaces and events.
 - **Prerequisites:** Sample spaces, events, complements, and disjoint sets from
@@ -26,7 +26,27 @@ By the end of the lesson, a student can:
 5. Explain why selecting mandatory categories first can count the same final
    group more than once.
 
-## 50-Minute Facilitation Route
+## Current 40-Minute Class Route
+
+The teacher uses [the compact notebook](notebooks/lesson_06_compact.ipynb) and
+[compact slides](slides/lesson_06_compact.pdf) together. The notebook is
+self-contained and retains executable checks; the slides supply the visible
+derivations and questions. The schedule is an estimate for this lesson within
+the 100-minute S02 class.
+
+| Time | Compact focus | Check and transition |
+|---:|---|---|
+| 00-03 | Define an outcome and the synthetic review setting. | Ask what one complete configuration contains. |
+| 03-10 | Product rule: $3\times4\times2=24$. | Enumerate, then change from stages to distinct roles. |
+| 10-18 | Permutations: $P(6,3)=120$. | Explain why role order matters; remove the roles. |
+| 18-25 | Combinations: $\binom{6}{3}=20$. | Explain the $3!$ reduction; add restrictions. |
+| 25-36 | Restricted groups: reject 420 against the 126-group universe, then derive 99. | Identify duplicate groups and disjoint exclusions. |
+| 36-40 | Select a counting rule and bridge to L07. | State the outcome, order, and restrictions before choosing a formula. |
+
+## Earlier 50-Minute Reference Route
+
+The following timing documents the original package; it is retained as
+historical context and is not the current S02 exposure route.
 
 | Time | Classroom movement | Observable student work |
 |---:|---|---|
@@ -36,7 +56,8 @@ By the end of the lesson, a student can:
 | 31-44 | Add category and conflict restrictions and run Step 4 | Reject 420 as larger than the 126-element universe and derive 99. |
 | 44-50 | Concept check and transition | Select a counting method and state how the same group could be overcounted. |
 
-The slide deck contains eight core slides plus one suggested-answers appendix.
+The extensive slide deck contains eight core slides plus one suggested-answers
+appendix.
 The concept check can lead into Lesson 07 during the same 100-minute class. It
 does not imply that the full class session ends here.
 
@@ -119,6 +140,10 @@ groups containing the conflict pair, so this subtraction does not introduce a
 second overlap.
 
 ## Study Notebook
+
+The compact notebook and slides above are teacher presentation material. The
+following extensive notebook remains the student study guide; the original
+scripts, figures, and extensive slides are retained.
 
 The student guide
 [`notebooks/lesson_06_counting_techniques_i.ipynb`](notebooks/lesson_06_counting_techniques_i.ipynb)
