@@ -1,0 +1,854 @@
+\documentclass[aspectratio=169,11pt,english]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+
+\newcommand{\ruta}{Class route · 40 minutes}
+\title[L05 · \ruta]{Set Theory and Sample Spaces}
+% Code fragments support the explanation; source files remain the authoritative
+% place to read every docstring and comment at full size.
+\lstset{basicstyle=\ttfamily\tiny,columns=fullflexible,keepspaces=true}
+\newcommand{\archivo}[1]{{\footnotesize\texttt{\detokenize{#1}}\par}\smallskip}
+\newcommand{\objetivo}[1]{{\small\color{TecAzul}#1\par}\medskip}
+\newcommand{\question}[1]{\par\smallskip\textbf{Your task.} #1\par}
+\newcommand{\checkit}[1]{\par\smallskip\textbf{Check.} #1\par}
+\newcommand{\code}[3]{%
+\ifnum#2>50\lstset{gobble=4}\else\lstset{gobble=0}\fi
+\ifcase#1\relax
+\or\lstinputlisting[firstline=#2,lastline=#3]{../src/set_theory_01_sample_space.py}%
+\or\lstinputlisting[firstline=#2,lastline=#3]{../src/set_theory_02_set_operations.py}%
+\or\lstinputlisting[firstline=#2,lastline=#3]{../src/set_theory_03_disjoint_events.py}%
+\fi}
+
+\begin{document}
+
+\begin{frame}{Set Theory and Sample Spaces}
+  \framesubtitle{Class route · 40 minutes}
+  \objetivo{L05 · A student guide to mathematics and programming}
+  How can we identify night dispatches, delayed dispatches, and dispatches that
+  satisfy both conditions?
+  \begin{block}{What you will build}
+    A model of possible outcomes and a Python program that answers questions
+    with sets, membership, and reproducible observations.
+  \end{block}
+  Synthetic dispatch case: context, definitions, implementation, and checks.
+  \par\medskip
+  {\footnotesize MA1001B Faculty \textbar{} Course lessons \textbar{} Tecnol\'ogico de Monterrey}
+\end{frame}
+
+\begin{frame}{By the end, you can demonstrate that you can...}
+  \framesubtitle{Class route · 40 minutes}
+  \begin{enumerate}
+    \item Define an experiment, represent an outcome, and construct its sample space $S$.
+    \item Distinguish possible outcomes, observed records, cardinalities, and frequencies.
+    \item Represent events as subsets and calculate union, intersection, and complement.
+    \item Justify disjointness and exhaustiveness as separate properties.
+    \item Implement the operations in Python and interpret their results.
+  \end{enumerate}
+  \checkit{Every objective has an activity and a check; the final question combines all five.}
+\end{frame}
+
+\begin{frame}{Your learning route: 40 minutes}
+  \framesubtitle{Class route · 40 minutes}
+  \begin{tabular}{p{.34\linewidth}rp{.45\linewidth}}
+    \toprule Block & Min & Product \\ \midrule
+    Case and objectives & 5 & Interpret one dispatch.\\
+    Sample space & 10 & Construct eight possibilities.\\
+    Events and operations & 15 & Solve and program set questions.\\
+    Disjointness and exhaustiveness & 11 & Justify two independent properties.\\
+    Integration & 4 & Solve a new question.\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  Follow intuition $\to$ formal definition $\to$ worked example $\to$ implementation $\to$ interpretation.
+  The simulation details and additional proofs appear in the student consultation section.
+\end{frame}
+
+\begin{frame}{The case: classify one dispatch}
+  \framesubtitle{Class route · 40 minutes}
+  \objetivo{Objective 1 · Context before symbols}
+  A \textbf{dispatch} is one individual shipment. We record:
+  \begin{description}
+    \item[Shift] Day or Night: when the dispatch is processed.
+    \item[Service] Standard or Express: the assigned service level.
+    \item[Status] On time or Delayed: whether the delivery met its target.
+  \end{description}
+  These categories let us ask about time, service, and delivery performance.
+  \begin{alertblock}{Synthetic teaching model}
+    The categories, 480 records, and generating probabilities are invented.
+    They are not observations or estimates from a real company.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Experiment and outcome: observe one repetition}
+  \framesubtitle{Class route · 40 minutes}
+  \textbf{Experiment:} observe one dispatch and record its three characteristics;
+  the combination is not known in advance.
+  \[
+    \omega=(\text{shift},\text{service},\text{status})
+  \]
+  The symbol $\omega$ represents one possible outcome. For example,
+  \[
+    \omega=(\text{Night},\text{Express},\text{Delayed}).
+  \]
+  This means a night dispatch with Express service that missed its delivery target.
+  \question{Why is writing only ``Delayed'' insufficient?}
+  \checkit{Shift and service are missing; position is part of the outcome contract.}
+\end{frame}
+
+\begin{frame}{A row, an identifier, and a result}
+  \framesubtitle{Class route · 40 minutes}
+  \begin{tabular}{rlll}
+    \toprule ID & Shift & Service & Status \\ \midrule
+    101 & Day & Standard & On time\\
+    102 & Day & Standard & On time\\
+    103 & Night & Express & Delayed\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  These three hypothetical shipments contain \textbf{two distinct outcomes}.
+  The ID distinguishes records; it is not part of $\omega$.
+  \[
+    3\ \text{records}\qquad 2\ \text{observed outcomes}\qquad |S|=8.
+  \]
+  \question{Does the second row increase $|S|$?}
+  \checkit{No. It repeats one outcome and increases its frequency, not the possibilities.}
+\end{frame}
+
+\begin{frame}{Build the sample space}
+  \framesubtitle{Class route · 40 minutes}
+  Define $T=\{\text{Day},\text{Night}\}$, $V=\{\text{Standard},\text{Express}\}$,
+  and $E=\{\text{On time},\text{Delayed}\}$.
+  \[
+    S=T\times V\times E=\{(t,v,e):t\in T,\ v\in V,\ e\in E\}.
+  \]
+  The \textbf{Cartesian product} forms all tuples by choosing one element from
+  every set. The symbol $\in$ means ``belongs to.''
+  \[
+    |S|=|T|\,|V|\,|E|=2\cdot2\cdot2=8.
+  \]
+  $|S|$ is the \textbf{cardinality}: the number of distinct possible outcomes.
+  Possibility does not imply equal probability.
+\end{frame}
+
+\begin{frame}{The eight possibilities, one per row}
+  \framesubtitle{Class route · 40 minutes}
+  \centering
+  \begin{tabular}{clll}
+    \toprule Label & Shift & Service & Status \\ \midrule
+    $\omega_1$ & Day & Standard & On time\\
+    $\omega_2$ & Day & Standard & Delayed\\
+    $\omega_3$ & Day & Express & On time\\
+    $\omega_4$ & Day & Express & Delayed\\
+    $\omega_5$ & Night & Standard & On time\\
+    $\omega_6$ & Night & Standard & Delayed\\
+    $\omega_7$ & Night & Express & On time\\
+    $\omega_8$ & Night & Express & Delayed\\ \bottomrule
+  \end{tabular}
+  \par\medskip\raggedright
+  $\omega_i$ abbreviates a \textbf{type of outcome}; it does not identify one shipment.
+  \question{List the four Day possibilities and then the four Night possibilities.}
+\end{frame}
+
+\begin{frame}{Increment 1 · Enumerate without omissions}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \textbf{Function:} \texttt{build\_sample\_space()}.
+  \textbf{Available inputs:} the three category tuples.
+  \code{1}{57}{61}
+  \question{Combine one category from each collection with \texttt{product};
+  preserve the tuple order so it can be checked against the table.}
+  \checkit{Eight distinct tuples. First is (Day, Standard, On time); last is
+  (Night, Express, Delayed).}
+\end{frame}
+
+\begin{frame}{Increment 1 · Read the product contract}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{62}{71}
+  The last argument changes fastest, so the order is predictable. Materializing
+  the iterator lets later tables and figures reuse the same sequence.
+  \checkit{The return value has eight inner tuples, each with three strings.}
+\end{frame}
+
+\begin{frame}{Increment 1 · Materialize and verify}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{65}{71}
+  \texttt{product} replaces three manually nested loops. The outer \texttt{tuple}
+  materializes the iterator and keeps one stable order; each inner tuple is one result.
+  \[
+    |S|=8\qquad |\{\omega:\omega\text{ is listed twice}\}|=0.
+  \]
+  \checkit{Test both \texttt{len(sample\_space) == 8} and
+  \texttt{len(set(sample\_space)) == 8}. Eight positions alone would not rule out duplicates.}
+\end{frame}
+
+\begin{frame}{From eight possibilities to 480 observations}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \texttt{simulate\_dispatches()} builds a DataFrame in memory with seed 42.
+  It does not download data or write a CSV.
+  \begin{itemize}
+    \item Shift and service use unequal generating probabilities.
+    \item The delay probability depends on shift and service.
+    \item The larger delay increment for Express is a synthetic assumption,
+          not a claim about Express in reality.
+  \end{itemize}
+  This run contains all eight outcome types. The most frequent type appears 196 times.
+  \checkit{Possible, observed, and frequent are different statements.}
+\end{frame}
+
+\begin{frame}{Increment 1 · Generate aligned records}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \textbf{Function:} \texttt{simulate\_dispatches(seed)}.
+  \code{1}{75}{82}
+  \question{First draw one shift and one service for each of the 480 records.
+  Read the probability tuples in category order.}
+  \checkit{Both arrays have length 480; probabilities describe the model and do
+  not impose exact category quotas.}
+\end{frame}
+
+\begin{frame}{Increment 1 · One probability per record}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{108}{119}
+  A Boolean comparison contributes 1 when its condition is true and 0 otherwise.
+  Thus the base probability and the two increments produce 0.10, 0.18, 0.22,
+  or 0.30 for a row.
+  \checkit{Every delay probability lies in $[0,1]$; then one uniform draw chooses
+  the status for each row.}
+\end{frame}
+
+\begin{frame}{Increment 1 · Finalize each status}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{120}{130}
+  The comparison now produces one status per row.
+\end{frame}
+
+\begin{frame}{Increment 1 · Assemble the observed table}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{131}{138}
+  \texttt{dispatch\_id} labels a row. \texttt{zip} joins the aligned shift,
+  service, and status values into one outcome tuple.
+\end{frame}
+
+\begin{frame}{Increment 1 · Assemble the observed table}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{139}{145}
+  The tuple column preserves the three-component result while the ID keeps
+  records distinguishable.
+  \checkit{The output has 480 rows and columns \texttt{dispatch\_id},
+  \texttt{shift}, \texttt{service}, \texttt{status}, and \texttt{outcome}.}
+\end{frame}
+
+\begin{frame}{Read frequencies without losing possibilities}
+  \framesubtitle{Class route · 40 minutes}
+  \centering
+  \includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figures/set_theory_01_sample_space.png}
+  \par\raggedright{\small Each bar counts synthetic records of one possible tuple;
+  all bars sum to 480. The bar of 196 does not add possibilities to $S$.}
+\end{frame}
+
+\begin{frame}{Events select outcomes from $S$}
+  \framesubtitle{Class route · 40 minutes}
+  \objetivo{Objective 3 · Question: which types are Night or Delayed?}
+  An \textbf{event} is a subset of $S$: it selects outcomes satisfying a condition.
+  \[
+    A=\{\omega\in S:\text{shift = Night}\}=\{\omega_5,\omega_6,\omega_7,\omega_8\}
+  \]
+  \[
+    B=\{\omega\in S:\text{status = Delayed}\}=\{\omega_2,\omega_4,\omega_6,\omega_8\}.
+  \]
+  $A\subseteq S$ means every element of $A$ belongs to $S$.
+  \checkit{$|A|=|B|=4$ possible types; this is not yet a count of observed rows.}
+\end{frame}
+
+\begin{frame}{Increment 2 · Select by condition}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \textbf{Function:} \texttt{define\_events(sample\_space)}.
+  \question{Build two sets: one for Night and one for Delayed. Filter the eight
+  possible tuples, not the 480 records.}
+  \begin{itemize}
+    \item Position 0 is shift; position 1 is service; position 2 is status.
+    \item Keep the complete tuple when its component satisfies the condition.
+  \end{itemize}
+  \code{2}{92}{96}
+  \checkit{The set comprehension begins with the first event condition.}
+\end{frame}
+
+\begin{frame}{Increment 2 · Define the second event}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{97}{104}
+  \checkit{Each set has four elements; $\omega_6$ and $\omega_8$ belong to both.}
+\end{frame}
+
+\begin{frame}{Increment 2 · Keep the complete tuple}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{100}{104}
+  The condition examines one component but returns the whole outcome. The event
+  remains a subset of $S$, not a collection of isolated labels.
+\end{frame}
+
+\begin{frame}{Intersection: both conditions}
+  \framesubtitle{Class route · 40 minutes}
+  \textbf{Question:} which possible types are Night \textbf{and} Delayed?
+  \[
+    A\cap B=\{\omega\in S:\omega\in A\ \text{and}\ \omega\in B\}.
+  \]
+  From $A$, $\omega_5$ and $\omega_7$ are On time, so discard them:
+  \[
+    A\cap B=\{\omega_6,\omega_8\},\qquad |A\cap B|=2.
+  \]
+  They are (Night, Standard, Delayed) and (Night, Express, Delayed).
+  \checkit{The result is two possible types, not necessarily two observed dispatches.}
+\end{frame}
+
+\begin{frame}{Union: at least one condition}
+  \framesubtitle{Class route · 40 minutes}
+  \textbf{Question:} which possible types are Night \textbf{or} Delayed?
+  Here ``or'' is inclusive: both conditions are accepted.
+  \[
+    A\cup B=\{\omega\in S:\omega\in A\ \text{or}\ \omega\in B\}.
+  \]
+  \[
+    A\cup B=\{\omega_2,\omega_4,\omega_5,\omega_6,\omega_7,\omega_8\}.
+  \]
+  The shared outcomes $\omega_6$ and $\omega_8$ enter once each.
+  \checkit{Six types qualify; only Day and On time types $\omega_1,\omega_3$ are absent.}
+\end{frame}
+
+\begin{frame}{Why $4+4-2=6$: inclusion--exclusion}
+  \framesubtitle{Class route · 40 minutes}
+  \begin{tabular}{lll}
+    \toprule Region & Outcomes & Count \\ \midrule
+    Only $A$ & $\omega_5,\omega_7$ & 2\\
+    $A\cap B$ & $\omega_6,\omega_8$ & 2\\
+    Only $B$ & $\omega_2,\omega_4$ & 2\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  Adding $4+4$ counts $\omega_6$ twice and $\omega_8$ twice. Subtract one copy
+  of the shared region:
+  \[
+    |A\cup B|=|A|+|B|-|A\cap B|=4+4-2=6.
+  \]
+  \checkit{The formula counts every member of the union exactly once.}
+\end{frame}
+
+\begin{frame}{Complement: what is missing inside the universe}
+  \framesubtitle{Class route · 40 minutes}
+  \textbf{Question:} which possible types are not Night?
+  The universe remains $S$ and $A$ contains the Night outcomes.
+  \[
+    A^c=S\setminus A=\{\omega\in S:\omega\notin A\}
+      =\{\omega_1,\omega_2,\omega_3,\omega_4\}.
+  \]
+  These are the four Day types. The superscript $c$ means complement, not a power.
+  \begin{alertblock}{The universe matters}
+    We do not add a Dawn or Midnight shift: it is not in this $S$.
+    A complement is always relative to a stated universe.
+  \end{alertblock}
+  \checkit{$|A^c|=8-4=4$ possible types.}
+\end{frame}
+
+\begin{frame}{Increment 2 · Program the operations}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \textbf{Function:} \texttt{summarize\_set\_operations()}.
+  \question{Validate that $A$ and $B$ are subsets of $S$, then return the five named sets.}
+  \begin{tabular}{lll}
+    \toprule Operation & Python & Expected size \\ \midrule
+    $A$ and $B$ & stored directly & 4 and 4\\
+    Intersection & \texttt{\&} & 2\\
+    Union & \texttt{|} & 6\\
+    Complement & \texttt{set(S) - A} & 4\\ \bottomrule
+  \end{tabular}
+  The table states the intended contract before the implementation.
+\end{frame}
+
+\begin{frame}{Increment 2 · Validate the universe}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{107}{112}
+  \question{Start with the universe and reject an event containing a tuple that
+  cannot occur under the stated model.}
+\end{frame}
+
+\begin{frame}{Increment 2 · Apply the validated operations}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{113}{118}
+  Validation makes the relative complement unambiguous: it is computed against
+  the universe received by the function.
+\end{frame}
+
+\begin{frame}{Increment 2 · Apply the three set operators}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{119}{134}
+  \texttt{\&} means intersection, \texttt{|} means union, and subtraction from
+  the universe means relative complement.
+\end{frame}
+
+\begin{frame}{Increment 2 · Name the returned operations}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{127}{134}
+  The dictionary names answers so later code can inspect them without repeating
+  the same set expression. It still counts possible types, not rows.
+  \checkit{The five lengths are 4, 4, 2, 6, and 4.}
+\end{frame}
+
+\begin{frame}{Now count observed records}
+  \framesubtitle{Class route · 40 minutes}
+  A set answers ``which types are possible?'' A Boolean mask answers ``which
+  rows in this DataFrame satisfy the condition?''
+  \[
+    n(A)=172,\quad n(B)=86,\quad n(A\cap B)=45,\quad n(A\cup B)=213.
+  \]
+  These are counts of rows, not cardinalities of event sets. The same logic gives
+  \[
+    n(A\cup B)=172+86-45=213,\qquad n(A^c)=480-172=308.
+  \]
+  \question{Use pandas \texttt{\&} and \texttt{|} between masks; \texttt{and} and
+  \texttt{or} do not perform elementwise Boolean operations on a Series.}
+\end{frame}
+
+\begin{frame}{Cardinality and frequency use different units}
+  \framesubtitle{Class route · 40 minutes}
+  \begin{tabular}{lrr}
+    \toprule Event & $|G|$: possible types & $n(G)$: observed dispatches \\ \midrule
+    $A$ & 4 & 172\\
+    $B$ & 4 & 86\\
+    $A\cap B$ & 2 & 45\\
+    $A\cup B$ & 6 & 213\\
+    $A^c$ & 4 & 308\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  A type may repeat in many rows. That is why $|A\cap B|=2$ and
+  $n(A\cap B)=45$ can both be correct.
+  \checkit{State the unit every time: possible types or observed dispatches.}
+\end{frame}
+
+\begin{frame}{A membership matrix, not a frequency chart}
+  \framesubtitle{Class route · 40 minutes}
+  \centering
+  \includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figures/set_theory_02_set_operations.png}
+  \par\raggedright{\small Each cell is 1 if a possible outcome belongs to a set and 0 otherwise.
+  The figure does not represent the 480 observed rows.}
+\end{frame}
+
+\begin{frame}{Two questions you must not confuse}
+  \framesubtitle{Class route · 40 minutes}
+  \objetivo{Objective 4 · Disjointness and exhaustiveness}
+  \textbf{Can both events occur together?} They are \textbf{disjoint} when
+  \[
+    A\cap B=\varnothing.
+  \]
+  \textbf{Do they cover every possibility?} They are \textbf{exhaustive} with
+  respect to $S$ when
+  \[
+    A\cup B=S.
+  \]
+  Exhaustive events may overlap. The tests answer different questions.
+\end{frame}
+
+
+
+\begin{frame}{Increment 3 · Test properties independently}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \textbf{Functions:} \texttt{define\_service\_events()} and
+  \texttt{compare\_event\_pairs()}.
+  \question{Build C/D, then compare A/B and C/D with two independent tests.}
+  \code{3}{93}{100}
+  \checkit{C and D each filter the service component (position 1) and form a
+  partition of S.}
+\end{frame}
+
+\begin{frame}{Increment 3 · Complete the service events}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{101}{106}
+  Both event definitions use the same universe and differ only in the service
+  label. This is why the pair partitions S.
+\end{frame}
+
+\begin{frame}{Increment 3 · Compare each pair}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{108}{115}
+  \question{For each named pair, validate membership in S and calculate the
+  intersection and union exactly once.}
+\end{frame}
+
+\begin{frame}{Increment 3 · Record the comparison}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{116}{123}
+  The comparison begins with an empty row list and one loop over the named pairs.
+\end{frame}
+
+\begin{frame}{Increment 3 · Record the comparison}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{124}{138}
+  Reusing the calculated intersection and union keeps the two property checks
+  DRY and makes their different meanings visible.
+  \checkit{One row per pair with separate property columns.}
+\end{frame}
+
+\begin{frame}{Increment 3 · Translate definitions into tests}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{139}{151}
+  \texttt{not intersection} tests emptiness; \texttt{union == universe} tests
+  coverage.
+\end{frame}
+
+\begin{frame}{Increment 3 · Keep the tests independent}
+  \framesubtitle{Class route · 40 minutes}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{152}{160}
+  Equal sizes alone would not prove set equality, so the code compares the union
+  with the received universe.
+  \checkit{A/B: intersection 2, union 6, false/false. C/D: intersection 0,
+  union 8, true/true.}
+\end{frame}
+
+\begin{frame}{Visual comparison: overlap versus coverage}
+  \framesubtitle{Class route · 40 minutes}
+  \centering
+  \includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figures/set_theory_03_disjoint_events.png}
+  \par\raggedright{\small The pink bars answer the overlap question, the navy bars answer
+  the coverage question, and the dashed line is $|S|=8$.}
+\end{frame}
+
+\begin{frame}{Integration · A new question}
+  \framesubtitle{Class route · 40 minutes}
+  \objetivo{Objective 5 · Combine condition, set operation, code, and interpretation}
+  \textbf{Context:} identify Express dispatches that arrived Delayed.
+  \textbf{Question:} what possible types satisfy both conditions, how many records
+  were observed, and how does this event compare with $A^c$ (Day)?
+  Define
+  \[
+    F=\{r\in S:r_1=\text{Express},\ r_2=\text{Delayed}\}.
+  \]
+  \question{Before reading the answer, write the two members of $F$, estimate its
+  observed count, and predict $F\cap A^c$ and $F\cup A^c$.}
+\end{frame}
+
+
+
+\begin{frame}{Check the five learning objectives}
+  \framesubtitle{Class route · 40 minutes}
+  \begin{enumerate}
+    \item Can you explain the experiment and enumerate $S$ without the table?
+    \item Can you explain why $|S|=8$ even though there are 480 rows?
+    \item Can you justify the members of an intersection, union, and complement?
+    \item Can you test disjointness and exhaustiveness independently?
+    \item Can you predict, run, and interpret the Python results?
+  \end{enumerate}
+  \checkit{The next lesson counts larger spaces without listing every outcome.}
+\end{frame}
+
+\begin{frame}{Reading and practice}
+  \framesubtitle{Class route · 40 minutes}
+  Holmes, Illowsky, and Dean, \emph{Introductory Business Statistics 2e}, OpenStax:
+  \begin{itemize}
+    \item \href{https://openstax.org/books/introductory-business-statistics-2e/pages/3-1-terminology}{Section 3.1: Terminology}. Review experiments, outcomes, sample spaces, events, unions, intersections, and complements.
+    \item \href{https://openstax.org/books/introductory-business-statistics-2e/pages/3-2-independent-and-mutually-exclusive-events}{Section 3.2: Independent and Mutually Exclusive Events}. Contrast mutual exclusivity with independence.
+  \end{itemize}
+  The conceptual foundation is CC BY-NC-SA 4.0. The dispatch case, code,
+  figures, and numerical results are original course material using synthetic data.
+\end{frame}
+
+\appendix
+\renewcommand{\ruta}{Student consultation}
+
+\begin{frame}{Student consultation · Choose what to revisit}
+  \framesubtitle{Student consultation}
+  \begin{itemize}
+    \item A worked solution for $F$ and counterexamples.
+    \item The general inclusion--exclusion argument.
+    \item Why disjointness is not independence.
+    \item Simulation assumptions, seed, and data structures.
+    \item Declarative graphics, resource ownership, and validation.
+    \item Additional practice with reasoned solutions.
+  \end{itemize}
+  These pages are part of the student guide; they are not instructor notes.
+\end{frame}
+
+\begin{frame}{Inclusion--exclusion: the general reason}
+  \framesubtitle{Student consultation}
+  Split the union into three non-overlapping regions:
+  \[
+    A\setminus B,\qquad A\cap B,\qquad B\setminus A.
+  \]
+  If their cardinalities are $x,y,z$, then
+  \[
+    |A|=x+y,\quad |B|=y+z,\quad |A\cup B|=x+y+z.
+  \]
+  The sum $|A|+|B|=x+2y+z$ counts the shared region twice. Subtract one copy:
+  \[
+    \boxed{|A\cup B|=|A|+|B|-|A\cap B|}.
+  \]
+  In this case $x=y=z=2$.
+\end{frame}
+
+\begin{frame}{The properties combine in four ways}
+  \framesubtitle{Student consultation}
+  \begin{tabular}{llll}
+    \toprule Pair & $|\cap|$ & $|\cup|$ & Conclusion \\ \midrule
+    $C,D$ & 0 & 8 & Disjoint and exhaustive\\
+    $A,B$ & 2 & 6 & Neither property\\
+    $A, A^c\cap B$ & 0 & 6 & Disjoint, not exhaustive\\
+    $S,A$ & 4 & 8 & Exhaustive, not disjoint\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  A property does not imply the other. For example, $S$ and $A$ cover $S$ but overlap.
+\end{frame}
+
+\begin{frame}{Disjointness does not mean independence}
+  \framesubtitle{Student consultation}
+  Independence is a probability statement:
+  \[
+    P(A\cap C)=P(A)P(C).
+  \]
+  In the generating model, shift and service are independently sampled:
+  $P(A)=0.35$ and $P(C)=0.70$, so $P(A\cap C)=0.245$ even though $A$ and $C$
+  share possible outcomes.
+  Two disjoint events with positive probability are not independent: their
+  intersection has probability zero but the product is positive.
+  \checkit{Set relationships and probability relationships are different claims.}
+\end{frame}
+
+\begin{frame}{The universe determines a complement}
+  \framesubtitle{Student consultation}
+  Suppose Express does not operate at Night. This is a new model, not a plotting edit:
+  \[
+    S'=S\setminus\{\omega_7,\omega_8\},\qquad |S'|=6.
+  \]
+  Events must be rebuilt as subsets of $S'$, and the simulator must respect the new
+  restriction. The complement of Night in $S'$ is then the Day outcomes only.
+  \checkit{Reusable functions should use the universe received, not a hard-coded 8.}
+\end{frame}
+
+\begin{frame}{Simulation · probabilities are assumptions}
+  \framesubtitle{Student consultation}
+  \begin{tabular}{llr}
+    \toprule Shift & Service & Delay probability \\ \midrule
+    Day & Standard & 0.10\\
+    Night & Standard & 0.18\\
+    Day & Express & 0.22\\
+    Night & Express & 0.30\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  The 0.30 is $0.10+0.08+0.12$. It is a transparent teaching assumption.
+  It does not estimate the reliability of Express in a real operation.
+  \checkit{The four model rates are 0.10, 0.18, 0.22, and 0.30.}
+\end{frame}
+
+\begin{frame}{Simulation · apply the two increments}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{118}{123}
+  The comparisons are arrays aligned with the 480 dispatches. The validation
+  rejects an impossible probability rather than silently clipping it.
+\end{frame}
+
+\begin{frame}{Simulation · apply the two increments}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{124}{129}
+  The Night and Express indicators contribute 0 or their named increments to
+  the base rate. This is vectorized arithmetic, not a row-by-row loop.
+\end{frame}
+
+\begin{frame}{Simulation · Convert probability to status}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{129}{136}
+  For a row with probability $p$, \texttt{np.where} implements
+  \textit{Delayed if $U<p$; On time otherwise}.
+\end{frame}
+
+\begin{frame}{Simulation · assemble the tuple column}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{137}{145}
+  \texttt{zip} joins values with the same row position. Repeated tuples remain
+  repeated observations even though the tuple itself is immutable.
+\end{frame}
+
+\begin{frame}{Data structures with a purpose}
+  \framesubtitle{Student consultation}
+  \begin{description}
+    \item[Inner tuple] An ordered result: shift, service, status. Immutable and hashable.
+    \item[Outer tuple] The eight possibilities in a stable display order.
+    \item[Set] An event without duplicates, with membership and set operations.
+    \item[DataFrame] The 480 records, including repeated outcomes and IDs.
+  \end{description}
+  Turning observed outcomes into a set answers ``which types appeared?'' but
+  removes the repetitions needed to calculate frequencies.
+\end{frame}
+
+\begin{frame}{Graphics · delegate presentation, retain reasoning}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \textbf{Function:} \texttt{build\_frequency\_figure()}.
+  \code{1}{174}{181}
+  The function first builds an explicit table in S order. This is the academic
+  calculation: each row is one possible outcome and one observed count.
+\end{frame}
+
+\begin{frame}{Graphics · let Seaborn handle geometry}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{182}{188}
+  The frequency list uses \texttt{get(item, 0)} so a possible but absent outcome
+  remains visible.
+\end{frame}
+
+\begin{frame}{Graphics · let Seaborn handle geometry}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{189}{198}
+  \texttt{barplot} places semantic categories and bars; the preceding table still
+  computes the count for each member of $S$.
+\end{frame}
+
+\begin{frame}{Graphics · label exact counts}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{199}{208}
+  \texttt{errorbar=None} avoids inferential intervals that this example did not
+  estimate; \texttt{bar\_label} resolves bar coordinates.
+\end{frame}
+
+\begin{frame}{Graphics · label exact counts}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{209}{218}
+  \texttt{bar\_label} delegates coordinate placement. \texttt{errorbar=None}
+  avoids inferential intervals that this example did not estimate.
+\end{frame}
+
+\begin{frame}{Graphics · membership as an explicit table}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_02_set_operations.py}
+  \textbf{Function:} \texttt{build\_membership\_figure()}.
+  \code{2}{137}{144}
+  The table comprehension creates one explicit 0/1 value for every outcome/set
+  pair.
+\end{frame}
+
+\begin{frame}{Graphics · complete the membership table}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{145}{149}
+  The mathematics is complete before plotting begins.
+\end{frame}
+
+\begin{frame}{Graphics · render membership, do not infer it}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{150}{155}
+  Each row is a possible outcome and each column is a set. The code converts
+  membership to 0/1 before Seaborn colors the matrix.
+\end{frame}
+
+\begin{frame}{Graphics · annotate the membership matrix}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{156}{160}
+  The figure is a membership table, not a frequency table.
+\end{frame}
+
+\begin{frame}{Graphics · annotate the membership matrix}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_02_set_operations.py}
+  \code{2}{161}{174}
+  The graphic never counts rows; it displays membership that was already computed.
+\end{frame}
+
+\begin{frame}{Graphics · reshape for a grouped comparison}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_03_disjoint_events.py}
+  \textbf{Function:} \texttt{build\_pair\_figure()}.
+  \code{3}{162}{170}
+  The input table already contains the exact intersection and union sizes.
+  \texttt{melt} only changes its display shape.
+\end{frame}
+
+\begin{frame}{Graphics · show two independent tests}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{171}{176}
+  The reshaped table has one row per pair and measure.
+\end{frame}
+
+\begin{frame}{Graphics · show two independent tests}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{177}{191}
+  \texttt{hue} groups the two measures; the dashed line uses the received $|S|$,
+  not a graphic constant.
+\end{frame}
+
+\begin{frame}{Graphics · label the exact pair sizes}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{192}{201}
+  Labels keep zero intersection visible.
+\end{frame}
+
+\begin{frame}{Graphics · label the exact pair sizes}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_03_disjoint_events.py}
+  \code{3}{202}{211}
+  Labels keep zero intersection visible and make the two independent tests
+  readable without guessing from color.
+\end{frame}
+
+\begin{frame}{Resource ownership: build, save, close}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \textbf{Function:} \texttt{save\_figure(figure, path)}.
+  \code{1}{149}{156}
+  Calculation functions return a Figure. The caller decides whether to display
+  it in a notebook or save it as evidence.
+\end{frame}
+
+\begin{frame}{Resource ownership · close even on failure}
+  \framesubtitle{Student consultation}
+  \archivo{set_theory_01_sample_space.py}
+  \code{1}{157}{162}
+  \texttt{finally} closes the figure even if writing fails, so repeated
+  executions do not leak resources.
+\end{frame}
+
+\begin{frame}{Validation before interpretation}
+  \framesubtitle{Student consultation}
+  \begin{tabular}{p{.48\linewidth}p{.45\linewidth}}
+    \toprule Check & What it detects \\ \midrule
+    Eight tuples and eight distinct tuples & Duplicates or omissions in $S$.\\
+    Events are subsets of $S$ & Results outside the universe.\\
+    Inclusion--exclusion equality & Bad filters or double counting.\\
+    $A\cap A^c=\varnothing$, $A\cup A^c=S$ & Incorrect complement.\\
+    Frequencies sum to 480 & Missing or duplicated rows.\\
+    Seed 42 reconstructs the same rows & Accidental generator changes.\\ \bottomrule
+  \end{tabular}
+  \par\medskip
+  A failed check requires reviewing the model and code before interpreting a figure.
+\end{frame}
+
+
+
+
+
+\end{document}

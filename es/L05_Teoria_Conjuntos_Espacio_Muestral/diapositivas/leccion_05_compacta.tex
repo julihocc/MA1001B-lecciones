@@ -1,0 +1,446 @@
+\documentclass[aspectratio=169,11pt,spanish]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\newcommand{\ruta}{Ruta de clase · 40 minutos}
+\title[L05 · \ruta]{Teoría de conjuntos y espacios muestrales}
+\lstset{basicstyle=\ttfamily\footnotesize,columns=fullflexible,keepspaces=true}
+\newcommand{\archivo}[1]{{\footnotesize\texttt{\detokenize{#1}}\par}\smallskip}
+\newcommand{\objetivo}[1]{{\small\color{TecAzul}#1\par}\medskip}
+\newcommand{\pregunta}[1]{\par\smallskip\textbf{Tu tarea.} #1\par}
+\newcommand{\verifica}[1]{\par\smallskip\textbf{Comprobación.} #1\par}
+\newcommand{\codigo}[3]{%
+\ifnum#2>50\lstset{gobble=4}\else\lstset{gobble=0}\fi
+\ifcase#1\relax
+\or\lstinputlisting[firstline=#2,lastline=#3]{../src/teoria_conjuntos_01_espacio_muestral.py}%
+\or\lstinputlisting[firstline=#2,lastline=#3]{../src/teoria_conjuntos_02_operaciones_conjuntos.py}%
+\or\lstinputlisting[firstline=#2,lastline=#3]{../src/teoria_conjuntos_03_eventos_disjuntos.py}%
+\fi}
+\begin{document}
+\shorthandoff{"}
+\begin{frame}{Teoría de conjuntos y espacios muestrales}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{L05 · Una guía de matemáticas y programación}
+¿Cómo identificar envíos nocturnos, retrasados o que cumplen ambas condiciones?
+\begin{block}{Lo que vas a construir}
+Un modelo de resultados posibles y un programa que responde preguntas mediante conjuntos.
+\end{block}
+Caso sintético de despachos: razonamiento, implementación y comprobación.
+\par\medskip
+{\footnotesize Claustro MA1001B \textbar{} Lecciones del curso \textbar{} Tecnológico de Monterrey}
+\end{frame}
+
+\begin{frame}{Al terminar podrás demostrar que sabes…}
+\framesubtitle{Ruta de clase · 40 minutos}
+\begin{enumerate}
+\item Definir el experimento, representar un resultado y construir $S$.
+\item Distinguir posibilidades, registros, cardinalidades y frecuencias.
+\item Modelar eventos y calcular unión, intersección y complemento.
+\item Justificar disyunción y exhaustividad por separado.
+\item Implementar las operaciones en Python e interpretar su salida.
+\end{enumerate}
+\verifica{Cada objetivo tendrá una tarea y una comprobación; al final resolverás una pregunta nueva.}
+\end{frame}
+
+\begin{frame}{Tu ruta de aprendizaje: 40 minutos}
+\framesubtitle{Ruta de clase · 40 minutos}
+\begin{tabular}{p{.32\linewidth}rp{.47\linewidth}}
+\toprule Bloque & Min & Producto \\ \midrule
+Caso y objetivos & 5 & Interpretar un despacho.\\
+Espacio muestral & 10 & Construir ocho posibilidades.\\
+Eventos y operaciones & 15 & Resolver y programar consultas.\\
+Disyunción y exhaustividad & 6 & Justificar dos condiciones distintas.\\
+Integración & 4 & Resolver una nueva pregunta.\\ \bottomrule
+\end{tabular}\par
+\medskip
+Usa los scripts proporcionados como base y completa los incrementos académicos.
+La simulación y las APIs auxiliares se desarrollan en la \hyperlink{consulta}{\beamerbutton{Consulta estudiantil}}.
+\end{frame}
+
+\begin{frame}{El caso: clasificar un envío individual}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{Objetivo 1 · Contexto antes de símbolos}
+Un \textbf{despacho} es un envío individual. Registramos:
+\begin{description}
+\item[Turno] Día o Noche: cuándo se realiza el despacho.
+\item[Servicio] Estándar o Exprés: modalidad contratada.
+\item[Estado] A tiempo o Retrasado: si cumplió el plazo de entrega.
+\end{description}
+Estas categorías permiten preguntar por horarios, modalidades y cumplimiento.
+\begin{alertblock}{Modelo didáctico}
+Las categorías, 480 registros y probabilidades son inventados. No describen ni estiman la operación de una empresa.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Experimento y resultado: observar una repetición}
+\framesubtitle{Ruta de clase · 40 minutos}
+\textbf{Experimento:} observar un despacho y registrar sus tres características, sin conocer de antemano cuál combinación ocurrirá.
+\[
+\omega=(\text{turno},\text{servicio},\text{estado})
+\]
+El símbolo $\omega$ representa \textbf{un resultado posible}. Por ejemplo,
+\[
+\omega=(\text{Noche},\text{Exprés},\text{Retrasado}).
+\]
+Significa: envío despachado de noche, con servicio Exprés, que no cumplió el plazo.
+\pregunta{¿Por qué no basta escribir Retrasado para describir todo el resultado?}
+\verifica{Faltan turno y servicio; el orden de las posiciones es parte del modelo.}
+\end{frame}
+
+\begin{frame}{Construir el espacio muestral}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{Objetivo 1 · Definición y regla del producto}
+Define $T=\{\text{Día},\text{Noche}\}$, $V=\{\text{Estándar},\text{Exprés}\}$ y
+$E=\{\text{A tiempo},\text{Retrasado}\}$.
+\[
+S=T\times V\times E=\{(t,v,e):t\in T,\ v\in V,\ e\in E\}.
+\]
+El \textbf{producto cartesiano} forma todas las tuplas tomando un elemento de cada conjunto. $\in$ significa pertenece a.
+\[
+|S|=|T|\,|V|\,|E|=2\cdot2\cdot2=8.
+\]
+$|S|$ es la \textbf{cardinalidad}: número de resultados distintos. Suponemos que las ocho combinaciones son posibles; no que sean equiprobables.
+\end{frame}
+
+\begin{frame}{Las ocho posibilidades, una por fila}
+\framesubtitle{Ruta de clase · 40 minutos}
+\centering
+\begin{tabular}{clll}
+\toprule Etiqueta & Turno & Servicio & Estado\\ \midrule
+$\omega_1$ & Día & Estándar & A tiempo\\
+$\omega_2$ & Día & Estándar & Retrasado\\
+$\omega_3$ & Día & Exprés & A tiempo\\
+$\omega_4$ & Día & Exprés & Retrasado\\
+$\omega_5$ & Noche & Estándar & A tiempo\\
+$\omega_6$ & Noche & Estándar & Retrasado\\
+$\omega_7$ & Noche & Exprés & A tiempo\\
+$\omega_8$ & Noche & Exprés & Retrasado\\ \bottomrule
+\end{tabular}
+\par\medskip\raggedright
+$\omega_i$ abrevia un \textbf{tipo de resultado}, no identifica un envío individual.
+\pregunta{Enumera las cuatro posibilidades de Día y después las de Noche.}
+\end{frame}
+
+\begin{frame}{Incremento 1 · Enumerar sin omisiones}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_01_espacio_muestral.py}
+\textbf{Función:} \texttt{construir\_espacio\_muestral()}.
+\textbf{Entradas disponibles:} las tres colecciones de categorías.
+\codigo{1}{40}{42}
+\pregunta{Combina una categoría de cada colección con \texttt{product}; conserva las tuplas en orden para compararlas con la tabla.}
+\verifica{Ocho tuplas distintas. Primera: (Día, Estándar, A tiempo); última: (Noche, Exprés, Retrasado).}
+\end{frame}
+
+\begin{frame}{Incremento 1 · Comprobación y significado}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_01_espacio_muestral.py}
+\textbf{Función:} \texttt{construir\_espacio\_muestral()}.
+\codigo{1}{65}{68}
+\texttt{product} evita tres ciclos escritos a mano. La \texttt{tuple} exterior conserva el orden de enumeración; cada tupla interior es un resultado.
+\verifica{\texttt{len(espacio\_muestral) == 8} y
+\texttt{len(set(espacio\_muestral)) == 8}.}
+La segunda prueba descarta duplicados: no basta tener ocho posiciones.
+\end{frame}
+
+\begin{frame}{Una fila observada no es una posibilidad nueva}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{Objetivo 2 · Un pequeño registro ilustrativo}
+\begin{tabular}{rlll}
+\toprule ID & Turno & Servicio & Estado\\ \midrule
+101 & Día & Estándar & A tiempo\\
+102 & Día & Estándar & A tiempo\\
+103 & Noche & Exprés & Retrasado\\ \bottomrule
+\end{tabular}\par
+\medskip
+Estos tres envíos hipotéticos contienen \textbf{dos resultados distintos}. Los ID distinguen registros; no forman parte de $\omega$.
+\[
+3\ \text{registros}\qquad 2\ \text{resultados observados}\qquad |S|=8.
+\]
+\pregunta{¿La segunda fila aumenta $|S|$?}
+\verifica{No: repite $\omega_1$. Aumenta su frecuencia, no las posibilidades.}
+\end{frame}
+
+\begin{frame}{De ocho posibilidades a 480 despachos simulados}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_01_espacio_muestral.py}
+\texttt{simular\_despachos()} genera un \texttt{DataFrame} en memoria con semilla 42. No requiere un CSV ni datos externos.
+\begin{itemize}
+\item El modelo asigna probabilidades desiguales a turnos y servicios.
+\item La probabilidad de retraso depende del turno y del servicio.
+\item El mayor retraso asignado a Exprés es un supuesto inventado, \textbf{no una afirmación sobre el servicio real}.
+\end{itemize}
+En esta ejecución aparecen los ocho resultados. El más frecuente aparece 196 veces entre 480 envíos.
+\verifica{Posible no significa equiprobable ni observado necesariamente.}
+\end{frame}
+
+\begin{frame}{Leer frecuencias: cuántos envíos de cada tipo}
+\framesubtitle{Ruta de clase · 40 minutos}
+\centering
+\includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figuras/teoria_conjuntos_01_espacio_muestral.png}
+\par\raggedright{\small Cada barra cuenta registros simulados de una tupla; todas suman 480 envíos. La barra de 196 no añade posibilidades a $S$ ni estima una empresa real.}
+\end{frame}
+
+\begin{frame}{Un evento selecciona resultados de S}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{Objetivo 3 · Pregunta: ¿cuáles envíos son nocturnos o retrasados?}
+Un \textbf{evento} es un subconjunto de $S$: selecciona resultados que cumplen una condición.
+\[
+A=\{\omega\in S:\text{turno = Noche}\}=\{\omega_5,\omega_6,\omega_7,\omega_8\}
+\]
+\[
+B=\{\omega\in S:\text{estado = Retrasado}\}=\{\omega_2,\omega_4,\omega_6,\omega_8\}.
+\]
+$A\subseteq S$ significa que \textbf{cada elemento de $A$ pertenece a $S$}.
+$\omega_6\in A$ expresa pertenencia de un resultado, no de un subconjunto.
+\verifica{El evento $A$ ocurre cuando el resultado del despacho pertenece a $A$. $|A|=|B|=4$ tipos posibles.}
+\end{frame}
+
+\begin{frame}{Incremento 2 · Seleccionar por condición}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_02_operaciones_conjuntos.py}
+\textbf{Función:} \texttt{definir\_eventos(espacio\_muestral)}.
+\textbf{Entrada:} las ocho tuplas del Paso 1.
+\pregunta{Construye dos conjuntos: uno con turno Noche y otro con estado Retrasado. Filtra las tuplas, no los 480 registros.}
+\begin{itemize}
+\item Posición 0: turno; posición 1: servicio; posición 2: estado.
+\item Conserva la tupla completa cuando satisface la condición.
+\end{itemize}
+\verifica{Cuatro elementos en cada conjunto; $\omega_6$ y $\omega_8$ pertenecen a ambos.}
+\end{frame}
+
+\begin{frame}{Incremento 2 · De la condición al conjunto}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_02_operaciones_conjuntos.py}
+\textbf{Función:} \texttt{definir\_eventos()}.
+\codigo{2}{180}{182}
+La comprensión recorre $S$, prueba una condición y conserva el resultado completo.
+Las llaves crean un \texttt{set}: cada tupla aparece una sola vez.
+\verifica{\texttt{len(evento\_a)} y \texttt{len(evento\_b)} valen 4.}
+No contamos envíos: una tupla puede pertenecer a ambos eventos.
+\end{frame}
+
+\begin{frame}{Intersección: cumplir ambas condiciones}
+\framesubtitle{Ruta de clase · 40 minutos}
+\textbf{Pregunta:} ¿qué tipos de despacho pueden ser nocturnos \textbf{y} retrasados?
+Disponemos de los conjuntos $A$ (Noche) y $B$ (Retrasado).
+\[
+A\cap B=\{\omega\in S:\omega\in A\ \text{y}\ \omega\in B\}.
+\]
+Al revisar $A$, $\omega_5$ y $\omega_7$ llegan a tiempo; se descartan.
+\[
+A\cap B=\{\omega_6,\omega_8\},\qquad |A\cap B|=2.
+\]
+Son (Noche, Estándar, Retrasado) y (Noche, Exprés, Retrasado).
+\verifica{Hay dos \textbf{tipos posibles}, no necesariamente dos envíos observados.}
+\end{frame}
+
+\begin{frame}{Unión: cumplir al menos una condición}
+\framesubtitle{Ruta de clase · 40 minutos}
+\textbf{Pregunta:} ¿qué tipos de despacho son nocturnos \textbf{o} retrasados?
+La palabra o es inclusiva: acepta también ambas condiciones.
+\[
+A\cup B=\{\omega\in S:\omega\in A\ \text{o}\ \omega\in B\}.
+\]
+$\omega_5$ entra por ser nocturno; $\omega_2$, por estar retrasado;
+$\omega_6$ cumple ambas condiciones, pero entra una sola vez.
+\[
+A\cup B=\{\omega_2,\omega_4,\omega_5,\omega_6,\omega_7,\omega_8\}.
+\]
+\verifica{Son seis tipos. Sólo faltan $\omega_1$ y $\omega_3$: despachos de Día que llegan a tiempo.}
+\end{frame}
+
+\begin{frame}{Por qué $4 + 4 - 2 = 6$}
+\framesubtitle{Ruta de clase · 40 minutos}
+\textbf{Pregunta:} ¿por qué sumar $|A|+|B|$ sobrecuenta la unión?
+\begin{center}
+\begin{tabular}{lll}
+\toprule Región & Resultados & Cantidad\\ \midrule
+Sólo $A$ & $\omega_5,\omega_7$ & 2\\
+$A\cap B$ & $\omega_6,\omega_8$ & 2\\
+Sólo $B$ & $\omega_2,\omega_4$ & 2\\ \bottomrule
+\end{tabular}
+\end{center}
+Al sumar $4+4$, contamos $\omega_6$ dos veces y $\omega_8$ dos veces.
+Restamos una copia de cada uno:
+\[
+|A\cup B|=|A|+|B|-|A\cap B|=4+4-2=6.
+\]
+\verifica{Inclusión--exclusión cuenta cada resultado de la unión exactamente una vez.}
+\end{frame}
+
+\begin{frame}{Complemento: lo que falta, dentro del universo}
+\framesubtitle{Ruta de clase · 40 minutos}
+\textbf{Pregunta:} ¿qué tipos de envío no son nocturnos?
+El universo sigue siendo $S$ y $A$ contiene los nocturnos.
+\[
+A^c=S\setminus A=\{\omega\in S:\omega\notin A\}
+=\{\omega_1,\omega_2,\omega_3,\omega_4\}.
+\]
+Son los cuatro tipos de Día. $\notin$ significa no pertenece;
+la letra $c$ indica complemento, no una potencia.
+\begin{alertblock}{El universo importa}
+No agregamos un turno Madrugada: no existe en este $S$. El complemento siempre se toma respecto de un universo definido.
+\end{alertblock}
+\verifica{$|A^c|=8-4=4$ tipos posibles.}
+\end{frame}
+
+\begin{frame}{Incremento 2 · Programar las operaciones}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_02_operaciones_conjuntos.py}
+\textbf{Función:} \texttt{resumir\_operaciones\_conjuntos()}.
+\textbf{Entradas:} espacio muestral, \texttt{evento\_a}, \texttt{evento\_b}.
+\pregunta{Convierte el espacio a \texttt{set}. Comprueba que los eventos son subconjuntos y devuelve un diccionario con las cinco colecciones.}
+\begin{center}
+\begin{tabular}{lll}
+\toprule Operación & Python & Cardinalidad esperada\\ \midrule
+Intersección & \texttt{\&} & 2\\
+Unión & \texttt{|} & 6\\
+Complemento & \texttt{universo - evento\_a} & 4\\ \bottomrule
+\end{tabular}
+\end{center}
+Conserva también $A$ y $B$, de cuatro elementos cada uno.
+\end{frame}
+
+\begin{frame}{Incremento 2 · Una operación, una intención}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_02_operaciones_conjuntos.py}
+\textbf{Función:} \texttt{resumir\_operaciones\_conjuntos()}.
+Con \texttt{universo = set(espacio\_muestral)} y eventos validados:
+\codigo{2}{205}{211}
+\verifica{Longitudes 4, 4, 2, 6 y 4, respectivamente.}
+El diccionario nombra las respuestas; no usa frecuencias.
+\end{frame}
+
+\begin{frame}{Ahora sí: seleccionar registros observados}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_02_operaciones_conjuntos.py}
+\textbf{Función:} \texttt{principal()}. \textbf{Entrada:} tabla \texttt{despachos} de 480 filas.
+\codigo{2}{271}{272}
+\texttt{eq} compara cada fila con una categoría. Cada máscara tiene 480 valores booleanos.
+\pregunta{Combina las máscaras con \texttt{\&} y suma sus valores verdaderos para contar envíos nocturnos retrasados.}
+\verifica{Obtendrás 45 \textbf{envíos}. La intersección de conjuntos tenía 2 \textbf{tipos}. No hay contradicción: los tipos se repiten.}
+\end{frame}
+
+\begin{frame}{Cardinalidad y frecuencia responden preguntas distintas}
+\framesubtitle{Ruta de clase · 40 minutos}
+Sea $n(G)$ el número de registros cuyo resultado pertenece al evento $G$.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule Evento & $|G|$: tipos posibles & $n(G)$: envíos observados\\ \midrule
+$A$ & 4 & 172\\
+$B$ & 4 & 86\\
+$A\cap B$ & 2 & 45\\
+$A\cup B$ & 6 & 213\\
+$A^c$ & 4 & 308\\ \bottomrule
+\end{tabular}
+\end{center}
+\[
+n(A\cup B)=172+86-45=213,\qquad n(A^c)=480-172=308.
+\]
+\verifica{La misma lógica evita contar dos veces un envío; las unidades ahora son registros, no tipos.}
+\end{frame}
+
+\begin{frame}{Una matriz de pertenencia, no de frecuencias}
+\framesubtitle{Ruta de clase · 40 minutos}
+\centering
+\includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figuras/teoria_conjuntos_02_operaciones_conjuntos.png}
+\par\raggedright{\small Cada celda indica pertenencia (1) o ausencia (0). Para $\omega_6$, $A$, $B$, intersección y unión valen 1; complemento vale 0. No se muestran los 480 registros.}
+\end{frame}
+
+\begin{frame}{Dos preguntas que no debes confundir}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{Objetivo 4 · Disyunción y exhaustividad}
+\textbf{¿Pueden ocurrir juntos?} Dos eventos son \textbf{disjuntos} o mutuamente excluyentes si
+\[
+A\cap B=\varnothing.
+\]
+$\varnothing$ es el conjunto vacío: ningún resultado cumple ambos.
+\medskip
+\textbf{¿Cubren todas las posibilidades?} Son \textbf{exhaustivos} respecto de $S$ si
+\[
+A\cup B=S.
+\]
+Esto permite traslapes. La condición es igualdad de conjuntos; comparar sólo tamaños es seguro únicamente si ya sabemos que son subconjuntos de $S$.
+\end{frame}
+
+
+
+\begin{frame}{Incremento 3 · Comparar pares de eventos}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_03_eventos_disjuntos.py}
+\textbf{Función:} \texttt{comparar\_pares\_eventos()}.
+\textbf{Entradas:} espacio muestral y pares de eventos ya construidos.
+\pregunta{Para cada par calcula intersección y unión. Registra sus tamaños, si la intersección está vacía y si la unión coincide con el universo.}
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule Par & Intersección & Unión & Disjuntos & Exhaustivos\\ \midrule
+$A,B$ & 2 & 6 & No & No\\
+$C,D$ & 0 & 8 & Sí & Sí\\ \bottomrule
+\end{tabular}
+\end{center}
+\verifica{Explica cada booleano mediante resultados concretos, no sólo leyendo la tabla.}
+\end{frame}
+
+\begin{frame}{Incremento 3 · Traducir las definiciones}
+\framesubtitle{Ruta de clase · 40 minutos}
+\archivo{teoria_conjuntos_03_eventos_disjuntos.py}
+\textbf{Función:} \texttt{comparar\_pares\_eventos()}, fragmento del ciclo.
+\codigo{3}{216}{227}
+\end{frame}
+
+\begin{frame}{Incremento 3 · Interpretar los booleanos}
+\framesubtitle{Ruta de clase · 40 minutos}
+\texttt{not interseccion} es verdadero para el conjunto vacío.
+\texttt{union == universo} compara elementos, no su orden ni sus frecuencias.
+\medskip
+La función devuelve una tabla con una fila por par. Las columnas de tamaños
+explican los booleanos: compartir 2 tipos descarta disyunción; cubrir sólo 6 de 8 descarta exhaustividad.
+\verifica{Para $A,B$: \texttt{False, False}. Para $C,D$: \texttt{True, True}.}
+\end{frame}
+
+\begin{frame}{Leer la cobertura de cada par}
+\framesubtitle{Ruta de clase · 40 minutos}
+\centering
+\includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figuras/teoria_conjuntos_03_eventos_disjuntos.png}
+\par\raggedright{\small Las barras cuentan tipos: intersección y unión. La referencia $|S|=8$ marca cobertura completa. $A,B$: 2 compartidos y 6 cubiertos; $C,D$: 0 compartidos y 8 cubiertos.}
+\end{frame}
+
+\begin{frame}{Integración · Una consulta nueva}
+\framesubtitle{Ruta de clase · 40 minutos}
+\objetivo{Objetivos 1--5 · Intenta resolver antes de consultar la solución}
+Queremos identificar despachos de servicio \textbf{Exprés y retrasados}. Llama $F$ a ese evento y usa el mismo universo $S$.
+\begin{enumerate}
+\item Describe $F$ por condición y enumera sus resultados.
+\item Escribe el filtro Python sobre las tuplas de $S$.
+\item Calcula $F\cap A^c$ y $F\cup A^c$. ¿Son disjuntos? ¿Exhaustivos?
+\item En los 480 registros, los tipos Día/Exprés/Retrasado y Noche/Exprés/Retrasado aparecen 25 y 15 veces. ¿Cuánto vale $n(F)$?
+\end{enumerate}
+\hyperlink{solucion}{\beamerbutton{Ver solución después de intentarlo}}
+\end{frame}
+
+\begin{frame}{Comprueba los cinco objetivos}
+\framesubtitle{Ruta de clase · 40 minutos}
+\begin{enumerate}
+\item ¿Puedes explicar el experimento y enumerar $S$ sin mirar la tabla?
+\item ¿Puedes explicar por qué $|S|=8$ aunque haya 480 filas?
+\item ¿Puedes justificar los elementos de intersección, unión y complemento?
+\item ¿Puedes probar disyunción y exhaustividad de manera independiente?
+\item ¿Puedes anticipar, ejecutar e interpretar los resultados de Python?
+\end{enumerate}
+\verifica{Una respuesta completa incluye condición, operación, resultado y unidad.}
+Siguiente paso: contar posibilidades sin enumerarlas todas (L06).
+\end{frame}
+
+\begin{frame}{Lectura y práctica para consolidar}
+\framesubtitle{Ruta de clase · 40 minutos}
+Holmes, Illowsky y Dean, \emph{Introductory Business Statistics 2e}, OpenStax:
+\begin{itemize}
+\item \href{https://openstax.org/books/introductory-business-statistics-2e/pages/3-1-terminology}{Sección 3.1: Terminology}. Revisa experimento, resultado, espacio muestral y operaciones. En el Ejemplo 3.2, identifica conjuntos antes de abordar probabilidades.
+\item \href{https://openstax.org/books/introductory-business-statistics-2e/pages/3-2-independent-and-mutually-exclusive-events}{Sección 3.2: Independent and Mutually Exclusive Events}. Contrasta exclusión mutua e independencia.
+\end{itemize}
+{\small Referencia conceptual bajo CC BY-NC-SA 4.0. El caso, código, cifras y figuras de despachos son materiales originales del curso con datos sintéticos.}
+\medskip
+La consulta siguiente amplía demostraciones, simulación y soluciones; no añade actividades obligatorias a los 40 minutos.
+\end{frame}
+
+\end{document}
+
