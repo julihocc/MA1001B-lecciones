@@ -1,18 +1,39 @@
 # Lección 05 - Teoría de Conjuntos y Espacios Muestrales
 
-Esta microlección de 50 minutos utiliza un experimento de despacho completamente sintético para
+Esta lección utiliza un experimento de despacho completamente sintético para
 conectar resultados de negocio con espacios muestrales y eventos. Los estudiantes enumeran todos
 los resultados posibles, representan eventos como subconjuntos, calculan uniones,
 intersecciones y complementos, y distinguen eventos mutuamente excluyentes de
 eventos que juntos cubren el espacio muestral.
 
-- **Duración objetivo:** 50 minutos.
+- **Ruta compacta de clase:** 40 minutos dentro del bloque asignado a L05.
+- **Extensos para estudio:** `diapositivas/leccion_05.pdf` y
+  `notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb`.
+- **Compactos para exposición:** `diapositivas/leccion_05_compacta.pdf` y
+  `notebooks/leccion_05_compacta.ipynb` (16 celdas, siete de código).
 - **Referencia canónica:** OpenStax, *Introductory Business Statistics 2e*,
   Capítulo 3, Secciones 3.1 y 3.2.
 - **Prerrequisitos:** Colecciones básicas en Python, variables categóricas de la
   Lección 01, y la distinción entre resultados posibles y datos observados.
 - **Aviso de datos:** Cada registro de despacho es sintético. No se utilizan datos
   reales de empresas, clientes, instalaciones, socios o datos operativos.
+
+## Ruta compacta — clase de 40 minutos
+
+La presentación compacta y la libreta compacta siguen los mismos bloques. Abrir
+ambas y ejecutar las siete celdas de código ya preparadas; el cómputo local tarda
+segundos y queda incluido en cada bloque. No se necesita descargar un dataset.
+
+| Minutos | Objetivo y diapositivas/celdas | Acción docente y comprobación | Transición |
+|---:|---|---|---|
+| 00–04 | Caso y objetivos; introducción de ambas fuentes. | Planteo el despacho y pregunto qué tres categorías describen un resultado. | Formalizar el resultado. |
+| 04–12 | Espacio muestral; sección homónima y dos celdas iniciales. | Ejecuto la construcción de S; compruebo que hay ocho posibilidades. | Contrastar con registros. |
+| 12–25 | Observaciones y eventos; tres secciones y dos celdas. | Ejecuto la simulación y las operaciones; compruebo que 480 filas no son 480 resultados y que A∩B tiene dos resultados. | Evaluar pares de eventos. |
+| 25–33 | Disyunción y exhaustividad; sección y celda correspondientes. | Comparo A–B con C–D; pido justificar intersección vacía y unión igual a S por separado. | Aplicar la distinción. |
+| 33–38 | Integración; pregunta de servicio Exprés retrasado y una celda. | Pido definir el evento y contrastar posibilidades con registros. | Cerrar sin código nuevo. |
+| 38–40 | Comprobación oral y puente a L06; última sección y celda. | Verifico las respuestas y señalo el siguiente problema de conteo. | Fin de L05. |
+
+Esta es una estimación de conducción, no un ensayo cronometrado en aula.
 
 ## Resultados de Aprendizaje
 
@@ -24,7 +45,7 @@ Al final de la lección, un estudiante puede:
 4. Justificar disyunción y exhaustividad por separado.
 5. Implementar las operaciones en Python y explicar sus resultados.
 
-## Ruta estudiantil de 50 minutos
+## Ruta de estudio extensa (50 minutos estimados)
 
 | Tiempo | Bloque | Producto verificable |
 |---:|---|---|
@@ -54,7 +75,7 @@ distingue explícitamente supuestos inventados y resultados observados.
 | Implementación e interpretación | Integración F = Exprés retrasado | Dos tipos, 40 envíos; F frente a A complemento: tamaños 1/5. |
 
 La integración puede conducir a L06 dentro de la misma sesión de 100 minutos.
-La consulta no añade tareas obligatorias al recorrido de 50 minutos.
+La consulta no añade tareas obligatorias al recorrido de estudio.
 
 ## Experimento de Despacho Sintético
 

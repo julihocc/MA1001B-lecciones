@@ -1,19 +1,38 @@
 # Lesson 05 - Set Theory and Sample Spaces
 
-This package is a complete student guide for a 50-minute route plus a detailed
-consultation section. One fully synthetic dispatch experiment connects
+This package provides an extended student guide and a 40-minute class route.
+One fully synthetic dispatch experiment connects
 Cartesian products, events, union, intersection, complement, disjointness, and
 exhaustiveness with readable Python.
 
 - **Track:** English, MA1001B.
-- **Class route:** 5 minutes case/objectives; 12 sample space; 17 events and
-  operations; 11 disjointness/exhaustiveness; 5 integration.
-- **Deck:** `slides/lesson_05.pdf`, revision `f38d037`, 79 pages. There is no
+- **Class route:** `slides/lesson_05_compact.pdf` and
+  `notebooks/lesson_05_compact.ipynb` (16 cells, seven code cells).
+- **Extended study:** `slides/lesson_05.pdf` and
+  `notebooks/lesson_05_set_theory_sample_space.ipynb`.
+- **Deck:** `slides/lesson_05.pdf`. There is no
   slide-count ceiling; explanations are divided into student-readable pages.
 - **Reference:** OpenStax, *Introductory Business Statistics 2e*, Sections 3.1
   and 3.2.
 - **Data:** all 480 dispatches, frequencies, and probabilities are invented
   teaching assumptions. They are not data or estimates from a company.
+
+## Compact route — 40-minute class
+
+The compact slides and notebook follow the same blocks. Open both and run the
+seven prepared code cells; local computation takes seconds within the allotted
+blocks. No external dataset is required.
+
+| Minutes | Objective and slides/cells | Instructor action and check | Transition |
+|---:|---|---|---|
+| 00–04 | Case and objectives; introductions in both sources. | Introduce the dispatch and ask for the three outcome categories. | Formalize the outcome. |
+| 04–12 | Sample space; matching section and two initial code cells. | Build S and check that it has eight possibilities. | Compare with observations. |
+| 12–25 | Observations and events; three sections and two code cells. | Run the simulation and set operations; check that 480 rows are not 480 outcomes and A∩B has two outcomes. | Compare event pairs. |
+| 25–33 | Disjointness and exhaustiveness; matching section and code cell. | Compare A–B with C–D; justify empty intersection and coverage of S separately. | Apply the distinction. |
+| 33–38 | Integration; delayed Express question and code cell. | Define the event and contrast possibilities with observed rows. | Close without new code. |
+| 38–40 | Oral check and bridge to L06; final section and code cell. | Check responses and introduce the next counting problem. | End L05. |
+
+This is an instructor timing estimate, not a timed classroom rehearsal.
 
 ## Learning outcomes
 
