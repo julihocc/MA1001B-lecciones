@@ -125,21 +125,20 @@ $(3,2,2,1)$ & 0.02563477 & 0.00606061\\ \bottomrule
 \end{center}
 \end{frame}
 
-\begin{frame}{Compara el cálculo y la simulación}
-\begin{columns}[T]
-\begin{column}{.43\textwidth}
+\begin{frame}{Compara tres probabilidades exactas}
 \small
-La libreta enumera 165 perfiles, calcula probabilidades exactas seleccionadas y simula 500 000 veces con semilla 42.
+La libreta enumera 165 perfiles y calcula el peso de tres de ellos con la misma fórmula.
+\[
+\begin{array}{c|c|c}
+\text{Perfil}&\text{Asignaciones etiquetadas}&P\\\hline
+(5,1,1,1)&336&0.00512695\\
+(4,2,1,1)&840&0.01281738\\
+(3,2,2,1)&1680&0.02563477
+\end{array}
+\]
+Cada probabilidad divide su número de asignaciones entre $4^8=65\,536$.
 \par\medskip
-Para $(5,1,1,1)$, la simulación devuelve 0.005288; para $(3,2,2,1)$, 0.025894. Se aproximan a valores exactos distintos, no a un mismo $1/165$.
-\par\smallskip
-\textbf{Comprobación:} ¿Qué contamos en el numerador de una probabilidad? Las asignaciones etiquetadas que producen el perfil, dado el modelo de enrutamiento.
-\end{column}
-\begin{column}{.55\textwidth}
-\centering
-\includegraphics[width=\linewidth]{../figuras/asignaciones_03_estrellas_barras_limite_probabilidad.png}
-\end{column}
-\end{columns}
+\textbf{Comprobación:} ¿Qué contamos en el numerador? Las asignaciones etiquetadas que producen el perfil, dado el modelo de enrutamiento.
 \end{frame}
 
 \begin{frame}{Cuenta los objetos adecuados y declara el modelo}

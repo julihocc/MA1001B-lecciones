@@ -124,21 +124,20 @@ $(3,2,2,1)$ & 0.02563477 & 0.00606061\\ \bottomrule
 \end{center}
 \end{frame}
 
-\begin{frame}{Compare calculation and simulation}
-\begin{columns}[T]
-\begin{column}{.43\textwidth}
+\begin{frame}{Compare three exact probabilities}
 \small
-The notebook enumerates 165 profiles, computes their selected exact probabilities, and uses 500,000 seed-42 simulations.
+The notebook enumerates 165 profiles and calculates the weights of three with the same formula.
+\[
+\begin{array}{c|c|c}
+\text{Profile}&\text{Labeled assignments}&P\\\hline
+(5,1,1,1)&336&0.00512695\\
+(4,2,1,1)&840&0.01281738\\
+(3,2,2,1)&1680&0.02563477
+\end{array}
+\]
+Each probability divides its number of assignments by $4^8=65\,536$.
 \par\medskip
-For $(5,1,1,1)$, the simulation gives 0.005288; for $(3,2,2,1)$ it gives 0.025894. These approximate different exact values, not a common $1/165$.
-\par\smallskip
-\textbf{Check:} Which count is appropriate for a probability numerator? The number of labeled assignments producing the profile, given the routing model.
-\end{column}
-\begin{column}{.55\textwidth}
-\centering
-\includegraphics[width=\linewidth]{../figures/allocations_03_star_bars_probability_limit.png}
-\end{column}
-\end{columns}
+\textbf{Check:} What is counted in the numerator? The labeled assignments producing the profile under the routing model.
 \end{frame}
 
 \begin{frame}{Count the right objects; state the probability model}
