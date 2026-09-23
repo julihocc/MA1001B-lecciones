@@ -241,7 +241,8 @@ def construir_figura_membresia(
     figura, eje = plt.subplots(figsize=(10.2, 5.4), layout="constrained")
     sns.heatmap(
         membresia, cmap=["#EEF1F7", "#EC2661"], vmin=0, vmax=1,
-        annot=True, fmt="d", cbar=False, linewidths=1, ax=eje,
+        annot=True, fmt="d", annot_kws={"color": "#000000"},
+        cbar=False, linewidths=1, ax=eje,
     )
     eje.set(
         title="Pertenencia a eventos y operaciones de conjuntos",

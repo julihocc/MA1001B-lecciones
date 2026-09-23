@@ -1,5 +1,17 @@
 # Lección 05 - Teoría de Conjuntos y Espacios Muestrales
 
+## Corrección de accesibilidad — 23 de septiembre de 2026
+
+La matriz de pertenencia conserva datos, categorías y colores, pero sus
+anotaciones numéricas ahora son negras (`#000000`). Sobre el rosa `#EC2661`,
+el contraste calculado es 5.02:1 (antes 4.19:1 con dígitos blancos); sobre
+el fondo claro es mayor. Regeneré la figura, las salidas de la libreta extensa
+y los PDF extenso y compacto, y comprobé visualmente la diapositiva de la
+matriz. Los tres scripts mantienen los conteos canónicos. El enlace del
+compacto a la libreta extensa usa ahora la ruta pública de GitHub, que también
+funciona al abrir el compacto en Colab; la copia local sigue junto a él.
+La nueva ejecución alojada y la propagación semanal se registran por separado.
+
 Esta lección utiliza un experimento de despacho completamente sintético para
 conectar resultados de negocio con espacios muestrales y eventos. Los estudiantes enumeran todos
 los resultados posibles, representan eventos como subconjuntos, calculan uniones,

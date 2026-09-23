@@ -166,7 +166,7 @@ def build_membership_figure(
         linecolor="white",
         annot=True,
         fmt="d",
-        annot_kws={"fontsize": 10},
+        annot_kws={"fontsize": 10, "color": "#000000"},
         ax=axis,
     )
     axis.set(
