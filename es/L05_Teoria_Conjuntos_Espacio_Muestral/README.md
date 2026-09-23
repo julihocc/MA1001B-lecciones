@@ -11,6 +11,9 @@ matriz. Los tres scripts mantienen los conteos canónicos. El enlace del
 compacto a la libreta extensa usa ahora la ruta pública de GitHub, que también
 funciona al abrir el compacto en Colab; la copia local sigue junto a él.
 La nueva ejecución alojada y la propagación semanal se registran por separado.
+Las referencias de páginas de la libreta extensa se alinearon con el PDF
+vigente de 55 páginas; el número de páginas del mazo histórico queda sólo
+como antecedente más abajo.
 
 Esta lección utiliza un experimento de despacho completamente sintético para
 conectar resultados de negocio con espacios muestrales y eventos. Los estudiantes enumeran todos

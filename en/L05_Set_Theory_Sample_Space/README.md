@@ -11,6 +11,9 @@ The three scripts retain their canonical counts. The compact notebook now
 links to the extensive notebook via its public GitHub path, which also works
 from Colab; the local copy remains beside it. The new hosted run and weekly
 propagation are recorded separately.
+The extensive notebook now points to the current 75-page deck. The deck
+identifies the worked F solution as part of the companion notebook rather
+than promising a separate solution slide; older page counts below are history.
 
 This package provides an extended student guide and a 40-minute class route.
 One fully synthetic dispatch experiment connects
