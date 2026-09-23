@@ -21,8 +21,8 @@ Cartesian products, events, union, intersection, complement, disjointness, and
 exhaustiveness with readable Python.
 
 - **Track:** English, MA1001B.
-- **Class route:** `slides/lesson_05_compact.pdf` and
-  `notebooks/lesson_05_compact.ipynb` (16 cells, seven code cells).
+- **Class route:** `slides/lesson_05_compact.pdf` (12 slides) and
+  `notebooks/lesson_05_compact.ipynb` (11 cells, five code cells).
 - **Extended study:** `slides/lesson_05.pdf` and
   `notebooks/lesson_05_set_theory_sample_space.ipynb`.
 - **Deck:** `slides/lesson_05.pdf`. There is no
@@ -34,18 +34,19 @@ exhaustiveness with readable Python.
 
 ## Compact route — 40-minute class
 
-The compact slides and notebook follow the same blocks. Open both and run the
-seven prepared code cells; local computation takes seconds within the allotted
-blocks. No external dataset is required.
+The compact slides and notebook were revised for this L05 demo. Open both and
+run five code cells; computation takes seconds within the allotted blocks.
+The notebook uses only the standard library and eight verified synthetic
+frequencies from the seed-42 script. Generating 480 rows and their figures
+remains in the extended study material.
 
 | Minutes | Objective and slides/cells | Instructor action and check | Transition |
 |---:|---|---|---|
-| 00–04 | Case and objectives; introductions in both sources. | Introduce the dispatch and ask for the three outcome categories. | Formalize the outcome. |
-| 04–12 | Sample space; matching section and two initial code cells. | Build S and check that it has eight possibilities. | Compare with observations. |
-| 12–25 | Observations and events; three sections and two code cells. | Run the simulation and set operations; check that 480 rows are not 480 outcomes and A∩B has two outcomes. | Compare event pairs. |
-| 25–33 | Disjointness and exhaustiveness; matching section and code cell. | Compare A–B with C–D; justify empty intersection and coverage of S separately. | Apply the distinction. |
-| 33–38 | Integration; delayed Express question and code cell. | Define the event and contrast possibilities with observed rows. | Close without new code. |
-| 38–40 | Oral check and bridge to L06; final section and code cell. | Check responses and introduce the next counting problem. | End L05. |
+| 00–10 | Model and eight tuples; slides 1–3, cell 1. | Introduce the dispatch, build $S$, and check that it has eight types. | Distinguish records. |
+| 10–14 | Synthetic frequencies; slide 4, cell 2. | Compare 480 records with eight types; check that repeating a tuple does not change $|S|$. | Define events. |
+| 14–26 | Events and operations; slides 5–7, cell 3. | Ask for predictions of intersection, union, and complement; run and compare types with records. | Compare pairs. |
+| 26–33 | Disjointness and exhaustiveness; slides 8–9, cell 4. | Contrast A–B with C–D and check each property separately. | Apply both conditions. |
+| 33–40 | Integration and close; slides 10–12, cell 5. | Define F, predict 2/40/1/5, and explain the units; bridge to L06. | End L05. |
 
 This is an instructor timing estimate, not a timed classroom rehearsal.
 

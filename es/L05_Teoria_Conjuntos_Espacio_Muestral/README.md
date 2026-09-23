@@ -24,8 +24,8 @@ eventos que juntos cubren el espacio muestral.
 - **Ruta compacta de clase:** 40 minutos dentro del bloque asignado a L05.
 - **Extensos para estudio:** `diapositivas/leccion_05.pdf` y
   `notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb`.
-- **Compactos para exposición:** `diapositivas/leccion_05_compacta.pdf` y
-  `notebooks/leccion_05_compacta.ipynb` (16 celdas, siete de código).
+- **Compactos para exposición:** `diapositivas/leccion_05_compacta.pdf` (12 láminas) y
+  `notebooks/leccion_05_compacta.ipynb` (11 celdas, cinco de código).
 - **Referencia canónica:** OpenStax, *Introductory Business Statistics 2e*,
   Capítulo 3, Secciones 3.1 y 3.2.
 - **Prerrequisitos:** Colecciones básicas en Python, variables categóricas de la
@@ -35,18 +35,19 @@ eventos que juntos cubren el espacio muestral.
 
 ## Ruta compacta — clase de 40 minutos
 
-La presentación compacta y la libreta compacta siguen los mismos bloques. Abrir
-ambas y ejecutar las siete celdas de código ya preparadas; el cómputo local tarda
-segundos y queda incluido en cada bloque. No se necesita descargar un dataset.
+La presentación y la libreta compactas se revisaron para esta demo de L05.
+Abrir ambas y ejecutar cinco celdas de código; el cómputo tarda segundos y
+queda incluido en cada bloque. La libreta usa la biblioteca estándar y las ocho
+frecuencias sintéticas verificadas del script con semilla 42. La generación de
+480 filas y sus gráficos permanece en el material extenso de estudio.
 
 | Minutos | Objetivo y diapositivas/celdas | Acción docente y comprobación | Transición |
 |---:|---|---|---|
-| 00–04 | Caso y objetivos; introducción de ambas fuentes. | Planteo el despacho y pregunto qué tres categorías describen un resultado. | Formalizar el resultado. |
-| 04–12 | Espacio muestral; sección homónima y dos celdas iniciales. | Ejecuto la construcción de S; compruebo que hay ocho posibilidades. | Contrastar con registros. |
-| 12–25 | Observaciones y eventos; tres secciones y dos celdas. | Ejecuto la simulación y las operaciones; compruebo que 480 filas no son 480 resultados y que A∩B tiene dos resultados. | Evaluar pares de eventos. |
-| 25–33 | Disyunción y exhaustividad; sección y celda correspondientes. | Comparo A–B con C–D; pido justificar intersección vacía y unión igual a S por separado. | Aplicar la distinción. |
-| 33–38 | Integración; pregunta de servicio Exprés retrasado y una celda. | Pido definir el evento y contrastar posibilidades con registros. | Cerrar sin código nuevo. |
-| 38–40 | Comprobación oral y puente a L06; última sección y celda. | Verifico las respuestas y señalo el siguiente problema de conteo. | Fin de L05. |
+| 00–10 | Modelo y ocho tuplas; láminas 1–3, celda 1. | Planteo el despacho, construyo $S$ y compruebo que tiene ocho tipos. | Distinguir registros. |
+| 10–14 | Frecuencias sintéticas; lámina 4, celda 2. | Comparo 480 registros con ocho tipos; compruebo que repetir una tupla no cambia $|S|$. | Definir eventos. |
+| 14–26 | Eventos y operaciones; láminas 5–7, celda 3. | Pido predecir intersección, unión y complemento; ejecuto y comparo tipos con registros. | Comparar pares. |
+| 26–33 | Disyunción y exhaustividad; láminas 8–9, celda 4. | Contrasto A–B con C–D y verifico cada propiedad por separado. | Aplicar ambas condiciones. |
+| 33–40 | Integración y cierre; láminas 10–12, celda 5. | Pido definir F, anticipar 2/40/1/5 y explicar las unidades; enlazo con L06. | Fin de L05. |
 
 Esta es una estimación de conducción, no un ensayo cronometrado en aula.
 

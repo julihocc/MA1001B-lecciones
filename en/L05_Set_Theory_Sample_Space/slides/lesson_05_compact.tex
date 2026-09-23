@@ -1,571 +1,163 @@
 \documentclass[aspectratio=169,11pt,english]{beamer}
 \input{../../../_preambulo_beamer.tex}
 \input{../../../_comandos_beamer.tex}
-
-\newcommand{\ruta}{Class route · 40 minutes}
-\title[L05 · \ruta]{Set Theory and Sample Spaces}
-% Code fragments support the explanation; source files remain the authoritative
-% place to read every docstring and comment at full size.
-\lstset{basicstyle=\ttfamily\tiny,columns=fullflexible,keepspaces=true}
-\newcommand{\archivo}[1]{{\footnotesize\texttt{\detokenize{#1}}\par}\smallskip}
-\newcommand{\objetivo}[1]{{\small\color{TecAzul}#1\par}\medskip}
-\newcommand{\question}[1]{\par\smallskip\textbf{Your task.} #1\par}
-\newcommand{\checkit}[1]{\par\smallskip\textbf{Check.} #1\par}
-\newcommand{\code}[3]{%
-\ifnum#2>50\lstset{gobble=4}\else\lstset{gobble=0}\fi
-\ifcase#1\relax
-\or\lstinputlisting[firstline=#2,lastline=#3]{../src/set_theory_01_sample_space.py}%
-\or\lstinputlisting[firstline=#2,lastline=#3]{../src/set_theory_02_set_operations.py}%
-\or\lstinputlisting[firstline=#2,lastline=#3]{../src/set_theory_03_disjoint_events.py}%
-\fi}
-
+\title[L05 · 40 minutes]{Set Theory and Sample Spaces}
 \begin{document}
+\begin{frame}{L05 · One dispatch, three features}
+\framesubtitle{00–02 min · Case}
+A dispatch records its \textbf{shift} (Day/Night), \textbf{service} (Standard/Express), and \textbf{status} (On time/Delayed).
 
-\begin{frame}{Set Theory and Sample Spaces}
-  \framesubtitle{Class route · 40 minutes}
-  \objetivo{L05 · A student guide to mathematics and programming}
-  How can we identify night dispatches, delayed dispatches, and dispatches that
-  satisfy both conditions?
-  \begin{block}{What you will build}
-    A model of possible outcomes and a Python program that answers questions
-    with sets, membership, and reproducible observations.
-  \end{block}
-  Synthetic dispatch case: context, definitions, implementation, and checks.
-  \par\medskip
-  {\footnotesize MA1001B Faculty \textbar{} Course lessons \textbar{} Tecnol\'ogico de Monterrey}
+\medskip
+\textbf{Question:} which dispatches can be at night or delayed?
+
+\medskip
+We use eight possible types and frequencies from 480 \textbf{synthetic} dispatches. They do not represent a real company.
 \end{frame}
+\begin{frame}{One outcome is a tuple; $S$ collects the possibilities}
+\framesubtitle{02–07 min · Model}
+\[
+\omega=(\text{shift},\text{service},\text{status}),\qquad S=T\times V\times E.
+\]
+$T=\{\text{Day},\text{Night}\}$, $V=\{\text{Standard},\text{Express}\}$, and $E=\{\text{On time},\text{Delayed}\}$.
+\[
+|S|=2\cdot2\cdot2=8.
+\]
+\textbf{Check:} what are the two Night, Express tuples?
 
-\begin{frame}{By the end, you can demonstrate that you can...}
-  \framesubtitle{Class route · 40 minutes}
-  \begin{enumerate}
-    \item Define an experiment, represent an outcome, and construct its sample space $S$.
-    \item Distinguish possible outcomes, observed records, cardinalities, and frequencies.
-    \item Represent events as subsets and calculate union, intersection, and complement.
-    \item Justify disjointness and exhaustiveness as separate properties.
-    \item Implement the operations in Python and interpret their results.
-  \end{enumerate}
-  \checkit{Every objective has an activity and a check; the final question combines all five.}
+\medskip
+\textbf{Answer:} (Night, Express, On time) and (Night, Express, Delayed).
 \end{frame}
+\begin{frame}{Notebook · Enumerate the eight tuples}
+\framesubtitle{07–10 min · Cell 1}
+\texttt{product(SHIFTS, SERVICES, STATUSES)} builds $S$ in category order.
 
-\begin{frame}{Your learning route: 40 minutes}
-  \framesubtitle{Class route · 40 minutes}
-  \begin{tabular}{p{.34\linewidth}rp{.45\linewidth}}
-    \toprule Block & Min & Product \\ \midrule
-    Case and objectives & 4 & Interpret one dispatch.\\
-    Sample space & 8 & Construct eight possibilities.\\
-    Observations and events & 13 & Solve and program set questions.\\
-    Event pair properties & 8 & Justify disjointness and coverage.\\
-    Integration & 5 & Solve a new question.\\
-    Closing check & 2 & Verify and bridge to L06.\\ \bottomrule
-  \end{tabular}
-  \par\medskip
-  Follow intuition $\to$ formal definition $\to$ worked example $\to$ implementation $\to$ interpretation.
-  Simulation details and additional proofs appear in the extended study materials.
+\medskip
+\textbf{Run cell 1.} Check that it shows eight distinct tuples. The first is (Day, Standard, On time); the last is (Night, Express, Delayed).
+
+\medskip
+A tuple identifies an \textbf{outcome type}, not an individual dispatch.
 \end{frame}
+\begin{frame}{Eight possibilities; 480 records}
+\framesubtitle{10–14 min · Cell 2}
+Cell 2 assigns synthetic frequencies to the eight tuples. The extended script generated them with seed 42.
+\[
+\sum_{\omega\in S}n(\omega)=480,\qquad |S|=8.
+\]
+For example, (Day, Standard, On time) occurs 196 times.
 
-\begin{frame}{The case: classify one dispatch}
-  \framesubtitle{Class route · 40 minutes}
-  \objetivo{Objective 1 · Context before symbols}
-  A \textbf{dispatch} is one individual shipment. We record:
-  \begin{description}
-    \item[Shift] Day or Night: when the dispatch is processed.
-    \item[Service] Standard or Express: the assigned service level.
-    \item[Status] On time or Delayed: whether the delivery met its target.
-  \end{description}
-  These categories let us ask about time, service, and delivery performance.
-  \begin{alertblock}{Synthetic teaching model}
-    The categories, 480 records, and generating probabilities are invented.
-    They are not observations or estimates from a real company.
-  \end{alertblock}
+\medskip
+\textbf{Check:} if another dispatch has that type, does $|S|$ change?
+
+\medskip
+\textbf{Answer:} no; $n(\omega)$ increases, while the number of possibilities stays eight.
 \end{frame}
+\begin{frame}{Events select outcome types}
+\framesubtitle{14–18 min · Cell 3}
+\[
+A=\{\omega\in S:\text{shift = Night}\},\qquad
+B=\{\omega\in S:\text{status = Delayed}\}.
+\]
+$A$ and $B$ are subsets of $S$, each containing four types.
 
-\begin{frame}{Experiment and outcome: observe one repetition}
-  \framesubtitle{Class route · 40 minutes}
-  \textbf{Experiment:} observe one dispatch and record its three characteristics;
-  the combination is not known in advance.
-  \[
-    \omega=(\text{shift},\text{service},\text{status})
-  \]
-  The symbol $\omega$ represents one possible outcome. For example,
-  \[
-    \omega=(\text{Night},\text{Express},\text{Delayed}).
-  \]
-  This means a night dispatch with Express service that missed its delivery target.
-  \question{Why is writing only ``Delayed'' insufficient?}
-  \checkit{Shift and service are missing; position is part of the outcome contract.}
+\medskip
+\textbf{Before running:} does (Night, Express, Delayed) belong to both?
+
+\medskip
+Yes. The same tuple can satisfy two conditions.
 \end{frame}
+\begin{frame}{Intersection, union, and complement}
+\framesubtitle{18–23 min · Prediction}
+\[
+\begin{array}{ll}
+A\cap B &: \text{Night and Delayed}\quad |A\cap B|=2,\\[3pt]
+A\cup B &: \text{Night or Delayed}\quad |A\cup B|=6,\\[3pt]
+A^c=S\setminus A &: \text{Day}\quad |A^c|=4.
+\end{array}
+\]
+The \textbf{or} is inclusive: a tuple satisfying both conditions appears once in $A\cup B$.
 
-\begin{frame}{A row, an identifier, and a result}
-  \framesubtitle{Class route · 40 minutes}
-  \begin{tabular}{rlll}
-    \toprule ID & Shift & Service & Status \\ \midrule
-    101 & Day & Standard & On time\\
-    102 & Day & Standard & On time\\
-    103 & Night & Express & Delayed\\ \bottomrule
-  \end{tabular}
-  \par\medskip
-  These three hypothetical shipments contain \textbf{two distinct outcomes}.
-  The ID distinguishes records; it is not part of $\omega$.
-  \[
-    3\ \text{records}\qquad 2\ \text{observed outcomes}\qquad |S|=8.
-  \]
-  \question{Does the second row increase $|S|$?}
-  \checkit{No. It repeats one outcome and increases its frequency, not the possibilities.}
+\medskip
+\textbf{Check:} $|A\cup B|=4+4-2=6$.
 \end{frame}
+\begin{frame}{Notebook · Possible types and observed records}
+\framesubtitle{23–26 min · Cell 3}
+\centering
+\begin{tabular}{lrr}
+\toprule Event & Possible types & Synthetic records\\ \midrule
+$A$ & 4 & 172\\
+$B$ & 4 & 86\\
+$A\cap B$ & 2 & 45\\
+$A\cup B$ & 6 & 213\\
+$A^c$ & 4 & 308\\ \bottomrule
+\end{tabular}
+\par\medskip\raggedright
+\textbf{Run cell 3.} Why is 45 not the cardinality of $A\cap B$?
 
-\begin{frame}{Build the sample space}
-  \framesubtitle{Class route · 40 minutes}
-  Define $T=\{\text{Day},\text{Night}\}$, $V=\{\text{Standard},\text{Express}\}$,
-  and $E=\{\text{On time},\text{Delayed}\}$.
-  \[
-    S=T\times V\times E=\{(t,v,e):t\in T,\ v\in V,\ e\in E\}.
-  \]
-  The \textbf{Cartesian product} forms all tuples by choosing one element from
-  every set. The symbol $\in$ means ``belongs to.''
-  \[
-    |S|=|T|\,|V|\,|E|=2\cdot2\cdot2=8.
-  \]
-  $|S|$ is the \textbf{cardinality}: the number of distinct possible outcomes.
-  Possibility does not imply equal probability.
+\medskip
+Because 45 counts observed dispatches; the intersection contains two types.
 \end{frame}
+\begin{frame}{Disjointness and exhaustiveness ask different questions}
+\framesubtitle{26–30 min · Definitions}
+A pair is \textbf{disjoint} if $X\cap Y=\varnothing$. It is \textbf{exhaustive} if $X\cup Y=S$.
 
-\begin{frame}{The eight possibilities, one per row}
-  \framesubtitle{Class route · 40 minutes}
-  \centering
-  \begin{tabular}{clll}
-    \toprule Label & Shift & Service & Status \\ \midrule
-    $\omega_1$ & Day & Standard & On time\\
-    $\omega_2$ & Day & Standard & Delayed\\
-    $\omega_3$ & Day & Express & On time\\
-    $\omega_4$ & Day & Express & Delayed\\
-    $\omega_5$ & Night & Standard & On time\\
-    $\omega_6$ & Night & Standard & Delayed\\
-    $\omega_7$ & Night & Express & On time\\
-    $\omega_8$ & Night & Express & Delayed\\ \bottomrule
-  \end{tabular}
-  \par\medskip\raggedright
-  $\omega_i$ abbreviates a \textbf{type of outcome}; it does not identify one shipment.
-  \question{List the four Day possibilities and then the four Night possibilities.}
+\medskip
+For $A$ (Night) and $B$ (Delayed):
+\[
+|A\cap B|=2,\qquad |A\cup B|=6.
+\]
+They are neither disjoint nor exhaustive.
+
+\medskip
+\textbf{Question:} which two types are outside $A\cup B$?
+
+\medskip
+The Day and On time types, one for each service.
 \end{frame}
+\begin{frame}{Notebook · A pair that partitions $S$}
+\framesubtitle{30–33 min · Cell 4}
+Let $C$ = Standard and $D$ = Express.
+\[
+C\cap D=\varnothing,\qquad C\cup D=S.
+\]
+\textbf{Run cell 4.} Compare $(A,B)$ with $(C,D)$.
 
-\begin{frame}{Increment 1 · Enumerate without omissions}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \textbf{Function:} \texttt{build\_sample\_space()}.
-  \textbf{Available inputs:} the three category tuples.
-  \code{1}{57}{61}
-  \question{Combine one category from each collection with \texttt{product};
-  preserve the tuple order so it can be checked against the table.}
-  \checkit{Eight distinct tuples. First is (Day, Standard, On time); last is
-  (Night, Express, Delayed).}
+\medskip
+\centering
+\begin{tabular}{lcc}
+\toprule Pair & Disjoint & Exhaustive\\ \midrule
+$A,B$ & No & No\\
+$C,D$ & Yes & Yes\\ \bottomrule
+\end{tabular}
 \end{frame}
+\begin{frame}{Integrate · A new question}
+\framesubtitle{33–37 min · Cell 5}
+Define $F$ = Express and Delayed.
 
-\begin{frame}{Increment 1 · Read the product contract}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \code{1}{62}{71}
-  The last argument changes fastest, so the order is predictable. Materializing
-  the iterator lets later tables and figures reuse the same sequence.
-  \checkit{The return value has eight inner tuples, each with three strings.}
+\medskip
+\textbf{Before running:} predict $|F|$, the number of synthetic records in $F$, $|F\cap A^c|$, and $|F\cup A^c|$.
+
+\medskip
+Hint: $A^c$ is the set of Day outcomes.
+
+\medskip
+Run cell 5 and explain each number in its unit: possible type or observed record.
 \end{frame}
+\begin{frame}{Check the answer}
+\framesubtitle{37–39 min · Interpretation}
+\[
+|F|=2,\qquad n(F)=40,\qquad
+|F\cap A^c|=1,\qquad |F\cup A^c|=5.
+\]
+One tuple is Express, Delayed, and Day. The other is Express, Delayed, and Night.
 
-\begin{frame}{Increment 1 · Materialize and verify}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \code{1}{65}{71}
-  \texttt{product} replaces three manually nested loops. The outer \texttt{tuple}
-  materializes the iterator and keeps one stable order; each inner tuple is one result.
-  \[
-    |S|=8\qquad |\{\omega:\omega\text{ is listed twice}\}|=0.
-  \]
-  \checkit{Test both \texttt{len(sample\_space) == 8} and
-  \texttt{len(set(sample\_space)) == 8}. Eight positions alone would not rule out duplicates.}
+\medskip
+\textbf{Exit question:} why do $|F|$ and $n(F)$ answer different questions?
 \end{frame}
+\begin{frame}{Continue studying}
+\framesubtitle{39–40 min · Close}
+The extended notebook develops the simulation of 480 dispatches, figures, and further exercises. The three scripts show how records are generated and analyzed.
 
-\begin{frame}{From eight possibilities to 480 observations}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \texttt{simulate\_dispatches()} builds a DataFrame in memory with seed 42.
-  It does not download data or write a CSV.
-  \begin{itemize}
-    \item Shift and service use unequal generating probabilities.
-    \item The delay probability depends on shift and service.
-    \item The larger delay increment for Express is a synthetic assumption,
-          not a claim about Express in reality.
-  \end{itemize}
-  This run contains all eight outcome types. The most frequent type appears 196 times.
-  \checkit{Possible, observed, and frequent are different statements.}
+\medskip
+\textbf{Bridge to L06:} as the sample space grows, listing every outcome becomes impractical. We will need counting rules.
 \end{frame}
-
-\begin{frame}{Increment 1 · Generate aligned records}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \textbf{Function:} \texttt{simulate\_dispatches(seed)}.
-  \code{1}{75}{82}
-  \question{First draw one shift and one service for each of the 480 records.
-  Read the probability tuples in category order.}
-  \checkit{Both arrays have length 480; probabilities describe the model and do
-  not impose exact category quotas.}
-\end{frame}
-
-\begin{frame}{Increment 1 · One probability per record}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \code{1}{108}{119}
-  A Boolean comparison contributes 1 when its condition is true and 0 otherwise.
-  Thus the base probability and the two increments produce 0.10, 0.18, 0.22,
-  or 0.30 for a row.
-  \checkit{Every delay probability lies in $[0,1]$; then one uniform draw chooses
-  the status for each row.}
-\end{frame}
-
-\begin{frame}{Increment 1 · Finalize each status}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \code{1}{120}{130}
-  The comparison now produces one status per row.
-\end{frame}
-
-\begin{frame}{Increment 1 · Assemble the observed table}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \code{1}{131}{138}
-  \texttt{dispatch\_id} labels a row. \texttt{zip} joins the aligned shift,
-  service, and status values into one outcome tuple.
-\end{frame}
-
-\begin{frame}{Increment 1 · Assemble the observed table}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_01_sample_space.py}
-  \code{1}{139}{145}
-  The tuple column preserves the three-component result while the ID keeps
-  records distinguishable.
-  \checkit{The output has 480 rows and columns \texttt{dispatch\_id},
-  \texttt{shift}, \texttt{service}, \texttt{status}, and \texttt{outcome}.}
-\end{frame}
-
-\begin{frame}{Read frequencies without losing possibilities}
-  \framesubtitle{Class route · 40 minutes}
-  \centering
-  \includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figures/set_theory_01_sample_space.png}
-  \par\raggedright{\small Each bar counts synthetic records of one possible tuple;
-  all bars sum to 480. The bar of 196 does not add possibilities to $S$.}
-\end{frame}
-
-\begin{frame}{Events select outcomes from $S$}
-  \framesubtitle{Class route · 40 minutes}
-  \objetivo{Objective 3 · Question: which types are Night or Delayed?}
-  An \textbf{event} is a subset of $S$: it selects outcomes satisfying a condition.
-  \[
-    A=\{\omega\in S:\text{shift = Night}\}=\{\omega_5,\omega_6,\omega_7,\omega_8\}
-  \]
-  \[
-    B=\{\omega\in S:\text{status = Delayed}\}=\{\omega_2,\omega_4,\omega_6,\omega_8\}.
-  \]
-  $A\subseteq S$ means every element of $A$ belongs to $S$.
-  \checkit{$|A|=|B|=4$ possible types; this is not yet a count of observed rows.}
-\end{frame}
-
-\begin{frame}{Increment 2 · Select by condition}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \textbf{Function:} \texttt{define\_events(sample\_space)}.
-  \question{Build two sets: one for Night and one for Delayed. Filter the eight
-  possible tuples, not the 480 records.}
-  \begin{itemize}
-    \item Position 0 is shift; position 1 is service; position 2 is status.
-    \item Keep the complete tuple when its component satisfies the condition.
-  \end{itemize}
-  \code{2}{92}{96}
-  \checkit{The set comprehension begins with the first event condition.}
-\end{frame}
-
-\begin{frame}{Increment 2 · Define the second event}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \code{2}{97}{104}
-  \checkit{Each set has four elements; $\omega_6$ and $\omega_8$ belong to both.}
-\end{frame}
-
-\begin{frame}{Increment 2 · Keep the complete tuple}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \code{2}{100}{104}
-  The condition examines one component but returns the whole outcome. The event
-  remains a subset of $S$, not a collection of isolated labels.
-\end{frame}
-
-\begin{frame}{Intersection: both conditions}
-  \framesubtitle{Class route · 40 minutes}
-  \textbf{Question:} which possible types are Night \textbf{and} Delayed?
-  \[
-    A\cap B=\{\omega\in S:\omega\in A\ \text{and}\ \omega\in B\}.
-  \]
-  From $A$, $\omega_5$ and $\omega_7$ are On time, so discard them:
-  \[
-    A\cap B=\{\omega_6,\omega_8\},\qquad |A\cap B|=2.
-  \]
-  They are (Night, Standard, Delayed) and (Night, Express, Delayed).
-  \checkit{The result is two possible types, not necessarily two observed dispatches.}
-\end{frame}
-
-\begin{frame}{Union: at least one condition}
-  \framesubtitle{Class route · 40 minutes}
-  \textbf{Question:} which possible types are Night \textbf{or} Delayed?
-  Here ``or'' is inclusive: both conditions are accepted.
-  \[
-    A\cup B=\{\omega\in S:\omega\in A\ \text{or}\ \omega\in B\}.
-  \]
-  \[
-    A\cup B=\{\omega_2,\omega_4,\omega_5,\omega_6,\omega_7,\omega_8\}.
-  \]
-  The shared outcomes $\omega_6$ and $\omega_8$ enter once each.
-  \checkit{Six types qualify; only Day and On time types $\omega_1,\omega_3$ are absent.}
-\end{frame}
-
-\begin{frame}{Why $4+4-2=6$: inclusion--exclusion}
-  \framesubtitle{Class route · 40 minutes}
-  \begin{tabular}{lll}
-    \toprule Region & Outcomes & Count \\ \midrule
-    Only $A$ & $\omega_5,\omega_7$ & 2\\
-    $A\cap B$ & $\omega_6,\omega_8$ & 2\\
-    Only $B$ & $\omega_2,\omega_4$ & 2\\ \bottomrule
-  \end{tabular}
-  \par\medskip
-  Adding $4+4$ counts $\omega_6$ twice and $\omega_8$ twice. Subtract one copy
-  of the shared region:
-  \[
-    |A\cup B|=|A|+|B|-|A\cap B|=4+4-2=6.
-  \]
-  \checkit{The formula counts every member of the union exactly once.}
-\end{frame}
-
-\begin{frame}{Complement: what is missing inside the universe}
-  \framesubtitle{Class route · 40 minutes}
-  \textbf{Question:} which possible types are not Night?
-  The universe remains $S$ and $A$ contains the Night outcomes.
-  \[
-    A^c=S\setminus A=\{\omega\in S:\omega\notin A\}
-      =\{\omega_1,\omega_2,\omega_3,\omega_4\}.
-  \]
-  These are the four Day types. The superscript $c$ means complement, not a power.
-  \begin{alertblock}{The universe matters}
-    We do not add a Dawn or Midnight shift: it is not in this $S$.
-    A complement is always relative to a stated universe.
-  \end{alertblock}
-  \checkit{$|A^c|=8-4=4$ possible types.}
-\end{frame}
-
-\begin{frame}{Increment 2 · Program the operations}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \textbf{Function:} \texttt{summarize\_set\_operations()}.
-  \question{Validate that $A$ and $B$ are subsets of $S$, then return the five named sets.}
-  \begin{tabular}{lll}
-    \toprule Operation & Python & Expected size \\ \midrule
-    $A$ and $B$ & stored directly & 4 and 4\\
-    Intersection & \texttt{\&} & 2\\
-    Union & \texttt{|} & 6\\
-    Complement & \texttt{set(S) - A} & 4\\ \bottomrule
-  \end{tabular}
-  The table states the intended contract before the implementation.
-\end{frame}
-
-\begin{frame}{Increment 2 · Validate the universe}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \code{2}{107}{112}
-  \question{Start with the universe and reject an event containing a tuple that
-  cannot occur under the stated model.}
-\end{frame}
-
-\begin{frame}{Increment 2 · Apply the validated operations}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \code{2}{113}{118}
-  Validation makes the relative complement unambiguous: it is computed against
-  the universe received by the function.
-\end{frame}
-
-\begin{frame}{Increment 2 · Apply the three set operators}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \code{2}{119}{134}
-  \texttt{\&} means intersection, \texttt{|} means union, and subtraction from
-  the universe means relative complement.
-\end{frame}
-
-\begin{frame}{Increment 2 · Name the returned operations}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_02_set_operations.py}
-  \code{2}{127}{134}
-  The dictionary names answers so later code can inspect them without repeating
-  the same set expression. It still counts possible types, not rows.
-  \checkit{The five lengths are 4, 4, 2, 6, and 4.}
-\end{frame}
-
-\begin{frame}{Now count observed records}
-  \framesubtitle{Class route · 40 minutes}
-  A set answers ``which types are possible?'' A Boolean mask answers ``which
-  rows in this DataFrame satisfy the condition?''
-  \[
-    n(A)=172,\quad n(B)=86,\quad n(A\cap B)=45,\quad n(A\cup B)=213.
-  \]
-  These are counts of rows, not cardinalities of event sets. The same logic gives
-  \[
-    n(A\cup B)=172+86-45=213,\qquad n(A^c)=480-172=308.
-  \]
-  \question{Use pandas \texttt{\&} and \texttt{|} between masks; \texttt{and} and
-  \texttt{or} do not perform elementwise Boolean operations on a Series.}
-\end{frame}
-
-\begin{frame}{Cardinality and frequency use different units}
-  \framesubtitle{Class route · 40 minutes}
-  \begin{tabular}{lrr}
-    \toprule Event & $|G|$: possible types & $n(G)$: observed dispatches \\ \midrule
-    $A$ & 4 & 172\\
-    $B$ & 4 & 86\\
-    $A\cap B$ & 2 & 45\\
-    $A\cup B$ & 6 & 213\\
-    $A^c$ & 4 & 308\\ \bottomrule
-  \end{tabular}
-  \par\medskip
-  A type may repeat in many rows. That is why $|A\cap B|=2$ and
-  $n(A\cap B)=45$ can both be correct.
-  \checkit{State the unit every time: possible types or observed dispatches.}
-\end{frame}
-
-\begin{frame}{A membership matrix, not a frequency chart}
-  \framesubtitle{Class route · 40 minutes}
-  \centering
-  \includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figures/set_theory_02_set_operations.png}
-  \par\raggedright{\small Each cell is 1 if a possible outcome belongs to a set and 0 otherwise.
-  The figure does not represent the 480 observed rows.}
-\end{frame}
-
-\begin{frame}{Two questions you must not confuse}
-  \framesubtitle{Class route · 40 minutes}
-  \objetivo{Objective 4 · Disjointness and exhaustiveness}
-  \textbf{Can both events occur together?} They are \textbf{disjoint} when
-  \[
-    A\cap B=\varnothing.
-  \]
-  \textbf{Do they cover every possibility?} They are \textbf{exhaustive} with
-  respect to $S$ when
-  \[
-    A\cup B=S.
-  \]
-  Exhaustive events may overlap. The tests answer different questions.
-\end{frame}
-
-
-
-\begin{frame}{Increment 3 · Test properties independently}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \textbf{Functions:} \texttt{define\_service\_events()} and
-  \texttt{compare\_event\_pairs()}.
-  \question{Build C/D, then compare A/B and C/D with two independent tests.}
-  \code{3}{93}{100}
-  \checkit{C and D each filter the service component (position 1) and form a
-  partition of S.}
-\end{frame}
-
-\begin{frame}{Increment 3 · Complete the service events}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \code{3}{101}{106}
-  Both event definitions use the same universe and differ only in the service
-  label. This is why the pair partitions S.
-\end{frame}
-
-\begin{frame}{Increment 3 · Compare each pair}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \code{3}{108}{115}
-  \question{For each named pair, validate membership in S and calculate the
-  intersection and union exactly once.}
-\end{frame}
-
-\begin{frame}{Increment 3 · Record the comparison}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \code{3}{116}{123}
-  The comparison begins with an empty row list and one loop over the named pairs.
-\end{frame}
-
-\begin{frame}{Increment 3 · Record the comparison}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \code{3}{124}{138}
-  Reusing the calculated intersection and union keeps the two property checks
-  DRY and makes their different meanings visible.
-  \checkit{One row per pair with separate property columns.}
-\end{frame}
-
-\begin{frame}{Increment 3 · Translate definitions into tests}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \code{3}{139}{151}
-  \texttt{not intersection} tests emptiness; \texttt{union == universe} tests
-  coverage.
-\end{frame}
-
-\begin{frame}{Increment 3 · Keep the tests independent}
-  \framesubtitle{Class route · 40 minutes}
-  \archivo{set_theory_03_disjoint_events.py}
-  \code{3}{152}{160}
-  Equal sizes alone would not prove set equality, so the code compares the union
-  with the received universe.
-  \checkit{A/B: intersection 2, union 6, false/false. C/D: intersection 0,
-  union 8, true/true.}
-\end{frame}
-
-\begin{frame}{Visual comparison: overlap versus coverage}
-  \framesubtitle{Class route · 40 minutes}
-  \centering
-  \includegraphics[height=.64\textheight,width=.96\linewidth,keepaspectratio]{../figures/set_theory_03_disjoint_events.png}
-  \par\raggedright{\small The pink bars answer the overlap question, the navy bars answer
-  the coverage question, and the dashed line is $|S|=8$.}
-\end{frame}
-
-\begin{frame}{Integration · A new question}
-  \framesubtitle{Class route · 40 minutes}
-  \objetivo{Objective 5 · Combine condition, set operation, code, and interpretation}
-  \textbf{Context:} identify Express dispatches that arrived Delayed.
-  \textbf{Question:} what possible types satisfy both conditions, how many records
-  were observed, and how does this event compare with $A^c$ (Day)?
-  Define
-  \[
-    F=\{r\in S:r_1=\text{Express},\ r_2=\text{Delayed}\}.
-  \]
-  \question{Before reading the answer, write the two members of $F$, estimate its
-  observed count, and predict $F\cap A^c$ and $F\cup A^c$.}
-\end{frame}
-
-
-
-\begin{frame}{Check the five learning objectives}
-  \framesubtitle{Class route · 40 minutes}
-  \begin{enumerate}
-    \item Can you explain the experiment and enumerate $S$ without the table?
-    \item Can you explain why $|S|=8$ even though there are 480 rows?
-    \item Can you justify the members of an intersection, union, and complement?
-    \item Can you test disjointness and exhaustiveness independently?
-    \item Can you predict, run, and interpret the Python results?
-  \end{enumerate}
-  \checkit{The next lesson counts larger spaces without listing every outcome.}
-\end{frame}
-
-\begin{frame}{Reading and practice}
-  \framesubtitle{Class route · 40 minutes}
-  Holmes, Illowsky, and Dean, \emph{Introductory Business Statistics 2e}, OpenStax:
-  \begin{itemize}
-    \item \href{https://openstax.org/books/introductory-business-statistics-2e/pages/3-1-terminology}{Section 3.1: Terminology}. Review experiments, outcomes, sample spaces, events, unions, intersections, and complements.
-    \item \href{https://openstax.org/books/introductory-business-statistics-2e/pages/3-2-independent-and-mutually-exclusive-events}{Section 3.2: Independent and Mutually Exclusive Events}. Contrast mutual exclusivity with independence.
-  \end{itemize}
-  The conceptual foundation is CC BY-NC-SA 4.0. The dispatch case, code,
-  figures, and numerical results are original course material using synthetic data.
-\end{frame}
-
 \end{document}
