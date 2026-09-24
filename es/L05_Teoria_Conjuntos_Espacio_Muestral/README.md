@@ -15,6 +15,16 @@ Las referencias de páginas de la libreta extensa se alinearon con el PDF
 vigente de 55 páginas; el número de páginas del mazo histórico queda sólo
 como antecedente más abajo.
 
+La revisión posterior de accesibilidad añadió a la libreta extensa un
+equivalente textual de las 40 posiciones de la matriz (ocho resultados por
+cinco operaciones). Las otras dos figuras ya tienen sus valores y unidades en
+el texto adyacente. Sólo cambió la celda Markdown `interpretar-operaciones`:
+las 27 celdas de código y sus salidas siguen idénticas a la ejecución previa.
+`nbformat.validate` pasó con 59 celdas y el HTML volvió a renderizar. El
+exportador HTML todavía advierte que las tres imágenes de salida carecen de
+atributo `alt`; la explicación cercana no elimina ese aviso ni equivale por
+sí sola a una prueba con lector de pantalla.
+
 Esta lección utiliza un experimento de despacho completamente sintético para
 conectar resultados de negocio con espacios muestrales y eventos. Los estudiantes enumeran todos
 los resultados posibles, representan eventos como subconjuntos, calculan uniones,

@@ -15,6 +15,16 @@ The extensive notebook now points to the current 75-page deck. The deck
 identifies the worked F solution as part of the companion notebook rather
 than promising a separate solution slide; older page counts below are history.
 
+The subsequent accessibility review added a text equivalent for all 40
+positions of the membership matrix (eight outcomes by five operations) to
+the extensive notebook. The other two figures already state their values and
+units in nearby text. Only the `operations-interpretation` Markdown cell
+changed: all 23 code cells and saved outputs match the preceding run.
+`nbformat.validate` passed with 41 cells, and HTML rendered again. The HTML
+exporter still warns that the three output images lack `alt` attributes;
+adjacent explanation does not remove that warning or constitute a screen
+reader test.
+
 This package provides an extended student guide and a 40-minute class route.
 One fully synthetic dispatch experiment connects
 Cartesian products, events, union, intersection, complement, disjointness, and
