@@ -305,24 +305,16 @@ a esa diferencia ni se infiere una nueva revisión académica.
 - Listar todos los resultados posibles no los hace igualmente probables.
 - Los resultados sintéticos no afirman nada sobre ningún proceso de despacho real.
 
-## Estructura del Paquete
+## Estructura del paquete vigente
 
 ```text
 L05_Teoria_Conjuntos_Espacio_Muestral/
-|-- README.md
-|-- notebooks/
-|   `-- leccion_05_teoria_conjuntos_espacio_muestral.ipynb
-|-- src/
-|   |-- teoria_conjuntos_01_espacio_muestral.py
-|   |-- teoria_conjuntos_02_operaciones_conjuntos.py
-|   `-- teoria_conjuntos_03_eventos_disjuntos.py
-|-- figuras/
-|   |-- teoria_conjuntos_01_espacio_muestral.png
-|   |-- teoria_conjuntos_02_operaciones_conjuntos.png
-|   `-- teoria_conjuntos_03_eventos_disjuntos.png
-`-- diapositivas/
-    |-- leccion_05.tex
-    `-- leccion_05.pdf
+├── docente/        presentación compacta (.tex y .pdf), libreta compacta
+├── estudiante/     presentación extensa (.tex y .pdf), libreta extensa
+├── antecedentes/   compactos anteriores
+├── src/            tres scripts incrementales compartidos
+├── figuras/        tres figuras compartidas
+└── README.md
 ```
 
 ## Ejecución de la Lección
@@ -343,14 +335,14 @@ uv run jupyter nbconvert --execute --to notebook --inplace `
   es/L05_Teoria_Conjuntos_Espacio_Muestral/estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
 ```
 
-Compila dos veces desde el directorio `diapositivas/`:
+Compila dos veces desde el directorio `estudiante/`:
 
 ```bash
 pdflatex -interaction=nonstopmode -halt-on-error leccion_05.tex
 pdflatex -interaction=nonstopmode -halt-on-error leccion_05.tex
 ```
 
-El PDF retenido integra la ruta de clase y la consulta estudiantil.
+El PDF extenso es la ruta estudiantil de autoestudio.
 El repositorio lo almacena mediante Git LFS.
 
 ## Libreta de Estudio

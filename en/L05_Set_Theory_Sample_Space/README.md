@@ -144,24 +144,16 @@ HTML export was checked structurally for the complete notebook and its three
 embedded figures. A full browser visual review of the local HTML remains
 subject to the local `file:` URL policy; no Colab validation is claimed.
 
-## Package structure
+## Current package structure
 
 ```text
 L05_Set_Theory_Sample_Space/
-|-- README.md
-|-- notebooks/
-|   `-- lesson_05_set_theory_sample_space.ipynb
-|-- src/
-|   |-- set_theory_01_sample_space.py
-|   |-- set_theory_02_set_operations.py
-|   `-- set_theory_03_disjoint_events.py
-|-- figures/
-|   |-- set_theory_01_sample_space.png
-|   |-- set_theory_02_set_operations.png
-|   `-- set_theory_03_disjoint_events.png
-`-- slides/
-    |-- lesson_05.tex
-    `-- lesson_05.pdf
+├── instructor/   compact presentation (.tex and .pdf), compact notebook
+├── student/      extended presentation (.tex and .pdf), extended notebook
+├── antecedentes/ earlier compact versions
+├── src/         three shared incremental scripts
+├── figures/     three shared figures
+└── README.md
 ```
 
 ## Running the package
@@ -182,7 +174,7 @@ uv run jupyter nbconvert --execute --to notebook --inplace `
   en/L05_Set_Theory_Sample_Space/student/lesson_05_set_theory_sample_space.ipynb
 ```
 
-Compile twice from `slides/`:
+Compile twice from `student/`:
 
 ```bash
 pdflatex -interaction=nonstopmode -halt-on-error lesson_05.tex
