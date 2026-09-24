@@ -1,0 +1,96 @@
+\documentclass[aspectratio=169,11pt,spanish]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\title[L05 · Fundamentos]{Teoría de conjuntos y espacios muestrales}
+\begin{document}
+\shorthandoff{"}
+\begin{frame}{L05 · Un experimento y sus resultados}
+Un \textbf{experimento aleatorio} tiene un resultado que no conocemos antes de realizarlo.
+Consideremos un lanzamiento de un dado de seis caras.
+\[
+S=\{1,2,3,4,5,6\},\qquad |S|=6.
+\]
+El \textbf{espacio muestral} $S$ contiene todos los resultados posibles. En un lanzamiento se observa un elemento de $S$.
+
+\medskip
+La \textbf{cardinalidad} $|S|$ es el número de elementos distintos de $S$.
+\end{frame}
+\begin{frame}{Un evento es un subconjunto}
+Un \textbf{evento} reúne los resultados que cumplen una condición. Para el dado, definimos:
+\[
+A=\{2,4,6\}\quad\text{(sale un número par)},\qquad
+B=\{4,5,6\}\quad\text{(sale al menos cuatro)}.
+\]
+Ambos son subconjuntos de $S$ y $|A|=|B|=3$.
+
+\medskip
+Si sale 4, ocurren $A$ y $B$: un resultado puede pertenecer a más de un evento.
+\end{frame}
+\begin{frame}{Intersección: cumplir ambas condiciones}
+La intersección conserva sólo los elementos comunes:
+\[
+A\cap B=\{x\in S:x\in A\text{ y }x\in B\}.
+\]
+En nuestro ejemplo,
+\[
+A\cap B=\{4,6\},\qquad |A\cap B|=2.
+\]
+El 4 y el 6 son pares y, a la vez, son al menos cuatro.
+\end{frame}
+\begin{frame}{Unión: cumplir al menos una condición}
+La unión reúne los elementos de $A$, de $B$ o de ambos:
+\[
+A\cup B=\{x\in S:x\in A\text{ o }x\in B\}.
+\]
+La \textbf{o} es inclusiva. Por tanto,
+\[
+A\cup B=\{2,4,5,6\},\qquad |A\cup B|=4.
+\]
+Cada resultado se escribe una sola vez en un conjunto.
+\end{frame}
+\begin{frame}{Contar una unión sin duplicar elementos}
+Al sumar $|A|+|B|$, los elementos de $A\cap B$ se cuentan dos veces. Restamos una copia de cada uno:
+\[
+|A\cup B|=|A|+|B|-|A\cap B|.
+\]
+Para los eventos definidos antes:
+\[
+4=3+3-2.
+\]
+Esta identidad es válida para cualesquiera dos conjuntos finitos.
+\end{frame}
+\begin{frame}{Complemento: respecto a un universo}
+El complemento de $A$ contiene los resultados de $S$ que no están en $A$:
+\[
+A^c=S\setminus A=\{1,3,5\},\qquad |A^c|=3.
+\]
+$A$ y $A^c$ separan todo el espacio muestral:
+\[
+A\cap A^c=\varnothing,\quad A\cup A^c=S,\quad
+|A^c|=|S|-|A|=6-3=3.
+\]
+Sin un universo definido, el complemento queda ambiguo.
+\end{frame}
+\begin{frame}{Disyunción y exhaustividad}
+Dos eventos $X,Y\subseteq S$ son \textbf{disjuntos} si $X\cap Y=\varnothing$.
+Son \textbf{exhaustivos} si $X\cup Y=S$.
+
+\medskip
+Sean $C=\{1,3,5\}$ (impar) y $D=\{2,4,6\}$ (par). Entonces
+\[
+C\cap D=\varnothing,\qquad C\cup D=S.
+\]
+$C$ y $D$ tienen ambas propiedades. Disyunción pregunta por el \textbf{traslape}; exhaustividad pregunta por la \textbf{cobertura}.
+\end{frame}
+\begin{frame}{Ideas para comprobar tus resultados}
+Para eventos $A,B\subseteq S$:
+\[
+A\cap B\subseteq A,\quad A\cap B\subseteq B,\qquad
+A\subseteq A\cup B,\quad B\subseteq A\cup B.
+\]
+Por ello $|A\cap B|$ no puede superar $|A|$ o $|B|$, y $|A\cup B|$ no puede ser menor que ellos.
+
+\medskip
+\scriptsize Referencia: OpenStax, \emph{Introductory Business Statistics 2e}, secciones 3.1 y 3.2. El ejemplo del dado es autónomo.
+\end{frame}
+\end{document}

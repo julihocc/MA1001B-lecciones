@@ -1,0 +1,95 @@
+\documentclass[aspectratio=169,11pt,english]{beamer}
+\input{../../../_preambulo_beamer.tex}
+\input{../../../_comandos_beamer.tex}
+\title[L05 · Foundations]{Set Theory and Sample Spaces}
+\begin{document}
+\begin{frame}{L05 · An experiment and its outcomes}
+A \textbf{random experiment} has an outcome we do not know before it occurs.
+Consider one roll of a six-sided die.
+\[
+S=\{1,2,3,4,5,6\},\qquad |S|=6.
+\]
+The \textbf{sample space} $S$ contains every possible outcome. One roll produces one element of $S$.
+
+\medskip
+The \textbf{cardinality} $|S|$ is the number of distinct elements of $S$.
+\end{frame}
+\begin{frame}{An event is a subset}
+An \textbf{event} collects outcomes satisfying a condition. For the die, define
+\[
+A=\{2,4,6\}\quad\text{(an even number)},\qquad
+B=\{4,5,6\}\quad\text{(at least four)}.
+\]
+Both are subsets of $S$, and $|A|=|B|=3$.
+
+\medskip
+If the result is 4, both $A$ and $B$ occur: one outcome can belong to more than one event.
+\end{frame}
+\begin{frame}{Intersection: satisfy both conditions}
+The intersection keeps only shared elements:
+\[
+A\cap B=\{x\in S:x\in A\text{ and }x\in B\}.
+\]
+In this example,
+\[
+A\cap B=\{4,6\},\qquad |A\cap B|=2.
+\]
+Four and six are even and are also at least four.
+\end{frame}
+\begin{frame}{Union: satisfy at least one condition}
+The union contains elements of $A$, of $B$, or of both:
+\[
+A\cup B=\{x\in S:x\in A\text{ or }x\in B\}.
+\]
+The \textbf{or} is inclusive. Therefore,
+\[
+A\cup B=\{2,4,5,6\},\qquad |A\cup B|=4.
+\]
+Each outcome is listed once in a set.
+\end{frame}
+\begin{frame}{Count a union without double-counting}
+Adding $|A|+|B|$ counts each element of $A\cap B$ twice. Subtract one copy of each:
+\[
+|A\cup B|=|A|+|B|-|A\cap B|.
+\]
+For the events above:
+\[
+4=3+3-2.
+\]
+This identity holds for any two finite sets.
+\end{frame}
+\begin{frame}{Complement: relative to a universe}
+The complement of $A$ contains outcomes in $S$ that are not in $A$:
+\[
+A^c=S\setminus A=\{1,3,5\},\qquad |A^c|=3.
+\]
+$A$ and $A^c$ partition the sample space:
+\[
+A\cap A^c=\varnothing,\quad A\cup A^c=S,\quad
+|A^c|=|S|-|A|=6-3=3.
+\]
+A complement is ambiguous until its universe is specified.
+\end{frame}
+\begin{frame}{Disjointness and exhaustiveness}
+Two events $X,Y\subseteq S$ are \textbf{disjoint} if $X\cap Y=\varnothing$.
+They are \textbf{exhaustive} if $X\cup Y=S$.
+
+\medskip
+Let $C=\{1,3,5\}$ (odd) and $D=\{2,4,6\}$ (even). Then
+\[
+C\cap D=\varnothing,\qquad C\cup D=S.
+\]
+$C$ and $D$ have both properties. Disjointness concerns \textbf{overlap}; exhaustiveness concerns \textbf{coverage}.
+\end{frame}
+\begin{frame}{Checks for your results}
+For events $A,B\subseteq S$:
+\[
+A\cap B\subseteq A,\quad A\cap B\subseteq B,\qquad
+A\subseteq A\cup B,\quad B\subseteq A\cup B.
+\]
+Hence $|A\cap B|$ cannot exceed $|A|$ or $|B|$, and $|A\cup B|$ cannot be smaller than either one.
+
+\medskip
+\scriptsize Reference: OpenStax, \emph{Introductory Business Statistics 2e}, Sections 3.1 and 3.2. The die example is self-contained.
+\end{frame}
+\end{document}

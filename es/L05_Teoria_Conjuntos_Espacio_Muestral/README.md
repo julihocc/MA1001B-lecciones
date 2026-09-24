@@ -1,65 +1,43 @@
-# Lección 05 - Teoría de Conjuntos y Espacios Muestrales
+# Lección 05 — Teoría de conjuntos y espacios muestrales
 
-## Corrección de accesibilidad — 23 de septiembre de 2026
+## Versión vigente — 24 de septiembre de 2026
 
-La matriz de pertenencia conserva datos, categorías y colores, pero sus
-anotaciones numéricas ahora son negras (`#000000`). Sobre el rosa `#EC2661`,
-el contraste calculado es 5.02:1 (antes 4.19:1 con dígitos blancos); sobre
-el fondo claro es mayor. Regeneré la figura, las salidas de la libreta extensa
-y los PDF extenso y compacto, y comprobé visualmente la diapositiva de la
-matriz. Los tres scripts mantienen los conteos canónicos. El enlace del
-compacto a la libreta extensa usa ahora la ruta pública de GitHub, que también
-funciona al abrir el compacto en Colab; la copia local sigue junto a él.
-La nueva ejecución alojada y la propagación semanal se registran por separado.
-Las referencias de páginas de la libreta extensa se alinearon con el PDF
-vigente de 55 páginas; el número de páginas del mazo histórico queda sólo
-como antecedente más abajo.
+La **presentación compacta** de ocho láminas expone la teoría mediante un dado:
+espacio muestral, eventos, intersección, unión, complemento, disyunción y
+exhaustividad. Se entiende sin abrir la libreta. La **libreta compacta** de
+16 celdas (cinco de código) desarrolla por sí sola un ejemplo de 480 despachos
+sintéticos; distingue los ocho tipos posibles de las frecuencias observadas y
+resuelve operaciones sobre identificadores de despachos. El cambio de universo
+entre ambos recursos se explica antes de abrir la libreta.
 
-La revisión posterior de accesibilidad añadió a la libreta extensa un
-equivalente textual de las 40 posiciones de la matriz (ocho resultados por
-cinco operaciones). Las otras dos figuras ya tienen sus valores y unidades en
-el texto adyacente. Sólo cambió la celda Markdown `interpretar-operaciones`:
-las 27 celdas de código y sus salidas siguen idénticas a la ejecución previa.
-`nbformat.validate` pasó con 59 celdas y el HTML volvió a renderizar. El
-exportador HTML todavía advierte que las tres imágenes de salida carecen de
-atributo `alt`; la explicación cercana no elimina ese aviso ni equivale por
-sí sola a una prueba con lector de pantalla.
+- Docente: [presentación](docente/leccion_05_compacta.pdf),
+  [fuente LaTeX](docente/leccion_05_compacta.tex) y
+  [libreta desarrollada](docente/leccion_05_compacta.ipynb).
+- Estudiante, autoestudio:
+  [PDF extenso](estudiante/leccion_05.pdf),
+  [fuente LaTeX](estudiante/leccion_05.tex) y
+  [libreta extensa](estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb).
+- Versiones compactas anteriores: `antecedentes/pre-autonomia-2026-09-24/`.
+- Referencia: OpenStax, *Introductory Business Statistics 2e*, 3.1–3.2.
+- Datos: los despachos son enteramente sintéticos.
 
-Esta lección utiliza un experimento de despacho completamente sintético para
-conectar resultados de negocio con espacios muestrales y eventos. Los estudiantes enumeran todos
-los resultados posibles, representan eventos como subconjuntos, calculan uniones,
-intersecciones y complementos, y distinguen eventos mutuamente excluyentes de
-eventos que juntos cubren el espacio muestral.
+### Ruta docente compacta estimada: 40 minutos
 
-- **Ruta compacta de clase:** 40 minutos dentro del bloque asignado a L05.
-- **Extensos para estudio:** `diapositivas/leccion_05.pdf` y
-  `notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb`.
-- **Compactos para exposición:** `diapositivas/leccion_05_compacta.pdf` (12 láminas) y
-  `notebooks/leccion_05_compacta.ipynb` (11 celdas, cinco de código).
-- **Referencia canónica:** OpenStax, *Introductory Business Statistics 2e*,
-  Capítulo 3, Secciones 3.1 y 3.2.
-- **Prerrequisitos:** Colecciones básicas en Python, variables categóricas de la
-  Lección 01, y la distinción entre resultados posibles y datos observados.
-- **Aviso de datos:** Cada registro de despacho es sintético. No se utilizan datos
-  reales de empresas, clientes, instalaciones, socios o datos operativos.
-
-## Ruta compacta — clase de 40 minutos
-
-La presentación y la libreta compactas se revisaron para esta demo de L05.
-Abrir ambas y ejecutar cinco celdas de código; el cómputo tarda segundos y
-queda incluido en cada bloque. La libreta usa la biblioteca estándar y las ocho
-frecuencias sintéticas verificadas del script con semilla 42. La generación de
-480 filas y sus gráficos permanece en el material extenso de estudio.
-
-| Minutos | Objetivo y diapositivas/celdas | Acción docente y comprobación | Transición |
+| Minutos | Objetivo y recurso | Acción y comprobación | Transición |
 |---:|---|---|---|
-| 00–10 | Modelo y ocho tuplas; láminas 1–3, celda 1. | Planteo el despacho, construyo $S$ y compruebo que tiene ocho tipos. | Distinguir registros. |
-| 10–14 | Frecuencias sintéticas; lámina 4, celda 2. | Comparo 480 registros con ocho tipos; compruebo que repetir una tupla no cambia $|S|$. | Definir eventos. |
-| 14–26 | Eventos y operaciones; láminas 5–7, celda 3. | Pido predecir intersección, unión y complemento; ejecuto y comparo tipos con registros. | Comparar pares. |
-| 26–33 | Disyunción y exhaustividad; láminas 8–9, celda 4. | Contrasto A–B con C–D y verifico cada propiedad por separado. | Aplicar ambas condiciones. |
-| 33–40 | Integración y cierre; láminas 10–12, celda 5. | Pido definir F, anticipar 2/40/1/5 y explicar las unidades; enlazo con L06. | Fin de L05. |
+| 00–10 | Conceptos y universo del dado; presentación pp. 1–2. | Definir experimento, resultado, espacio muestral y evento; comprobar que un evento es subconjunto de S. | Operaciones. |
+| 10–18 | Operaciones; presentación pp. 3–6. | Obtener intersección, unión sin duplicados y complemento; comprobar cardinalidades. | Propiedades. |
+| 18–23 | Disyunción y exhaustividad; presentación pp. 7–8. | Verificar por separado intersección vacía y unión igual a S. | Cambiar de universo. |
+| 23–28 | Ocho tipos; libreta sección 1, celda de código 3. | Ejecutar producto cartesiano y comprobar `|S|=8`. | Registros observados. |
+| 28–34 | Simulación; libreta sección 2, celda de código 6. | Ejecutar 480 despachos con semilla 42; comprobar que tipos y registros tienen unidades distintas. | Operaciones con IDs. |
+| 34–38 | Eventos y propiedades; libreta secciones 3–4, celdas de código 9 y 12. | Comprobar 45 en A∩B, 213 en A∪B y que C,D son disjuntos y exhaustivos. | Consulta final. |
+| 38–40 | Consulta F; libreta sección 5, celda de código 15. | Comprobar 40 despachos exprés retrasados e interpretar la respuesta. | Cierre L05. |
 
-Esta es una estimación de conducción, no un ensayo cronometrado en aula.
+Es una estimación de conducción, sin ensayo cronometrado. La ejecución local
+con dependencias bloqueadas y la revisión visual se registran por separado.
+Las notas fechadas que siguen describen etapas anteriores y pueden mencionar
+rutas, conteos o publicaciones históricos; los recursos vigentes son los
+enlazados arriba.
 
 ## Resultados de Aprendizaje
 
@@ -81,7 +59,7 @@ Al final de la lección, un estudiante puede:
 | 34-45 | Disyunción y exhaustividad | Comparar pares y justificar cada booleano. |
 | 45-50 | Integración | Resolver el evento Exprés retrasado y comprobar los objetivos. |
 
-El [PDF estudiantil](diapositivas/leccion_05.pdf) contiene una ruta central
+El [PDF estudiantil](estudiante/leccion_05.pdf) contiene una ruta central
 y una sección diferenciada de consulta, sin límite fijo de diapositivas.
 Las consignas anteceden a las soluciones; la consulta desarrolla simulación,
 
@@ -218,7 +196,7 @@ SHA-256 del PDF: `6097C8B134F2908A9B3CA028945C5D4B572FA2E4814E8435232CED76352D94
 ## Libreta de estudio — tercera fase, 20 de septiembre de 2026
 
 La guía estudiantil
-[`notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb`](notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb)
+[`estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb`](estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb)
 integra los tres pasos en un solo estado acumulativo. Construye en memoria el
 espacio muestral de ocho miembros y los 480 despachos sintéticos, conserva las
 identidades de fila sembradas, embebe tres figuras editables y concluye con
@@ -267,7 +245,7 @@ HTML (revisar también todas las respuestas desplegadas):
 
 ```powershell
 uv run jupyter nbconvert --to html --output-dir <directorio-temporal> `
-  es/L05_Teoria_Conjuntos_Espacio_Muestral/notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
+  es/L05_Teoria_Conjuntos_Espacio_Muestral/estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
 ```
 
 La libreta es autocontenida: no descarga datos, no lee archivos del repositorio,
@@ -362,7 +340,7 @@ Ejecutar la libreta y guardar todas las salidas de celda:
 
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
-  es/L05_Teoria_Conjuntos_Espacio_Muestral/notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
+  es/L05_Teoria_Conjuntos_Espacio_Muestral/estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
 ```
 
 Compila dos veces desde el directorio `diapositivas/`:
@@ -377,7 +355,7 @@ El repositorio lo almacena mediante Git LFS.
 
 ## Libreta de Estudio
 
-`notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb` integra los tres
+`estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb` integra los tres
 pasos en un estado acumulativo, embebe las tres figuras y ofrece ejercicios
 editables, respuestas plegables y aserciones sobre las cifras canónicas. Es
 autocontenida: no lee los scripts, las figuras retenidas ni archivos de datos.
@@ -385,7 +363,7 @@ autocontenida: no lee los scripts, las figuras retenidas ni archivos de datos.
 Para ejecutarla localmente desde la raíz del repositorio:
 
 ```bash
-uv run jupyter nbconvert --execute --to notebook --inplace es/L05_Teoria_Conjuntos_Espacio_Muestral/notebooks/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
+uv run jupyter nbconvert --execute --to notebook --inplace es/L05_Teoria_Conjuntos_Espacio_Muestral/estudiante/leccion_05_teoria_conjuntos_espacio_muestral.ipynb
 ```
 
 También puede subirse directamente a Google Colab o abrirse con el kernel de

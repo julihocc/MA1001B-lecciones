@@ -1,64 +1,41 @@
-# Lesson 05 - Set Theory and Sample Spaces
+# Lesson 05 — Set Theory and Sample Spaces
 
-## Accessibility correction — 23 September 2026
+## Current version — 24 September 2026
 
-The membership matrix retains its data, categories, and colors, while its
-numeric annotations are now black (`#000000`). Against `#EC2661`, the
-calculated contrast is 5.02:1 (previously 4.19:1 with white digits); it is
-higher on the pale background. I regenerated the figure, the extensive
-notebook outputs, and both PDF decks, and visually checked the matrix slide.
-The three scripts retain their canonical counts. The compact notebook now
-links to the extensive notebook via its public GitHub path, which also works
-from Colab; the local copy remains beside it. The new hosted run and weekly
-propagation are recorded separately.
-The extensive notebook now points to the current 75-page deck. The deck
-identifies the worked F solution as part of the companion notebook rather
-than promising a separate solution slide; older page counts below are history.
+The eight-slide **compact presentation** explains theory through a die:
+sample space, events, intersection, union, complement, disjointness, and
+exhaustiveness. It stands on its own. The 16-cell **compact notebook** (five
+code cells) independently develops a coded example with 480 synthetic
+dispatches. It distinguishes eight possible outcome types from observed
+frequencies and performs operations on dispatch IDs. Explain the change
+of universe when switching resources.
 
-The subsequent accessibility review added a text equivalent for all 40
-positions of the membership matrix (eight outcomes by five operations) to
-the extensive notebook. The other two figures already state their values and
-units in nearby text. Only the `operations-interpretation` Markdown cell
-changed: all 23 code cells and saved outputs match the preceding run.
-`nbformat.validate` passed with 41 cells, and HTML rendered again. The HTML
-exporter still warns that the three output images lack `alt` attributes;
-adjacent explanation does not remove that warning or constitute a screen
-reader test.
+- Instructor: [presentation](instructor/lesson_05_compact.pdf),
+  [LaTeX source](instructor/lesson_05_compact.tex), and
+  [worked notebook](instructor/lesson_05_compact.ipynb).
+- Student self-study: [extended PDF](student/lesson_05.pdf),
+  [LaTeX source](student/lesson_05.tex), and
+  [extended notebook](student/lesson_05_set_theory_sample_space.ipynb).
+- Earlier compact versions: `antecedentes/pre-autonomia-2026-09-24/`.
+- Reference: OpenStax, *Introductory Business Statistics 2e*, 3.1–3.2.
+- Data: all dispatch records are synthetic.
 
-This package provides an extended student guide and a 40-minute class route.
-One fully synthetic dispatch experiment connects
-Cartesian products, events, union, intersection, complement, disjointness, and
-exhaustiveness with readable Python.
+### Estimated 40-minute compact route
 
-- **Track:** English, MA1001B.
-- **Class route:** `slides/lesson_05_compact.pdf` (12 slides) and
-  `notebooks/lesson_05_compact.ipynb` (11 cells, five code cells).
-- **Extended study:** `slides/lesson_05.pdf` and
-  `notebooks/lesson_05_set_theory_sample_space.ipynb`.
-- **Deck:** `slides/lesson_05.pdf`. There is no
-  slide-count ceiling; explanations are divided into student-readable pages.
-- **Reference:** OpenStax, *Introductory Business Statistics 2e*, Sections 3.1
-  and 3.2.
-- **Data:** all 480 dispatches, frequencies, and probabilities are invented
-  teaching assumptions. They are not data or estimates from a company.
-
-## Compact route — 40-minute class
-
-The compact slides and notebook were revised for this L05 demo. Open both and
-run five code cells; computation takes seconds within the allotted blocks.
-The notebook uses only the standard library and eight verified synthetic
-frequencies from the seed-42 script. Generating 480 rows and their figures
-remains in the extended study material.
-
-| Minutes | Objective and slides/cells | Instructor action and check | Transition |
+| Minutes | Goal and resource | Instructor action and check | Transition |
 |---:|---|---|---|
-| 00–10 | Model and eight tuples; slides 1–3, cell 1. | Introduce the dispatch, build $S$, and check that it has eight types. | Distinguish records. |
-| 10–14 | Synthetic frequencies; slide 4, cell 2. | Compare 480 records with eight types; check that repeating a tuple does not change $|S|$. | Define events. |
-| 14–26 | Events and operations; slides 5–7, cell 3. | Ask for predictions of intersection, union, and complement; run and compare types with records. | Compare pairs. |
-| 26–33 | Disjointness and exhaustiveness; slides 8–9, cell 4. | Contrast A–B with C–D and check each property separately. | Apply both conditions. |
-| 33–40 | Integration and close; slides 10–12, cell 5. | Define F, predict 2/40/1/5, and explain the units; bridge to L06. | End L05. |
+| 00–10 | Concepts and die universe; deck pp. 1–2. | Define experiment, outcome, sample space, and event; check that an event is a subset of S. | Set operations. |
+| 10–18 | Operations; deck pp. 3–6. | Find intersection, union without duplicates, and complement; check cardinalities. | Event properties. |
+| 18–23 | Disjointness and exhaustiveness; deck pp. 7–8. | Check empty intersection and union equal to S separately. | Change universe. |
+| 23–28 | Eight types; notebook section 1, code cell 3. | Run Cartesian product and check `|S|=8`. | Observed records. |
+| 28–34 | Simulation; notebook section 2, code cell 6. | Run 480 dispatches with seed 42; distinguish type and record units. | Operations on IDs. |
+| 34–38 | Events and properties; notebook sections 3–4, code cells 9 and 12. | Check 45 in A∩B, 213 in A∪B, and C,D disjoint and exhaustive. | Final query. |
+| 38–40 | Query F; notebook section 5, code cell 15. | Check 40 delayed express dispatches and interpret the answer. | Close L05. |
 
-This is an instructor timing estimate, not a timed classroom rehearsal.
+This is an instructor estimate, not a timed classroom rehearsal. Local runs
+with locked dependencies and visual review are recorded separately. The dated
+notes below describe earlier stages and may mention historical paths, counts,
+or publication states; the current resources are linked above.
 
 ## Learning outcomes
 
@@ -114,7 +91,7 @@ remain visible and testable.
 
 ## Student deck
 
-`slides/lesson_05.tex` and its compiled PDF follow the route
+`student/lesson_05.tex` and its compiled PDF follow the route
 
 `intuition -> formal definition -> worked example -> implementation -> interpretation`.
 
@@ -128,7 +105,7 @@ notes or facilitation instructions.
 
 ## Reproducible student notebook
 
-[`notebooks/lesson_05_set_theory_sample_space.ipynb`](notebooks/lesson_05_set_theory_sample_space.ipynb)
+[`student/lesson_05_set_theory_sample_space.ipynb`](student/lesson_05_set_theory_sample_space.ipynb)
 is an executable companion, not a replacement for the deck. It:
 
 - introduces context, objectives, formulas, and references to PDF revision
@@ -202,7 +179,7 @@ Execute the notebook and retain its outputs:
 
 ```powershell
 uv run jupyter nbconvert --execute --to notebook --inplace `
-  en/L05_Set_Theory_Sample_Space/notebooks/lesson_05_set_theory_sample_space.ipynb
+  en/L05_Set_Theory_Sample_Space/student/lesson_05_set_theory_sample_space.ipynb
 ```
 
 Compile twice from `slides/`:
