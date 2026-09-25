@@ -22,8 +22,8 @@
   {\color{TecRojo}\rule{\textwidth}{1.2pt}}
   \vspace{0.8cm}
 
-  MA1001B Faculty\\[0.3cm]
-  Term\\[0.3cm]
+  Extensive material for independent study\\[0.3cm]
+  Synthetic case of 400 orders\\[0.3cm]
   Tecnol\'ogico de Monterrey
 \end{frame}
 
@@ -170,6 +170,102 @@
       \includegraphics[width=\textwidth]{../figures/probability_03_limit.png}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}{From Records to a Table}
+  \small
+  Each of the 400 synthetic orders has one routing category and one delivery
+  outcome. \texttt{pd.crosstab} counts each combination once.
+  \begin{center}
+    \begin{tabular}{lll}
+      \toprule
+      Selection & Count & Probability\\
+      \midrule
+      Manual review & \(48+72=120\) & \(0.30\)\\
+      Late & \(48+32=80\) & \(0.20\)\\
+      Manual and late & \(48\) & \(0.12\)\\
+      Automated and on time & \(248\) & \(0.62\)\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  A cell is an intersection; a margin ignores the other variable.
+  The denominator is 400 because each row represents one order.
+\end{frame}
+
+\begin{frame}{The Union Removes a Duplicate Count}
+  \small
+  The 120 manual-review orders include 48 late orders. The 80 late orders
+  include those same 48.
+  \[
+    |M\cup L|=120+80-48=152,\qquad
+    P(M\cup L)=\frac{152}{400}=0.38.
+  \]
+  \begin{block}{Independent check}
+    Only the 248 automated, on-time orders lie outside \(M\cup L\).
+    By the complement, \(P(M\cup L)=1-248/400=0.38\).
+  \end{block}
+  Simple addition works only for an empty intersection. Here
+  \(0.30+0.20=0.50\) exceeds the true union by \(0.12\).
+\end{frame}
+
+\begin{frame}{Conditioning Changes the Denominator}
+  \small
+  Among 120 manual-review orders, 48 were late:
+  \[
+    P(L\mid M)=\frac{48}{120}=0.40.
+  \]
+  Among 80 late orders, 48 were manually reviewed:
+  \[
+    P(M\mid L)=\frac{48}{80}=0.60.
+  \]
+  The intersection stays the same, but the reference population changes.
+  The general rule matches the table cell:
+  \[
+    P(M\cap L)=P(M)P(L\mid M)=0.30(0.40)=0.12.
+  \]
+  Replacing the conditional with marginal \(P(L)=0.20\) gives \(0.06\).
+\end{frame}
+
+\begin{frame}{How the Scripts Build Evidence}
+  \small
+  \begin{enumerate}
+    \item \texttt{build\_operations\_data()} expands four fixed counts into
+      400 synthetic rows. Seed 42 controls their order only.
+    \item \texttt{pd.crosstab} recovers the four cells and checks the total.
+    \item \texttt{table\_probabilities()} divides margins and cells by 400.
+    \item Step 2 compares the addition rule with a direct count.
+    \item Step 3 compares the marginal product with the general rule.
+  \end{enumerate}
+  All three programs run independently and save figures without opening
+  windows. The study notebook integrates them with editable practice.
+\end{frame}
+
+\begin{frame}{Worked Example: Automated or Late}
+  \small
+  Let \(A\) mean \emph{automated}. The table gives
+  \(P(A)=280/400=0.70\), \(P(L)=80/400=0.20\), and
+  \(P(A\cap L)=32/400=0.08\).
+  \[
+    P(A\cup L)=0.70+0.20-0.08=0.82.
+  \]
+  Direct count: \(280+80-32=328\), so \(328/400=0.82\).
+  \begin{block}{Practice}
+    Find \(P(\text{on time}\cup M)\), then check it through the
+    complementary cell.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Scope of This Table}
+  \small
+  These frequencies belong to a fabricated population of 400 orders.
+  They do not represent a company or estimate an external population rate.
+  The association between manual review and lateness does not establish
+  causality: there is no random assignment or control for other factors.
+
+  \begin{block}{Conceptual bridge}
+    L09 develops the reduced sample space created by conditioning
+    and formal checks of independence.
+  \end{block}
 \end{frame}
 
 \begin{frame}{Concept Check}

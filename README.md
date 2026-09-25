@@ -18,3 +18,6 @@ LaTeX installation. PDFs and notebooks are tracked with Git LFS.
 The original course repository includes this repository at `02-lecciones` as a
 Git submodule.
 
+## W08 L08 package
+
+The bilingual L08 package is indexed in [Spanish](es/L08_Reglas_Probabilidad_Tablas_Contingencia/README.md) and [English](en/L08_Probability_Rules_Contingency_Tables/README.md). Each route separates independent student study from compact instructor exposition.

@@ -1,5 +1,13 @@
 # Lesson 08: Probability Rules and Contingency Tables
 
+## Active package by audience
+- **Student, independent study:** [extensive deck](student/lesson_08.pdf), [Beamer source](student/lesson_08.tex), [extensive notebook](student/lesson_08_probability_rules_contingency_tables.ipynb), and [nine-file ZIP](student/lesson_08_student.zip).
+- **Instructor, class exposition:** [compact deck](instructor/lesson_08_compact.pdf), [Beamer source](instructor/lesson_08_compact.tex), and [compact notebook](instructor/lesson_08_compact.ipynb). Each is self-contained; the compact deck has eight slides.
+- **Shared:** [three incremental scripts](src/README.md) and three verified figures in figures/. Four fixed cell counts define the 400 synthetic orders. Expanding them into records is part of the teaching step that constructs and checks a contingency table. No external dataset is needed.
+
+**W08 working version:** L08 for MA1001B.502 S04. The common 40-minute route fits inside a 50-minute block; a separate 50-minute sampling block uses existing sources. No partner data appear in this lesson.
+
+
 This 50-minute micro-lesson uses one fully synthetic order-operations dataset
 to read marginal and joint probabilities from a contingency table, apply the
 complement and addition rules, and expose the assumption hidden in multiplying
@@ -110,7 +118,7 @@ as a limit; Lesson 09 develops conditional probability and independence.
 ## Study Notebook
 
 The student guide
-[`notebooks/lesson_08_probability_rules_contingency_tables.ipynb`](notebooks/lesson_08_probability_rules_contingency_tables.ipynb)
+[`student/lesson_08_probability_rules_contingency_tables.ipynb`](student/lesson_08_probability_rules_contingency_tables.ipynb)
 integrates the three steps into one cumulative state. It constructs the 400
 synthetic records in memory, preserves the documented function contracts from
 `src/`, embeds three editable figures, and concludes with executable
@@ -151,48 +159,16 @@ corresponding PNG. The results below came from repeated execution in the locked
 
 ## Package Structure
 
-```text
-L08_Probability_Rules_Contingency_Tables/
-|-- README.md
-|-- notebooks/
-|   `-- lesson_08_probability_rules_contingency_tables.ipynb
-|-- src/
-|   |-- probability_rules_01_contingency_table.py
-|   |-- probability_rules_02_complement_addition.py
-|   `-- probability_rules_03_multiplication_limit.py
-|-- figures/
-|   |-- probability_01_table.png
-|   |-- probability_02_addition.png
-|   `-- probability_03_limit.png
-`-- slides/
-    |-- lesson_08.tex
-    `-- lesson_08.pdf
-```
+- src/: three standalone programs.
+- figures/: three PNGs produced by the scripts.
+- student/: extensive deck, Beamer source, and notebook.
+- instructor/: compact deck, Beamer source, and notebook.
 
 ## Execution
 
-Run from the repository root:
+From the 02-lecciones/ root, use the environment pinned by pyproject.toml and uv.lock. Run the three src/ scripts in order. Either notebook runs top to bottom from a clean Python kernel in an isolated directory, without external data. Compile the Beamer sources from student/ and instructor/ with two pdflatex passes; both PDFs use the shared figures and collection preamble.
 
-```powershell
-uv sync --frozen
-uv run en/L08_Probability_Rules_Contingency_Tables/src/probability_rules_01_contingency_table.py
-uv run en/L08_Probability_Rules_Contingency_Tables/src/probability_rules_02_complement_addition.py
-uv run en/L08_Probability_Rules_Contingency_Tables/src/probability_rules_03_multiplication_limit.py
-```
-
-Execute the notebook and save all cell outputs:
-
-```powershell
-uv run jupyter nbconvert --execute --to notebook --inplace `
-  en/L08_Probability_Rules_Contingency_Tables/notebooks/lesson_08_probability_rules_contingency_tables.ipynb
-```
-
-Compile twice from the `slides/` directory:
-
-```powershell
-pdflatex -interaction=nonstopmode -halt-on-error lesson_08.tex
-pdflatex -interaction=nonstopmode -halt-on-error lesson_08.tex
-```
+The estimated compact route totals 40 minutes: table and margins 12, complement and union 13, multiplication limit 10, check and transition 5. The remaining 10 minutes in the L08 S04 block cover opening, questions, and contingency. This estimate is not a class rehearsal.
 
 ## OpenStax Attribution
 

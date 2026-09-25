@@ -22,8 +22,8 @@
   {\color{TecRojo}\rule{\textwidth}{1.2pt}}
   \vspace{0.8cm}
 
-  Facultad MA1001B\\[0.3cm]
-  Periodo\\[0.3cm]
+  Material extenso de estudio autónomo\\[0.3cm]
+  Caso sintético de 400 pedidos\\[0.3cm]
   Tecnol\'ogico de Monterrey
 \end{frame}
 
@@ -172,6 +172,102 @@
       \includegraphics[width=\textwidth]{../figuras/probabilidad_03_limite.png}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}{De registros a una tabla}
+  \small
+  Cada uno de los 400 pedidos sintéticos tiene una categoría de enrutamiento
+  y una de entrega. \texttt{pd.crosstab} cuenta cada combinación una vez.
+  \begin{center}
+    \begin{tabular}{lll}
+      \toprule
+      Selección & Conteo & Probabilidad\\
+      \midrule
+      Revisión manual & \(48+72=120\) & \(0.30\)\\
+      Retrasado & \(48+32=80\) & \(0.20\)\\
+      Manual y retrasado & \(48\) & \(0.12\)\\
+      Automatizado y a tiempo & \(248\) & \(0.62\)\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Una celda representa una intersección; un margen ignora la otra variable.
+  El denominador es 400 porque cada fila representa un pedido.
+\end{frame}
+
+\begin{frame}{La unión elimina un conteo duplicado}
+  \small
+  Los 120 pedidos manuales incluyen 48 retrasados. Los 80 retrasados
+  incluyen esos mismos 48.
+  \[
+    |M\cup L|=120+80-48=152,\qquad
+    P(M\cup L)=\frac{152}{400}=0.38.
+  \]
+  \begin{block}{Comprobación independiente}
+    Fuera de \(M\cup L\) sólo quedan los 248 pedidos automatizados y a tiempo.
+    Por el complemento, \(P(M\cup L)=1-248/400=0.38\).
+  \end{block}
+  La suma simple sólo sirve si la intersección está vacía; aquí
+  \(0.30+0.20=0.50\) excede la unión real en \(0.12\).
+\end{frame}
+
+\begin{frame}{La condición cambia el denominador}
+  \small
+  Entre 120 pedidos manuales, 48 fueron retrasados:
+  \[
+    P(L\mid M)=\frac{48}{120}=0.40.
+  \]
+  Entre 80 pedidos retrasados, 48 tuvieron revisión manual:
+  \[
+    P(M\mid L)=\frac{48}{80}=0.60.
+  \]
+  La intersección es la misma, pero cambia la población de referencia.
+  La regla general reconcilia el producto con la celda:
+  \[
+    P(M\cap L)=P(M)P(L\mid M)=0.30(0.40)=0.12.
+  \]
+  Sustituir la condición por la marginal \(P(L)=0.20\) daría \(0.06\).
+\end{frame}
+
+\begin{frame}{Cómo construyen evidencia los scripts}
+  \small
+  \begin{enumerate}
+    \item \texttt{build\_operations\_data()} expande cuatro conteos fijos en
+      400 filas sintéticas. La semilla 42 sólo fija su orden.
+    \item \texttt{pd.crosstab} recupera las cuatro celdas y comprueba el total.
+    \item \texttt{table\_probabilities()} divide márgenes y celdas por 400.
+    \item El paso 2 contrasta la regla de adición con un conteo directo.
+    \item El paso 3 contrasta el producto marginal con la regla general.
+  \end{enumerate}
+  Los tres programas son autónomos y guardan sus figuras sin abrir ventanas.
+  La libreta de estudio integra los pasos y ofrece práctica modificable.
+\end{frame}
+
+\begin{frame}{Ejemplo resuelto: automatizado o retrasado}
+  \small
+  Sea \(A\) el evento \emph{automatizado}. La tabla da
+  \(P(A)=280/400=0.70\), \(P(L)=80/400=0.20\) y
+  \(P(A\cap L)=32/400=0.08\).
+  \[
+    P(A\cup L)=0.70+0.20-0.08=0.82.
+  \]
+  Conteo directo: \(280+80-32=328\), así que \(328/400=0.82\).
+  \begin{block}{Práctica}
+    Calcule \(P(\text{a tiempo}\cup M)\) y compruebe el resultado
+    mediante la celda complementaria.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Alcance de esta tabla}
+  \small
+  Las frecuencias pertenecen a una población fabricada de 400 pedidos.
+  No representan una empresa ni estiman una tasa poblacional externa.
+  La asociación entre revisión manual y retraso tampoco prueba causalidad:
+  no hay asignación aleatoria ni control de otros factores.
+
+  \begin{block}{Puente conceptual}
+    En L09 se profundiza en el espacio muestral reducido que aparece al
+    condicionar y en la comprobación formal de independencia.
+  \end{block}
 \end{frame}
 
 \begin{frame}{Verificación de conceptos}

@@ -1,5 +1,13 @@
 # Lección 08: Reglas de probabilidad y tablas de contingencia
 
+## Paquete activo por audiencia
+- **Estudiante, estudio autogestionado:** [presentación extensa](estudiante/leccion_08.pdf), [fuente Beamer](estudiante/leccion_08.tex), [libreta extensa](estudiante/leccion_08_reglas_probabilidad_tablas_contingencia.ipynb) y [ZIP de nueve archivos](estudiante/leccion_08_estudiante.zip).
+- **Docente, exposición:** [presentación compacta](docente/leccion_08_compacta.pdf), [fuente Beamer](docente/leccion_08_compacta.tex) y [libreta compacta](docente/leccion_08_compacta.ipynb). Son autónomas entre sí y la presentación tiene ocho láminas.
+- **Compartido:** [tres scripts incrementales](src/README.md) y tres figuras verificadas en la carpeta figuras. La tabla fija de cuatro conteos define los 400 pedidos sintéticos; expandirla en filas es parte del paso didáctico de construir y cotejar una tabla de contingencia. No hay un dataset externo que adquirir.
+
+**Versión de trabajo W08:** L08 para S04 de MA1001B.501; la ruta común de 40 minutos se inserta en un bloque de 50 minutos, seguido por otro bloque de muestreo preparado con fuentes existentes. No hay datos de socios en esta lección.
+
+
 Esta microlección de 50 minutos usa un conjunto sintético de operaciones de
 pedidos para leer probabilidades marginales y conjuntas en una tabla de
 contingencia, aplicar las reglas de complemento y adición, y exponer el
@@ -113,7 +121,7 @@ independencia.
 ## Libreta de estudio
 
 La guía estudiantil
-[`notebooks/leccion_08_reglas_probabilidad_tablas_contingencia.ipynb`](notebooks/leccion_08_reglas_probabilidad_tablas_contingencia.ipynb)
+[`estudiante/leccion_08_reglas_probabilidad_tablas_contingencia.ipynb`](estudiante/leccion_08_reglas_probabilidad_tablas_contingencia.ipynb)
 integra los tres pasos en un solo estado acumulativo. Construye en memoria los
 400 registros sintéticos, conserva los contratos funcionales documentados en
 `src/`, embebe tres figuras editables y concluye con aserciones ejecutables,
@@ -155,48 +163,16 @@ provienen de ejecuciones repetidas en el entorno bloqueado de `uv`.
 
 ## Estructura del paquete
 
-```text
-L08_Reglas_Probabilidad_Tablas_Contingencia/
-|-- README.md
-|-- notebooks/
-|   `-- leccion_08_reglas_probabilidad_tablas_contingencia.ipynb
-|-- src/
-|   |-- reglas_probabilidad_01_tabla_contingencia.py
-|   |-- reglas_probabilidad_02_complemento_adicion.py
-|   `-- reglas_probabilidad_03_limite_multiplicacion.py
-|-- figuras/
-|   |-- probabilidad_01_tabla.png
-|   |-- probabilidad_02_adicion.png
-|   `-- probabilidad_03_limite.png
-`-- diapositivas/
-    |-- leccion_08.tex
-    `-- leccion_08.pdf
-```
+- src/: tres programas autónomos.
+- figuras/: tres PNG producidos por los scripts.
+- estudiante/: presentación extensa, fuente Beamer y libreta extensa.
+- docente/: presentación compacta, fuente Beamer y libreta compacta.
 
 ## Ejecución
 
-Desde la raíz del repositorio:
+Desde la raíz de 02-lecciones/, usar el entorno fijado por pyproject.toml y uv.lock. Ejecutar en orden los tres scripts de src/. Las dos libretas se pueden ejecutar de principio a fin desde un kernel Python limpio y una carpeta aislada, sin datos externos. Compilar las fuentes Beamer desde estudiante/ y docente/ con dos pasadas de pdflatex; ambos PDF usan las figuras compartidas y el preámbulo común.
 
-```bash
-uv sync --frozen
-uv run es/L08_Reglas_Probabilidad_Tablas_Contingencia/src/reglas_probabilidad_01_tabla_contingencia.py
-uv run es/L08_Reglas_Probabilidad_Tablas_Contingencia/src/reglas_probabilidad_02_complemento_adicion.py
-uv run es/L08_Reglas_Probabilidad_Tablas_Contingencia/src/reglas_probabilidad_03_limite_multiplicacion.py
-```
-
-Ejecutar la libreta y guardar todas las salidas de celda:
-
-```powershell
-uv run jupyter nbconvert --execute --to notebook --inplace `
-  es/L08_Reglas_Probabilidad_Tablas_Contingencia/notebooks/leccion_08_reglas_probabilidad_tablas_contingencia.ipynb
-```
-
-Compilar dos veces desde el directorio `diapositivas/`:
-
-```bash
-pdflatex -interaction=nonstopmode -halt-on-error leccion_08.tex
-pdflatex -interaction=nonstopmode -halt-on-error leccion_08.tex
-```
+La ruta compacta estimada suma 40 minutos: tabla y márgenes 12, complemento y unión 13, límite de multiplicación 10, comprobación y transición 5. Los 10 minutos restantes del bloque L08 de S04 cubren apertura, preguntas y contingencia. Esta estimación no es un ensayo de clase.
 
 ## Atribución OpenStax
 
