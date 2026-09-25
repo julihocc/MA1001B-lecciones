@@ -182,3 +182,10 @@ a two-way table follow OpenStax, *Introductory Business Statistics 2e*, Chapter
 - Authors: Alexander Holmes, Barbara Illowsky, and Susan Dean.
 - License: CC BY-NC-SA 4.0.
 
+## 2026-09-25 · compact code guidance
+
+Every code cell in the compact instructor notebook now carries explanatory comments beside the relevant operation. The executable Python and saved outputs were preserved; a fresh run reproduced the saved outputs. Student materials were not changed.
+
+| Notebook | Code cells | SHA-256 |
+|---|---:|---|
+| [lesson_08_compact.ipynb](instructor/lesson_08_compact.ipynb) | 3 | C9ED1566A0C5A45912772F7693C3B26A3C469892D1E0BD0BCD33D70E55B5E7AE |
